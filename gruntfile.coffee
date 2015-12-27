@@ -9,4 +9,6 @@ module.exports = (grunt) ->
 	loadGruntTasks grunt
 	grunt.initConfig loadGruntConfigs grunt, options
 
+	grunt.registerTask 'travis', ['coffeelint:all']
+
 	grunt.registerTask 'default', ['coffeelint:all']

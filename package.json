@@ -1,6 +1,6 @@
 {
   "name": "aimole",
-  "description": "ai play against ai",
+  "description": "let ai play against ai",
   "author": "Leo Yu Ho, Lo <leoyuholo@gmail.com>",
   "version": "0.0.0",
   "devDependencies": {

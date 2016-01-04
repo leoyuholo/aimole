@@ -1,5 +1,7 @@
-# aimole
-ai play against ai
+# AI mole
+let ai play against ai
 
-# contributors
-Janice Chen
+# Development environment
+run `shellscripts/setup_dev.sh`, it setup the linux environment. Then, run `npm install` and `bower install` to install dependencies
+
+run `grunt` or `grunt dev` to start livereload server, then visit `localhost:3000`

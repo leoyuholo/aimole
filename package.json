@@ -1,15 +1,34 @@
 {
   "name": "aimole",
-  "description": "ai play against ai",
+  "description": "let ai play against ai",
   "author": "Leo Yu Ho, Lo <leoyuholo@gmail.com>",
   "version": "0.0.0",
   "devDependencies": {
+    "chai": "^3.4.1",
     "coffee-script": "^1.10.0",
     "coffeelint": "^1.14.2",
     "coffeelint-newline-at-eof": "^0.4.1",
     "grunt": "^0.4.5",
     "grunt-coffeelint": "0.0.13",
+    "grunt-concurrent": "^2.1.0",
+    "grunt-contrib-jade": "^0.15.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-mocha-test": "^0.12.7",
+    "grunt-nodemon": "^0.4.1",
+    "grunt-text-replace": "^0.4.0",
+    "jstransformer-coffee-script": "^1.0.0",
+    "jstransformer-stylus": "^1.0.0",
     "load-grunt-configs": "^0.4.3",
-    "load-grunt-tasks": "^3.4.0"
+    "load-grunt-tasks": "^3.4.0",
+    "mocha": "^2.3.4",
+    "sinon": "^1.17.2",
+    "sinon-chai": "^2.8.0"
+  },
+  "dependencies": {
+    "async": "^1.5.0",
+    "coffee-errors": "^0.8.6",
+    "express": "^4.13.3",
+    "lodash": "^3.10.1",
+    "require-all": "^2.0.0"
   }
 }

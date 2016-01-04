@@ -4,6 +4,6 @@ module.exports = (grunt, options) ->
 		options:
 			configFile: 'coffeelint.json'
 		all:
-			src: ['**/*.coffee', '!node_modules/**']
+			src: grunt.option('target') || ['**/*.coffee', '!node_modules/**']
 
 	return config

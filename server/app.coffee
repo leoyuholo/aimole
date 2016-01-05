@@ -1,4 +1,11 @@
+
+async = require 'async'
+
 $ = require './globals'
 
-$.app.listen $.config.port, () ->
-	console.log "server listening on port #{$.config.port}"
+async.series [
+	$.run.setups
+	$.run.server
+], (err) ->
+	return console.log 'error starting up codeSubmit admin', err if err
+	console.log 'codeSubmit admin listen on port', $.config.port

@@ -14,7 +14,7 @@ describe 'aimole', () ->
 			describe 'sandboxService', () ->
 				scriptName = 'services/sandboxService'
 				scriptPath = helper.getScriptPath scriptName
-				sandboxService = require scriptPath
+				sandboxService = require(scriptPath)()
 
 				describe 'run', () ->
 					it 'should call callback', (done) ->

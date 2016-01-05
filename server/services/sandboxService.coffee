@@ -1,5 +1,8 @@
 
-module.exports = self = {}
+module.exports = ($) ->
+	self = {}
 
-self.run = (done) ->
-	done null
+	self.run = (done) ->
+		done null
+
+	return self

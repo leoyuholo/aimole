@@ -1,20 +1,14 @@
-$ = require '../globals'
 
-router = $.express.Router()
+module.exports = ($) ->
 
-router.get '/list', (req, res, done) ->
+	router = $.express.Router()
 
-	res.json
-		success: true
-		games: [
-			{
-				name: 'tic-tac-toe'
-				difficulty: 'easy'
-			},
-			{
-				name: '2048'
-				difficulty: 'intermediate'
-			}
-		]
+	router.get '/list', (req, res, done) ->
 
-module.exports = router
+		$.services.gameService.list (err, games) ->
+
+			res.json
+				success: true
+				games: games
+
+	return router

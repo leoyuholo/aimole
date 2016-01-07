@@ -26,9 +26,15 @@
   },
   "dependencies": {
     "async": "^1.5.0",
+    "body-parser": "^1.14.2",
+    "caller-id": "^0.1.0",
     "coffee-errors": "^0.8.6",
     "express": "^4.13.3",
+    "fs-extra": "^0.26.4",
     "lodash": "^3.10.1",
-    "require-all": "^2.0.0"
+    "moment": "^2.11.0",
+    "mongoose": "^4.3.4",
+    "require-all": "^2.0.0",
+    "winston": "^2.1.1"
   }
 }

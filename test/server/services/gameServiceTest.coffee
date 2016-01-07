@@ -14,10 +14,8 @@ describe 'aimole', () ->
 			describe 'gameService', () ->
 				scriptName = 'services/gameService'
 				scriptPath = helper.getScriptPath scriptName
-				gameService = require scriptPath
+				gameService = require(scriptPath)(helper.getGlobalsStub())
 
 				describe 'list', () ->
-					it 'should call callback with an array', (done) ->
-						gameService.list (err, games) ->
-							games.should.be.an.array
-							done null
+					it 'should have list function', () ->
+						gameService.list.should.be.a.function

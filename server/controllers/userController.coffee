@@ -1,13 +1,14 @@
-$ = require '../globals'
 
-router = $.express.Router()
+module.exports = ($) ->
 
-router.get '/login', (req, res, done) ->
+	router = $.express.Router()
 
-	res.json
-		success: true
-		user:
-			email: 'demo@aimole.com'
-			username: 'demo'
+	router.get '/login', (req, res, done) ->
 
-module.exports = router
+		res.json
+			success: true
+			user:
+				email: 'demo@aimole.com'
+				username: 'demo'
+
+	return router

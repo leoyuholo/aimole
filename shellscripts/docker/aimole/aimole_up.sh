@@ -1,11 +1,30 @@
 #!/bin/bash
 
-script_dir=$(readlink -f $(dirname $0))
+if [ "$(uname)" == "Darwin" ]; then
+    # Get absolute path to this script file (for Mac)
+    pushd . > /dev/null
+    SCRIPT_PATH="${BASH_SOURCE[0]}";
+    while([ -h "${SCRIPT_PATH}" ]); do
+        cd "`dirname "${SCRIPT_PATH}"`"
+        SCRIPT_PATH="$(readlink "`basename "${SCRIPT_PATH}"`")";
+    done
+    cd "`dirname "${SCRIPT_PATH}"`" > /dev/null
+    script_dir="`pwd`"
+		cd "../../../" > /dev/null
+		app_dir="`pwd`"
+    popd  > /dev/null
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+    script_dir=$(readlink -f $(dirname $0))
+		app_dir=$(readlink -f "$script_dir/../../../")
+else
+    script_dir=""
+		app_dir=""
+fi
 
 container_name="aimole"
 worker_dir=/tmp/aimole/worker/
-app_dir=$(readlink -f "$script_dir/../../../")
-argument="--livereload=35728 dev"
+argument=""
+# argument="--livereload=35728 dev"
 
 mkdir -p $worker_dir
 
@@ -19,8 +38,8 @@ echo "app_dir:" $app_dir
 echo "container_name:" $container_name
 echo "argument": $argument
 
+# -u $(id -u):$(getent group docker | cut -d: -f3) \
 docker run  -i \
-			-u $(id -u):$(getent group docker | cut -d: -f3) \
 			--link mongodb:mongodb \
 			-p 3000:3000 \
 			-p 35728:35728 \

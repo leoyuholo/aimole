@@ -30,6 +30,7 @@
     "caller-id": "^0.1.0",
     "coffee-errors": "^0.8.6",
     "express": "^4.13.3",
+    "fs-extra": "^0.26.4",
     "lodash": "^3.10.1",
     "moment": "^2.11.0",
     "mongoose": "^4.3.4",

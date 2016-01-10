@@ -5,7 +5,7 @@ jshint = require('gulp-jshint')
 coffeelint = require('gulp-coffeelint')
 jade = require('gulp-jade')
 exec = require('child_process').exec
-
+nodemon = require('gulp-nodemon')
 browserify = require('browserify')
 babelify = require('babelify')
 
@@ -57,7 +57,7 @@ gulp.task('watch', () ->
 )
 
 # Start docker
-gulp.task('server', () ->
+gulp.task('node', () ->
 	exec('coffee server/app.coffee', (err, stdout, stderr) ->
 		console.log(stdout)
 		console.log(stderr)
@@ -65,5 +65,21 @@ gulp.task('server', () ->
 	)
 )
 
+gulp.task('nodemon', () ->
+	nodemon(
+		verbose: true
+		legacyWatch: true
+		script: 'server/app.coffee'
+		watch: ['server/', 'configs/']
+		# ext: 'coffee'
+		# tasks: ['lint']
+		# ignore: []
+		execMap:
+			coffee: 'node_modules/.bin/coffee'
+	).on('restart', () ->
+		console.log('Restart')
+	)
+)
+
 # Default task
-gulp.task('default', ['lint', 'server'])
+gulp.task('default', ['html', 'lint', 'nodemon'])

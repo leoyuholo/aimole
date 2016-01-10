@@ -7,5 +7,5 @@ async.series [
 	$.run.setups
 	$.run.server
 ], (err) ->
-	return console.log 'error starting up codeSubmit admin', err if err
-	console.log 'codeSubmit admin listen on port', $.config.port
+	return console.log 'Error starting up AI mole', err if err
+	console.log 'AI mole listen on port', $.config.port

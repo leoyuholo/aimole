@@ -19,7 +19,7 @@ module.exports = $ = {}
 $.serverDir = __dirname
 $.rootDir = path.join $.serverDir, '..'
 $.publicDir = path.join $.rootDir, 'public'
-$.libDir = path.join $.rootDir, 'bower_components'
+# $.libDir = path.join $.rootDir, 'bower_components'
 
 # configs
 $.config = require path.join $.rootDir, 'configs', 'config'
@@ -52,7 +52,7 @@ $.utils.requireAll = requireAll
 
 # static resources
 $.app.use express.static $.publicDir
-$.app.use '/lib', express.static $.libDir
+# $.app.use '/lib', express.static $.libDir
 
 # api
 api = express.Router()

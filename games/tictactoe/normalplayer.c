@@ -21,7 +21,7 @@ NEWROUND:
 			}
 		}
 		if (round1) {
-			printf("%d %d", 1, 1);
+			printf("%d %d\n", 1, 1);
 			goto NEWROUND;
 		}
 	}
@@ -90,7 +90,7 @@ NEWROUND:
 		terminate = 1;
 		break;
 	}
-	printf("%d %d", output/3, output%3);	
+	printf("%d %d\n", output/3, output%3);	
    } 
    return 0;
 }

@@ -42,7 +42,7 @@ echo "argument": $argument
 docker run  -i \
 			--link mongodb:mongodb \
 			-p 3000:3000 \
-			-p 35728:35728 \
+			-p 35729:35729 \
 			-v $app_dir:/app \
 			-v $worker_dir:$worker_dir \
 			-v /var/run/docker.sock:/var/run/docker.sock \

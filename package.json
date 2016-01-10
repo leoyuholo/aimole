@@ -9,11 +9,10 @@
     "coffeelint": "^1.14.2",
     "coffeelint-newline-at-eof": "^0.4.1",
     "gulp-coffeelint": "^0.6.0",
-    "gulp-inject": "^3.0.0",
     "gulp-jshint": "^2.0.0",
     "gulp-livereload": "^3.8.1",
+    "gulp-nodemon": "^2.0.6",
     "jshint": "^2.8.0",
-    "livereload": "^0.4.0",
     "mocha": "^2.3.4",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0"

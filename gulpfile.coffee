@@ -10,7 +10,6 @@ livereload = require('gulp-livereload')
 browserify = require('browserify')
 babelify = require('babelify')
 fs = require('fs')
-inject = require('gulp-inject')
 
 publicDir = path.join __dirname, 'public'
 

@@ -1,7 +1,5 @@
 **/.DS_Store
 
-# Created by https://www.gitignore.io/api/node
-
 ### Node ###
 # Logs
 logs
@@ -47,4 +45,5 @@ dist/
 # Grunt usually preprocesses files such as coffeescript, compass... inside the .tmp directory
 .tmp/
 
+public
 .tern-project

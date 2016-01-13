@@ -1,0 +1,3 @@
+FROM mongo
+
+VOLUME ["/backup"]

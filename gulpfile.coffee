@@ -1,28 +1,22 @@
 path = require 'path'
+fs = require('fs')
+child_process = require('child_process')
+exec = child_process.exec
 
 gulp = require('gulp')
 jshint = require('gulp-jshint')
 coffeelint = require('gulp-coffeelint')
 jade = require('gulp-jade')
-exec = require('child_process').exec
 nodemon = require('gulp-nodemon')
 livereload = require('gulp-livereload')
 browserify = require('browserify')
 babelify = require('babelify')
-fs = require('fs')
 
 publicDir = path.join __dirname, 'public'
-
-livereloadDelay = 2500
 
 # List of coffee script / JSX for lint & watch
 listOfCoffee = ['*.coffee', 'server/**.coffee', 'config/**.coffee', 'test/**.coffee']
 listOfJs = ['client/**.jsx']
-
-# Testing Travis
-gulp.task('travis', () ->
-	return
-)
 
 gulp.task('lint-coffee', () ->
 	gulp.src(listOfCoffee)
@@ -47,13 +41,6 @@ gulp.task('jsx', () ->
 		.pipe(gulp.dest(publicDir))
 )
 
-# Compile SASS
-gulp.task('sass', () ->
-	gulp.src('client/**.scss')
-		.pipe(sass().on('error', sass.logError))
-		.pipe(gulp.dest(publicDir))
-)
-
 # Copy HTML
 gulp.task('html', () ->
 	gulp.src(['client/**.html'])
@@ -72,16 +59,9 @@ gulp.task('watch', () ->
 	# gulp.watch('**/*.scss', ['sass'])
 )
 
-# Simple server starter
-gulp.task('node', () ->
-	exec('coffee server/app.coffee', (err, stdout, stderr) ->
-		console.log(stdout)
-		console.log(stderr)
-		console.error(err)
-	)
-)
-
 # Start server with nodemon
+livereloadDelay = 2500
+
 gulp.task('nodemon', () ->
 	nodemon(
 		verbose: true
@@ -100,6 +80,10 @@ gulp.task('nodemon', () ->
 		), livereloadDelay
 	)
 )
+
+gulp.task('travis', [])
+
+gulp.task('dev', ['html', 'watch', 'lint-js', 'lint-coffee', 'nodemon'])
 
 # Default task
 gulp.task('default', ['html', 'watch', 'lint-js', 'lint-coffee', 'nodemon'])

@@ -7,7 +7,7 @@ module.exports = (grunt, options) ->
 		test:
 			options:
 				forever: false
-			files: ['test/server/**/*Test.coffee', 'server/**/*.coffee']
+			files: ['test/games/**/*Test.coffee', 'test/server/**/*Test.coffee', 'server/**/*.coffee']
 			tasks: ['coffeelint:all', 'mochaTest:all']
 		dev:
 			files: ['client/**']

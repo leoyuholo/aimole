@@ -46,3 +46,4 @@ dist/
 .tmp/
 
 public
+.tern-project

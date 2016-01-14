@@ -2008,7 +2008,7 @@ typedef struct verdict_command_t{
 	char *command;
 	int player;
 	int time;
-	char *stdout;
+	char *std_out;
 	char *error_message;
 }verdict_command;
 
@@ -2029,15 +2029,15 @@ void verdict_command_init(verdict_command *command){
 	command->command = NULL;
 	command->player = 0;
 	command->time = -1;
-	command->stdout = NULL;
+	command->std_out = NULL;
 	command->error_message = NULL;
 }
 
 void verdict_command_free(verdict_command *command){
 	if (command->command)
 		free(command->command);
-	if (command->stdout)
-		free(command->command);
+	if (command->std_out)
+		free(command->std_out);
 	if (command->error_message)
 		free(command->error_message);
 }
@@ -2059,12 +2059,12 @@ void send_to_server(verdict_action *action){
 	if (action->action)
 		json_object_set_string(root_object, "action", action->action);
 	if (action->next_player)
-		json_object_set_number(root_object, "nextPlayer", action->next_player);
+		json_object_set_number(root_object, "nextPlayer", action->next_player - 1);
 	if (action->score[1] || action->score[2]){
 		int i;
 		JSON_Value *arr_value = json_value_init_array();
 		JSON_Array *arr = json_value_get_array(arr_value);
-		for (i = 0; i < 3; i++)
+		for (i = 1; i < 3; i++)
 			json_array_append_number(arr, action->score[i]);
 		json_object_set_value(root_object, "score", arr_value);
 	}
@@ -2090,12 +2090,12 @@ verdict_command query_server(){
 	verdict_command_init(&command);
 	copy_string(&command.command, json_object_get_string(root_object, "command"));
 	if (!strcmp(command.command, "player")){
-		command.player = EPS + json_object_get_number(root_object, "player");
+		command.player = 1 + EPS + json_object_get_number(root_object, "player");
 		command.time = EPS + json_object_get_number(root_object, "timeMs");
-		copy_string(&command.stdout, json_object_get_string(root_object, "stdout"));
+		copy_string(&command.std_out, json_object_get_string(root_object, "stdout"));
 	}
 	else if (!strcmp(command.command, "terminated")){
-		command.player = EPS + json_object_get_number(root_object, "player");
+		command.player = 1 + EPS + json_object_get_number(root_object, "player");
 	}
 	else if (strcmp(command.command, "error") && strcmp(command.command, "start")){
 		report_error("get invalid command");
@@ -2251,11 +2251,11 @@ int main(){
 		}
 		if (!strcmp(command.command, "player")){
 			player = command.player;
-			if (!command.stdout){
+			if (!command.std_out){
 				winner = next_turn();
 			}
 			else{ 
-				if (sscanf(command.stdout, "%d%d", &x, &y) != 2){
+				if (sscanf(command.std_out, "%d%d", &x, &y) != 2){
 					winner = next_turn();
 				}
 				else{

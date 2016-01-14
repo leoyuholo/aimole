@@ -19,11 +19,11 @@ NEWROUND:
 			int j;
 			for (j = 0; j < 3; j++) {
 				if (board[j][y] == 0) { 
-					printf("%d %d", j, y);
+					printf("%d %d\n", j, y);
 					goto NEWROUND;
 				}
 				if (board[x][j] == 0) {
-					printf("%d %d", x, j);
+					printf("%d %d\n", x, j);
 					goto NEWROUND;
 				}	
 			} 
@@ -31,7 +31,7 @@ NEWROUND:
 	}
 	for (i = 0; i < 9; i++) {
 		if (input[i] == 0){
-			printf("%d %d", i/3, i%3);
+			printf("%d %d\n", i/3, i%3);
 			goto NEWROUND;
 		}
 	}

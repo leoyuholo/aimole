@@ -1,4 +1,4 @@
-import Colors from 'material-ui/lib/styles/Colors';
+import Colors from 'material-ui/lib/styles/colors';
 
 export default {
     cell: {

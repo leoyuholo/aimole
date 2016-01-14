@@ -61,7 +61,7 @@ gulp.task('watch', () ->
 	# gulp.watch(listOfJs, ['lint-js'])
 	# gulp.watch(listOfCoffee, ['lint-coffee'])
 	# gulp.watch('client/**.html', ['html'])
-	watch(['**/*.js', 'client/jsx/**/.jsx', '**/*.coffee'], (files) ->
+	watch(['!node_modules/**', '**/*.js', 'client/jsx/**/.jsx', '**/*.coffee'], (files) ->
 		gulp.start('lint')
 	)
 	# watch('**/*.js', (files) ->

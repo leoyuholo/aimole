@@ -28,11 +28,11 @@ gulp.task('lint-coffee', () ->
 )
 
 # Lint for JavaScript and CoffeeScript
-gulp.task('lint-js', () ->
-	gulp.src(listOfJs)
-		.pipe(jshint())
-		.pipe(jshint.reporter())
-)
+# gulp.task('lint-js', () ->
+# 	gulp.src(listOfJs)
+# 		.pipe(jshint())
+# 		.pipe(jshint.reporter())
+# )
 
 # Compile JSX
 gulp.task('jsx', () ->
@@ -57,16 +57,7 @@ gulp.task('html', () ->
 # Watch for changes
 gulp.task('watch', () ->
 	livereload.listen()
-	# gulp.watch(['**/*.js', '**/*.jsx', '**/*.coffee'], ['lint'])
-	# gulp.watch(listOfJs, ['lint-js'])
-	# gulp.watch(listOfCoffee, ['lint-coffee'])
-	# gulp.watch('client/**.html', ['html'])
-	watch(['!node_modules/**', '**/*.js', 'client/jsx/**/.jsx', '**/*.coffee'], (files) ->
-		gulp.start('lint')
-	)
-	# watch('**/*.js', (files) ->
-	# 	gulp.start('lint-js')
-	# )
+	watch ['!node_modules/**', 'client/jsx/**/.jsx', '**/*.coffee'], (files) -> gulp.start('lint')
 	watch '**/*.coffee', (files) -> gulp.start('lint-coffee')
 	watch 'client/**.html', (files) -> gulp.start('html')
 	watch 'client/jsx/**/*.jsx', (files) -> gulp.start('jsx')
@@ -97,7 +88,7 @@ gulp.task('nodemon', () ->
 
 gulp.task('travis', [])
 
-gulp.task('dev', ['jsx', 'html', 'watch', 'lint-js', 'lint-coffee', 'nodemon'])
+gulp.task('dev', ['jsx', 'html', 'watch', 'lint-coffee', 'nodemon'])
 
 # Default task
 gulp.task('default', ['dev'])

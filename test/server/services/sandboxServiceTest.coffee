@@ -25,9 +25,12 @@ describe 'aimole', () ->
 
 				before (done) ->
 					async.parallel [
-						_.partial fse.readFile, path.join __dirname, 'testData', 'player1.c'
-						_.partial fse.readFile, path.join __dirname, 'testData', 'player2.c'
-						_.partial fse.readFile, path.join __dirname, 'testData', 'verdict.js'
+						# _.partial fse.readFile, path.join __dirname, 'testData', 'player1.c'
+						# _.partial fse.readFile, path.join __dirname, 'testData', 'player2.c'
+						# _.partial fse.readFile, path.join __dirname, 'testData', 'verdict.js'
+						_.partial fse.readFile, path.join __dirname, '../../../games/tictactoe', 'easyplayer.c'
+						_.partial fse.readFile, path.join __dirname, '../../../games/tictactoe', 'easyplayer.c'
+						_.partial fse.readFile, path.join __dirname, '../../../games/tictactoe', 'verdict.py'
 					], (err, [p1, p2, v]) ->
 						should.not.exist err
 

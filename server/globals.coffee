@@ -19,6 +19,7 @@ module.exports = $ = {}
 $.serverDir = __dirname
 $.rootDir = path.join $.serverDir, '..'
 $.publicDir = path.join $.rootDir, 'public'
+$.gameDir = path.join $.rootDir, 'game'
 # $.libDir = path.join $.rootDir, 'bower_components'
 
 # configs

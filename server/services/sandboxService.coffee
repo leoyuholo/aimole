@@ -8,14 +8,15 @@ fse = require 'fs-extra'
 module.exports = ($) ->
 	self = {}
 
-	names = ['player1', 'player2']
+	names = ['verdict', 'player1', 'player2']
 
 	killAll = () ->
+		console.log 'killing all'
 		names.forEach (name) ->
 			childProcess.exec "docker rm -f #{name}"
 
 	initProcess = (process, label, onData, onTimeout, onExit, onError) ->
-		# console.log 'init', label
+		console.log 'init', label
 
 		timer =
 			timeout: ''
@@ -23,42 +24,45 @@ module.exports = ($) ->
 			stopWatch: Date.now()
 
 		process.stdout.on 'data', (data) ->
-			data = data.split('\x00').join('')
 			clearTimeout timer.timeout
-			# console.log 'stopWatch', timer.stopWatch, Date.now() - timer.stopWatch
+			console.log 'receive', label, 'data', data
 			onData data.toString(), (Date.now() - timer.stopWatch)
 
 		process.on 'exit', () ->
-			# console.log 'exit', label
+			console.log 'exit', label
 			onExit()
 
-		process.on 'error', (err) ->
-			# console.log 'error', err
-			onError err
+		process.stderr.on 'data', (err) ->
+			console.log 'error', err
+			onError new Error(err)
+
+		write = (str) ->
+			str += '\n' if !/\n$/.test str
+			console.log 'write:', label, 'data', "[#{str}]"
+			process.stdin.write str
+			timer.stopWatch = Date.now()
+			timer.timeout = setTimeout ( () ->
+				onTimeout Date.now() - timer.stopWatch, label
+			), timer.timeLimit
+
+		writeJson = (obj) ->
+			write JSON.stringify obj
 
 		return {
-			write: (str) ->
-				# console.log 'write player:', label, 'data', str
-				process.stdin.write str + '\n'
-				timer.stopWatch = Date.now()
-				timer.timeout = setTimeout ( () ->
-					onTimeout Date.now() - timer.stopWatch, label
-				), timer.timeLimit
-
-			writeJson: (obj) ->
-				process.stdin.write JSON.stringify obj
+			write: write
+			writeJson: writeJson
 		}
 
 	initPlayer = (process, playerLabel, verdict) ->
 
 		onPlayerData = (data, timeElapsed) ->
-			# console.log arguments
+			console.log arguments
 			# playerData:
 			# 	command: 'player'
 			# 	player: [0, 1]
 			# 	time: 1234
 			# 	stdout: 'string'
-			# console.log 'onPlayerData', data, "timeElapsed[#{timeElapsed}]"
+			console.log 'onPlayerData', data, "timeElapsed[#{timeElapsed}]"
 			playerData =
 				command: 'player'
 				player: playerLabel
@@ -124,7 +128,7 @@ module.exports = ($) ->
 					killAll()
 					done null, verdictHistory
 				when 'next'
-					players[verdictAction.nextPlayer].write verdictAction.writeMsg
+					players[verdictAction.nextPlayer].write "#{verdictAction.writeMsg}"
 				when 'error'
 					done new Error(verdictAction.errorMessage)
 
@@ -170,16 +174,32 @@ module.exports = ($) ->
 		].join ' '
 
 	makeVerdictCmd = (sandboxrunPath, sandboxConfig) ->
+		# [
+		# 	'node'
+		# 	path.join sandboxrunPath, sandboxConfig.codeFilename
+		# ].join ' '
 		[
-			'node'
-			path.join sandboxrunPath, sandboxConfig.codeFilename
+			'docker'
+			'run'
+			'-i'
+			'--name', sandboxConfig.containerName
+			'--rm'
+			'--net', 'none'
+			'--security-opt', 'apparmor:unconfined'
+			'-v', sandboxrunPath + ':/vol/'
+			'-u', '$(id -u):$(id -g)'
+			'tomlau10/sandbox-run'
+			'-n', 1
+			'-c', sandboxConfig.codeFilename
+			'-CR'
+			sandboxConfig.executableFilename
 		].join ' '
 
 	runCode = (code, sandboxrunPath, sandboxConfig, done) ->
 		fse.outputFile path.join(sandboxrunPath, sandboxConfig.codeFilename), code, (err) ->
 			return $.utils.onError done, err if err
 
-			# console.log makeRunCmd sandboxrunPath, sandboxConfig
+			console.log makeRunCmd sandboxrunPath, sandboxConfig
 
 			done null, childProcess.exec makeRunCmd sandboxrunPath, sandboxConfig
 
@@ -187,20 +207,19 @@ module.exports = ($) ->
 		fse.outputFile path.join(sandboxrunPath, sandboxConfig.codeFilename), code, (err) ->
 			return $.utils.onError done, err if err
 
-			# console.log makeVerdictCmd sandboxrunPath, sandboxConfig
+			console.log makeVerdictCmd sandboxrunPath, sandboxConfig
 
 			done null, childProcess.exec makeVerdictCmd sandboxrunPath, sandboxConfig
 
 	self.run = (player1, player2, verdict, done) ->
 		async.parallel [
-			_.partial runVerdict, verdict, path.join(sandboxrunPath, 'verdict'), {codeFilename: 'verdict.js', executableFilename: 'verdict', containerName: 'verdict'}
+			_.partial runVerdict, verdict, path.join(sandboxrunPath, 'verdict'), {codeFilename: 'verdict.py', executableFilename: 'verdict', containerName: 'verdict'}
+			# _.partial runVerdict, verdict, path.join(sandboxrunPath, 'verdict'), {codeFilename: 'verdict.js', executableFilename: 'verdict', containerName: 'verdict'}
 			_.partial runCode, player1, path.join(sandboxrunPath, 'player1'), {codeFilename: 'player1.c', executableFilename: 'player1', containerName: 'player1'}
 			_.partial runCode, player2, path.join(sandboxrunPath, 'player2'), {codeFilename: 'player2.c', executableFilename: 'player2', containerName: 'player2'}
 		], (err, [verdict, player1, player2]) ->
 			return $.utils.onError done, err if err
 
-			setTimeout ( () ->
-				runGame verdict, [player1, player2], done
-			), 5000
+			runGame verdict, [player1, player2], done
 
 	return self

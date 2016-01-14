@@ -19,7 +19,7 @@ describe 'aimole', () ->
 			gameDirPath = helper.getScriptPath gameDirName
 
 			describe 'verdict', () ->
-				verdictFilename = 'verdict.c'
+				verdictFilename = 'verdict.py'
 
 				it 'should run', (done) ->
 					this.timeout 20000

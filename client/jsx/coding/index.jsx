@@ -57,9 +57,11 @@ export default class CodingIndex extends React.Component {
         this.setState({submitted: true});
         $.ajax({
             url: '/api/game/submit',
-            type: 'post',
-            data: { code: code },
+            type: 'POST',
+            data: JSON.stringify({code: code}),
+            contentType: "application/json",
             success: msg => {
+                console.log(msg);
                 this.setState({result: msg});
             },
             error: err => {

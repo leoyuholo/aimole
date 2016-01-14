@@ -37,8 +37,8 @@ gulp.task('lint-coffee', () ->
 # Compile JSX
 gulp.task('jsx', () ->
 	browserify(['client/jsx/App.jsx'], {
-			paths: ['client/jsx/']
-		})
+		paths: ['client/jsx/']
+	})
 		.transform(babelify)
 		.bundle()
 		.on('error', (err) -> console.log('Error: ', err.message))
@@ -57,7 +57,6 @@ gulp.task('html', () ->
 # Watch for changes
 gulp.task('watch', () ->
 	livereload.listen()
-	watch ['!node_modules/**', 'client/jsx/**/.jsx', '**/*.coffee'], (files) -> gulp.start('lint')
 	watch '**/*.coffee', (files) -> gulp.start('lint-coffee')
 	watch 'client/**.html', (files) -> gulp.start('html')
 	watch 'client/jsx/**/*.jsx', (files) -> gulp.start('jsx')

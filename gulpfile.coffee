@@ -13,6 +13,7 @@ browserify = require('browserify')
 babelify = require('babelify')
 
 watch = require('gulp-watch')
+source = require('vinyl-source-stream')
 
 publicDir = path.join __dirname, 'public'
 

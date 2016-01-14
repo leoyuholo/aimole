@@ -33,7 +33,7 @@ gulp.task('lint-js', () ->
 
 # Compile JSX
 gulp.task('jsx', () ->
-	browserify(['client/**.jsx'])
+	browserify(['client/jsx/App.jsx'])
 		.transform(babelify)
 		.bundle()
 		.on('error', (err) -> console.log('Error: ', err.message))
@@ -43,7 +43,7 @@ gulp.task('jsx', () ->
 
 # Copy HTML
 gulp.task('html', () ->
-	gulp.src(['client/**.html'])
+	gulp.src(['client/**.html', 'client/**.css'])
 		# .pipe(inject(gulp.src(['public/livereload.js'], {read: false})))
 		.pipe(gulp.dest(publicDir))
 		.pipe(livereload())

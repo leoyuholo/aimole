@@ -1,41 +1,68 @@
 #include <stdio.h>
- 
-int main()
-{
-   int input[9];
-   int board[3][3];
-   int terminate = 0;
-   int round = 0;
-NEWROUND:
-   while(!terminate){
-	int i;
-	for (i = 0; i < 9; i++) {
-		scanf("%d", &input[i]);
-		board[i/3][i%3] = input[i];
-	}
-	for (i = 0; i < 9; i++) {
-		if (input[i] == 1) {
-			int x = i/3, y = i%3;
-			int j;
-			for (j = 0; j < 3; j++) {
-				if (board[j][y] == 0) { 
-					printf("%d %d\n", j, y);
-					goto NEWROUND;
+/*
+strategy: Loop through all the tiles.
+Whenever encounter a tile belong to ourselves, 
+find a blank tile next to it and return.
+If failed, find any one blank tile and return.
+ */ 
+int main() {
+	int board[3][3];
+	int terminate = 0;
+	while(!terminate) {
+		//get board state
+		int x, y;
+		for (x = 0; x < 3; x++) {
+			for (y = 0; y < 3; y++) {
+				scanf("%d", &board[x][y]);
+			}
+		}
+		//find a blank tile next to our tile
+		int find = 0;
+		for (x = 0; x < 3; x++) {
+			for (y = 0; y < 3; y++) {
+				if (board[x][y] == 1) {
+					if (x - 1 >= 0
+							&& board[x - 1][y] == 0) {
+						printf("%d %d\n", x - 1, y);
+						find = 1;
+						break;
+					}
+					else if (x + 1 < 3
+							&& board[x + 1][y] == 0) {
+						printf("%d %d\n", x + 1, y);
+						find = 1;
+						break;
+					}
+					else if (x - 1 >= 0
+							&& board[x][y - 1] == 0) {
+						printf("%d %d\n", x, y - 1);
+						find = 1;
+						break;
+					}
+					else if (x + 1 < 3
+							&& board[x][y + 1] == 0) {
+						printf("%d %d\n", x, y + 1);
+						find = 1;
+						break;
+					}
 				}
-				if (board[x][j] == 0) {
-					printf("%d %d\n", x, j);
-					goto NEWROUND;
-				}	
-			} 
+			}
+			if (find) break;
+		}
+		if (!find) {
+			//find any blank file. If there is no blank tile, terminate.
+			int hasBlankTile = 0, i;
+			for (i = 0; i < 9; i++) {
+				if (board[i/3][i%3] == 0) {
+					hasBlankTile = 1;
+					printf("%d %d\n", i/3, i%3);
+					break;
+				}
+			}
+			if (!hasBlankTile) {
+				terminate = 1;
+			}
 		}
 	}
-	for (i = 0; i < 9; i++) {
-		if (input[i] == 0){
-			printf("%d %d\n", i/3, i%3);
-			goto NEWROUND;
-		}
-	}
-	
-   } 
-   return 0;
+	return 0;
 }

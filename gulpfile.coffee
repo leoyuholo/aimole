@@ -83,7 +83,7 @@ gulp.task('nodemon', () ->
 
 gulp.task('travis', [])
 
-gulp.task('dev', ['html', 'watch', 'lint-js', 'lint-coffee', 'nodemon'])
+gulp.task('dev', ['jsx', 'html', 'watch', 'lint-js', 'lint-coffee', 'nodemon'])
 
 # Default task
-gulp.task('default', ['html', 'watch', 'lint-js', 'lint-coffee', 'nodemon'])
+gulp.task('default', ['dev'])

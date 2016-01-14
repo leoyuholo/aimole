@@ -12,6 +12,8 @@ livereload = require('gulp-livereload')
 browserify = require('browserify')
 babelify = require('babelify')
 
+watch = require('gulp-watch')
+
 publicDir = path.join __dirname, 'public'
 
 # List of coffee script / JSX for lint & watch
@@ -33,7 +35,9 @@ gulp.task('lint-js', () ->
 
 # Compile JSX
 gulp.task('jsx', () ->
-	browserify(['client/jsx/App.jsx'])
+	browserify(['client/jsx/App.jsx'], {
+			paths: ['client/jsx/']
+		})
 		.transform(babelify)
 		.bundle()
 		.on('error', (err) -> console.log('Error: ', err.message))
@@ -53,9 +57,18 @@ gulp.task('html', () ->
 gulp.task('watch', () ->
 	livereload.listen()
 	# gulp.watch(['**/*.js', '**/*.jsx', '**/*.coffee'], ['lint'])
-	gulp.watch(listOfJs, ['lint-js'])
-	gulp.watch(listOfCoffee, ['lint-coffee'])
-	gulp.watch('client/**.html', ['html'])
+	# gulp.watch(listOfJs, ['lint-js'])
+	# gulp.watch(listOfCoffee, ['lint-coffee'])
+	# gulp.watch('client/**.html', ['html'])
+	watch(['**/*.js', 'client/jsx/**/.jsx', '**/*.coffee'], (files) ->
+		gulp.start('lint')
+	)
+	# watch('**/*.js', (files) ->
+	# 	gulp.start('lint-js')
+	# )
+	watch '**/*.coffee', (files) -> gulp.start('lint-coffee')
+	watch 'client/**.html', (files) -> gulp.start('html')
+	watch 'client/jsx/**/*.jsx', (files) -> gulp.start('jsx')
 	# gulp.watch('**/*.scss', ['sass'])
 )
 

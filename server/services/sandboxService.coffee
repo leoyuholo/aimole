@@ -17,6 +17,7 @@ module.exports = ($) ->
 
 	initProcess = (process, label, onData, onTimeout, onExit, onError) ->
 		console.log 'init', label
+		exited = false
 
 		timer =
 			timeout: ''
@@ -37,20 +38,25 @@ module.exports = ($) ->
 			onError new Error(err)
 
 		write = (str) ->
-			str += '\n' if !/\n$/.test str
-			console.log 'write:', label, 'data', "[#{str}]"
-			process.stdin.write str
-			timer.stopWatch = Date.now()
-			timer.timeout = setTimeout ( () ->
-				onTimeout Date.now() - timer.stopWatch, label
-			), timer.timeLimit
+			if !exited
+				str += '\n' if !/\n$/.test str
+				console.log 'write:', label, 'data', "[#{str}]"
+				process.stdin.write str
+				timer.stopWatch = Date.now()
+				timer.timeout = setTimeout ( () ->
+					onTimeout Date.now() - timer.stopWatch, label
+				), timer.timeLimit
 
 		writeJson = (obj) ->
-			write JSON.stringify obj
+			write JSON.stringify obj if !exited
+
+		exit = () ->
+			exited = true
 
 		return {
 			write: write
 			writeJson: writeJson
+			exit: exit
 		}
 
 	initPlayer = (process, playerLabel, verdict) ->
@@ -106,6 +112,16 @@ module.exports = ($) ->
 	initVerdict = (process, players, done) ->
 		# TODO: use promise
 		verdictHistory = []
+		exited = false
+
+		exit = (err) ->
+			_.invoke players, 'exit'
+			verdict.exit()
+			if !exited
+				exited = true
+				killAll()
+				return done err if err
+				done null, verdictHistory
 
 		onVerdictData = (data) ->
 			# verdictCommand:
@@ -125,23 +141,20 @@ module.exports = ($) ->
 			switch verdictAction.action
 				when 'stop'
 					# TODO: kill all process
-					killAll()
-					done null, verdictHistory
+					exit()
 				when 'next'
 					players[verdictAction.nextPlayer].write "#{verdictAction.writeMsg}"
 				when 'error'
-					done new Error(verdictAction.errorMessage)
+					exit new Error(verdictAction.errorMessage)
 
 		onVerdictTimeout = () ->
-			killAll()
-			done new Error('Verdict timeout.')
+			exit new Error('Verdict timeout.')
 
 		onVerdictError = (err) ->
-			done new Error('Verdict error.')
+			exit new Error('Verdict error.')
 
 		onVerdictExit = () ->
-			killAll()
-			done null, verdictHistory
+			exit()
 
 		verdict = initProcess process, 'v', onVerdictData, onVerdictTimeout, onVerdictExit, onVerdictError
 		players = _.map players, (player, index) ->

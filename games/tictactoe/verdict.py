@@ -1,5 +1,4 @@
 import json
-import sys
 class TicTacToeVerdict:
     def __init__(self):
         self.board = [[0 for i in range(3)] for j in range(3)]
@@ -30,7 +29,6 @@ class TicTacToeVerdict:
     
     def query_command(self):
         json_string = raw_input()
-        #sys.stderr.write('input: ' + json_string + '\n')
         command = json.loads(json_string)
         return command
     
@@ -79,6 +77,7 @@ class TicTacToeVerdict:
                             ok = 0
                             break
                     if ok:
+                        self.winner = board[i][j] - 1
                         return True
         return False
     
@@ -108,6 +107,7 @@ class TicTacToeVerdict:
                 self.winner = self.next_player()
             self.turn = self.next_player()
         self.report_winner()
+
 if __name__ == '__main__':
     verdict = TicTacToeVerdict()
     verdict.main()

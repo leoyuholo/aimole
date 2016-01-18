@@ -6,6 +6,7 @@ express = require 'express'
 bodyParser = require 'body-parser'
 winston = require 'winston'
 _requireAll = require 'require-all'
+
 requireAll = (dir, injections) ->
 	_requireAll
 		dirname: dir
@@ -19,7 +20,7 @@ module.exports = $ = {}
 $.serverDir = __dirname
 $.rootDir = path.join $.serverDir, '..'
 $.publicDir = path.join $.rootDir, 'public'
-$.gameDir = path.join $.rootDir, 'game'
+$.gameDir = path.join $.rootDir, 'games'
 # $.libDir = path.join $.rootDir, 'bower_components'
 
 # configs
@@ -29,6 +30,7 @@ $.config = require path.join $.rootDir, 'configs', 'config'
 $.express = express
 $.app = express()
 $.app.use bodyParser.json {limit: '1000kb'}
+$.app.use bodyParser.urlencoded {extended: true}
 
 # logger
 $.logger = new winston.Logger(

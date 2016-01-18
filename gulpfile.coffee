@@ -12,6 +12,9 @@ livereload = require('gulp-livereload')
 browserify = require('browserify')
 babelify = require('babelify')
 
+watch = require('gulp-watch')
+source = require('vinyl-source-stream')
+
 publicDir = path.join __dirname, 'public'
 
 # List of coffee script / JSX for lint & watch
@@ -25,15 +28,17 @@ gulp.task('lint-coffee', () ->
 )
 
 # Lint for JavaScript and CoffeeScript
-gulp.task('lint-js', () ->
-	gulp.src(listOfJs)
-		.pipe(jshint())
-		.pipe(jshint.reporter())
-)
+# gulp.task('lint-js', () ->
+# 	gulp.src(listOfJs)
+# 		.pipe(jshint())
+# 		.pipe(jshint.reporter())
+# )
 
 # Compile JSX
 gulp.task('jsx', () ->
-	browserify(['client/**.jsx'])
+	browserify(['client/jsx/App.jsx'], {
+		paths: ['client/jsx/']
+	})
 		.transform(babelify)
 		.bundle()
 		.on('error', (err) -> console.log('Error: ', err.message))
@@ -43,7 +48,7 @@ gulp.task('jsx', () ->
 
 # Copy HTML
 gulp.task('html', () ->
-	gulp.src(['client/**.html'])
+	gulp.src(['client/**.html', 'client/**.css'])
 		# .pipe(inject(gulp.src(['public/livereload.js'], {read: false})))
 		.pipe(gulp.dest(publicDir))
 		.pipe(livereload())
@@ -52,10 +57,9 @@ gulp.task('html', () ->
 # Watch for changes
 gulp.task('watch', () ->
 	livereload.listen()
-	# gulp.watch(['**/*.js', '**/*.jsx', '**/*.coffee'], ['lint'])
-	gulp.watch(listOfJs, ['lint-js'])
-	gulp.watch(listOfCoffee, ['lint-coffee'])
-	gulp.watch('client/**.html', ['html'])
+	watch '**/*.coffee', (files) -> gulp.start('lint-coffee')
+	watch 'client/**.html', (files) -> gulp.start('html')
+	watch 'client/jsx/**/*.jsx', (files) -> gulp.start('jsx')
 	# gulp.watch('**/*.scss', ['sass'])
 )
 
@@ -83,7 +87,7 @@ gulp.task('nodemon', () ->
 
 gulp.task('travis', [])
 
-gulp.task('dev', ['html', 'watch', 'lint-js', 'lint-coffee', 'nodemon'])
+gulp.task('dev', ['jsx', 'html', 'watch', 'lint-coffee', 'nodemon'])
 
 # Default task
-gulp.task('default', ['html', 'watch', 'lint-js', 'lint-coffee', 'nodemon'])
+gulp.task('default', ['dev'])

@@ -22,10 +22,11 @@ export default class Game extends React.Component {
     }
 
     getResult() {
+        console.log('result', this.props.result);
         if (this.props.result === undefined)
             return [['0','0','0'], ['0','0','0'], ['0','0','0']];
         else
-            return this.props.result.gameResult;
+            return this.props.result;
     }
 
     getCurrentPlayer() {
@@ -43,9 +44,10 @@ export default class Game extends React.Component {
     }
 
     render() {
+        //console.log('resultGameBoard ', this.props.result);
         return (
             <div style={mainStyle}>
-                <GameBoard gameResult={this.getResult()} />
+                <GameBoard result={this.getResult()} />
                 <CurrentPlayer val={this.getCurrentPlayer()} />
                 <Winner val={this.getWinner()} />
             </div>

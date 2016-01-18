@@ -24,9 +24,9 @@ export default class Game extends React.Component {
 
     getSymbol() {
         switch(this.props.val) {
-            case '1':
+            case 1:
                 return 'O';
-            case '2':
+            case 2:
                 return 'X';
             default:
                 return ' ';

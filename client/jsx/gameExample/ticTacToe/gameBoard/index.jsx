@@ -11,7 +11,8 @@ const mainStyle = {
 
 export default class Game extends React.Component {
     render() {
-        var tbody = this.props.gameResult.map((row, i) => (
+        console.log('gameBoardPropsResult', this.props.result);
+        var tbody = this.props.result.map((row, i) => (
             <tr key={`row${i}`}>
                 {row.map((cell, j) => (
                     <Cell key={`cell${i}${j}`} val={cell} />

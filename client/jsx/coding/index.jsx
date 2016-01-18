@@ -47,10 +47,13 @@ export default class CodingIndex extends React.Component {
     }
 
     getCurrentFrameResult() {
+        //console.log('this.state.result ', this.state.result);
         if (this.state.submitted === false)
             return undefined;
-        else
-            return this.state.result[this.state.currentFrame];
+        else {
+            console.log('hihihi ', this.state.result[this.state.currentFrame]);
+            return this.state.result[this.state.currentFrame].display;
+        }
     }
 
     handleSubmit(code) {
@@ -61,8 +64,11 @@ export default class CodingIndex extends React.Component {
             data: JSON.stringify({code: code}),
             contentType: "application/json",
             success: msg => {
-                console.log(msg);
-                this.setState({result: msg});
+                //console.log(msg);
+                this.setState({
+                    result: msg.gameResult,
+                    submitted: true
+                });
             },
             error: err => {
                 console.error(err);

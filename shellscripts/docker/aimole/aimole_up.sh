@@ -15,6 +15,14 @@ docker rm $container_name
 
 /bin/bash $script_dir/../mongodb/mongodb_up.sh
 
+sandboxrun=tomlau10/sandbox-run
+if [ -z "$(docker images -a | grep $sandboxrun)" ]; then
+	echo "$sandboxrun docker image exists, pulling..."
+	docker pull $sandboxrun
+else
+	echo "$sandboxrun docker image exists, skip pulling."
+fi
+
 echo "app_dir:" $app_dir
 echo "container_name:" $container_name
 echo "argument": $argument

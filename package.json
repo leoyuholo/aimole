@@ -7,7 +7,9 @@
     "start": "coffee app/server.coffee"
   },
   "devDependencies": {
-    "babelify": "^6.3.0",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "babelify": "^7.2.0",
     "browserify": "^11.2.0",
     "chai": "^3.4.1",
     "coffee-errors": "^0.8.6",
@@ -30,6 +32,7 @@
     "gulp-watch": "^4.3.5",
     "jquery-browserify": "^1.8.1",
     "jshint": "^2.8.0",
+    "lodash": "^3.10.1",
     "material-ui": "^0.14.2",
     "mocha": "^2.3.4",
     "react": "^0.14.6",

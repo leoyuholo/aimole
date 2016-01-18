@@ -1,3 +1,6 @@
+# require modules
+fse = require 'fs-extra'
+path = require 'path'
 
 _ = require 'lodash'
 
@@ -15,7 +18,7 @@ module.exports = ($) ->
 			return $.utils.onError done, err if err
 			fse.readFile path.join($.gameDir, 'tictactoe', 'verdict.py'), (err, verdict) ->
 				return $.utils.onError done, err if err
-				$.services.sanboxService.run player1, player2, verdict, (err, gameResult) ->
+				$.services.sandboxService.run player1, player2, verdict, (err, gameResult) ->
 					return $.utils.onError done, err if err
 					done null, gameResult
 

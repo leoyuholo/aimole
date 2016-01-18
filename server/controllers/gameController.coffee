@@ -12,6 +12,7 @@ module.exports = ($) ->
 				games: games
 
 	router.post '/submit', (req, res, done) ->
+		
 		code = req.body.code
 
 		$.services.gameService.submit code, (err, gameResult) ->

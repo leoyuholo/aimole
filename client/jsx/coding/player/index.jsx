@@ -38,7 +38,7 @@ export default class Player extends React.Component {
     constructor() {
         super();
         this.state = {
-            playing: false
+            playing: true
         };
         this.handleSliderChange = this.handleSliderChange.bind(this);
         this.handlePrev = this.handlePrev.bind(this);

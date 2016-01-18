@@ -35,7 +35,7 @@ export default class Game extends React.Component {
 
     render() {
         return (
-            <Motion style={{x: spring(this.props.val === '0' ? 0.1 : 1, [390, 50])}}>
+            <Motion style={{x: spring(this.props.val === 0 ? 0.1 : 1, [390, 50])}}>
                 {({x}) =>
                     <td style={this.getCellStyle(x)}>
                         {this.getSymbol()}

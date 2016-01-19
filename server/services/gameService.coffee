@@ -14,7 +14,7 @@ module.exports = ($) ->
 			done null, _.map games, $.models.Game.envelop
 
 	self.submit = (player1, done) ->
-		fse.readFile path.join($.gameDir, 'tictactoe', 'easyplayer.c'), (err, player2) ->
+		fse.readFile path.join($.gameDir, 'tictactoe', 'normalplayer.c'), (err, player2) ->
 			return $.utils.onError done, err if err
 			fse.readFile path.join($.gameDir, 'tictactoe', 'verdict.py'), (err, verdict) ->
 				return $.utils.onError done, err if err

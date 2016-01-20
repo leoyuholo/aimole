@@ -3,7 +3,7 @@ requireDir './gulp'
 
 gulp = require 'gulp'
 
-gulp.task 'test', []
+gulp.task 'test', ['mocha']
 
 gulp.task 'travis', ['lint', 'test']
 gulp.task 'update-client', ['browserify', 'html']

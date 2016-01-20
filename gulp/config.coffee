@@ -8,6 +8,8 @@ module.exports =
 		js: ['client/**.jsx']
 		jsx: ['client/**.jsx']
 		html: ['client/**.html']
+		mocha: ['test/server/**/*Test.coffee', 'test/games/**/*Test.coffee']
+	inject: ['bundle.js', 'main.css']
 	livereload:
 		port: 32759
 	nodemon:
@@ -26,4 +28,5 @@ module.exports =
 		transform: [babelify]
 		insertGlobals: true
 		outputName: 'bundle.js'
-	inject: ['bundle.js', 'main.css']
+	mocha:
+		timeout: 5000

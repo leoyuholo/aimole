@@ -1,8 +1,19 @@
+sudo: required
+
 language: node_js
 node_js:
   - "4.2"
+
+services:
+  - docker
+
 before_script:
   - npm install -g gulp
+
+before_install:
+  - docker pull tomlau10/sandbox-run
+
 script: gulp travis
+
 notifications:
   slack: aimole:fRehTMAJdrw3FtvhhDVaFOpe

@@ -7,11 +7,11 @@ node_js:
 services:
   - docker
 
-before_script:
-  - npm install -g gulp
-
 before_install:
   - docker pull tomlau10/sandbox-run
+
+before_script:
+  - npm install -g gulp
 
 script: gulp travis
 

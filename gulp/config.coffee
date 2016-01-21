@@ -30,3 +30,4 @@ module.exports =
 		outputName: 'bundle.js'
 	mocha:
 		timeout: 5000
+		require: ['coffee-errors']

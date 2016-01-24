@@ -18,10 +18,15 @@
     "gulp-coffeelint": "^0.6.0",
     "gulp-copy": "0.0.2",
     "gulp-exec": "^2.1.2",
+    "gulp-inject": "^3.0.0",
+    "gulp-inject-string": "^1.1.0",
     "gulp-jade": "^1.1.0",
     "gulp-jshint": "^2.0.0",
     "gulp-livereload": "^3.8.1",
+    "gulp-load-plugins": "^1.2.0",
+    "gulp-mocha": "^2.2.0",
     "gulp-nodemon": "^2.0.6",
+    "gulp-rename": "^1.2.2",
     "gulp-watch": "^4.3.5",
     "jquery-browserify": "^1.8.1",
     "jshint": "^2.8.0",
@@ -47,6 +52,7 @@
     "mongoose": "^4.3.4",
     "q": "^1.4.1",
     "require-all": "^2.0.0",
+    "require-dir": "^0.3.0",
     "winston": "^2.1.1"
   }
 }

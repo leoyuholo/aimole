@@ -5,8 +5,8 @@ module.exports =
 	publicDir: 'public/'
 	files:
 		coffee: ['*.coffee', 'server/**.coffee', 'config/**.coffee', 'test/**.coffee', 'gulp/**.coffee']
-		js: ['client/**.jsx']
-		jsx: ['client/**.jsx']
+		js: ['client/**/*.js']
+		jsx: ['client/jsx/**/*.jsx']
 		html: ['client/**.html']
 		mocha: ['test/server/**/*Test.coffee', 'test/games/**/*Test.coffee']
 	inject: ['bundle.js', 'main.css']
@@ -24,8 +24,8 @@ module.exports =
 		livereloaddelay: 2500
 	browserify:
 		entries: ['client/jsx/App.jsx']
+		transform: [[babelify, {presets: ['react', 'es2015']}]]
 		paths: ['client/jsx/']
-		transform: [babelify]
 		insertGlobals: true
 		outputName: 'bundle.js'
 	mocha:

@@ -50,14 +50,15 @@ export default class CodingIndex extends React.Component {
         //console.log('this.state.result ', this.state.result);
         if (this.state.submitted === false)
             return undefined;
-        else {
-            console.log('hihihi ', this.state.result[this.state.currentFrame]);
+        else
             return this.state.result[this.state.currentFrame].display;
-        }
     }
 
     handleSubmit(code) {
-        this.setState({submitted: true});
+        this.setState({
+            submitted: true,
+            result: undefined
+        });
         $.ajax({
             url: '/api/game/submit',
             type: 'POST',
@@ -65,10 +66,7 @@ export default class CodingIndex extends React.Component {
             contentType: "application/json",
             success: msg => {
                 //console.log(msg);
-                this.setState({
-                    result: msg.gameResult,
-                    submitted: true
-                });
+                this.setState({result: msg.gameResult});
             },
             error: err => {
                 console.error(err);

@@ -37,9 +37,6 @@ export default class Player extends React.Component {
 
     constructor() {
         super();
-        this.state = {
-            playing: true
-        };
         this.handleSliderChange = this.handleSliderChange.bind(this);
         this.handlePrev = this.handlePrev.bind(this);
         this.handleNext = this.handleNext.bind(this);
@@ -47,35 +44,35 @@ export default class Player extends React.Component {
     }
 
     handleSliderChange(e, val) {
-        this.setState({playing: false});
         this.props.setCurrentFrame.call(this, Math.round(val * this.props.lastFrame));
+        this.props.setPlay.call(this, false);
     }
 
     handlePrev() {
         this.props.setCurrentFrame.call(this, this.props.currentFrame - 1);
-        this.setState({playing: false});
+        this.props.setPlay.call(this, false);
     }
 
     handleNext() {
         this.props.setCurrentFrame.call(this, this.props.currentFrame + 1);
-        this.setState({playing: false});
+        this.props.setPlay.call(this, false);
     }
 
     handlePlay(val) {
-        if (this.state.playing === false) { // initially pausing
+        if (this.props.playing === false) { // initially pausing
             this.props.setCurrentFrame.call(this, this.props.currentFrame + 1);
-            this.setState({playing: true});
+            this.props.setPlay.call(this, true);
         } else {
-            this.setState({playing: false});
+            this.props.setPlay.call(this, false);
         }
     }
 
     componentDidUpdate() {
-        if (this.state.playing && this.props.currentFrame < this.props.lastFrame)
+        if (this.props.playing && this.props.currentFrame < this.props.lastFrame)
             setTimeout(() => {
-                if (this.state.playing)
+                if (this.props.playing)
                     this.props.setCurrentFrame.call(this, this.props.currentFrame + 1);
-            }, 1000);
+            }, 1500);
     }
 
     render() {
@@ -95,7 +92,7 @@ export default class Player extends React.Component {
                     mini={true}
                     primary={true}>
                     <FontIcon className="material-icons">
-                        {this.state.playing? 'pause' : 'play_arrow'}
+                        {this.props.playing? 'pause' : 'play_arrow'}
                     </FontIcon>
                 </FloatingActionButton>
 

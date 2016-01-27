@@ -16,40 +16,29 @@ export default class Game extends React.Component {
 
     constructor() {
         super();
-        this.getResult = this.getResult.bind(this);
-        this.getCurrentPlayer = this.getCurrentPlayer.bind(this);
-        this.getWinner = this.getWinner.bind(this);
+        this.state = {
+            currentFrame: 0,
+            currentPlayer: 0,
+            result: [['0','0','0'], ['0','0','0'], ['0','0','0']],
+            winner: 0
+        };
     }
 
-    getResult() {
-        console.log('result', this.props.result);
-        if (this.props.result === undefined)
-            return [['0','0','0'], ['0','0','0'], ['0','0','0']];
-        else
-            return this.props.result;
-    }
-
-    getCurrentPlayer() {
-        if (this.props.result === undefined)
-            return 0;
-        else
-            return this.props.result.currentPlayer;
-    }
-
-    getWinner() {
-        if (this.props.result && this.props.result.winner !== undefined)
-            return this.props.result.winner;
-        else
-            return 0;
+    componentDidMount() {
+        window.addEventListener('updateResult', e => {
+            this.setState({
+                currentFrame: e.detail.currentFrame? e.detail.currentFrame: this.state.currentFrame,
+                result: e.detail.result? e.detail.result: this.state.result,
+            });
+        });
     }
 
     render() {
-        //console.log('resultGameBoard ', this.props.result);
         return (
             <div style={mainStyle}>
-                <GameBoard result={this.getResult()} />
-                <CurrentPlayer val={this.getCurrentPlayer()} />
-                <Winner val={this.getWinner()} />
+                <GameBoard result={this.state.result} />
+                <CurrentPlayer val={this.state.currentPlayer} />
+                <Winner val={this.state.winner} />
             </div>
         );
     }

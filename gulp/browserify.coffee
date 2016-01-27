@@ -2,7 +2,7 @@ gulp = require 'gulp'
 plugins = require('gulp-load-plugins')()
 source = require 'vinyl-source-stream'
 browserify = require 'browserify'
-# reactify = require 'reactify'
+babelify = require 'babelify'
 
 config = require './config'
 

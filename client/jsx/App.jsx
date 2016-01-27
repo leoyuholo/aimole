@@ -11,3 +11,6 @@ injectTapEventPlugin();
 ReactDOM.render(<CodingIndex />, document.getElementById('content'));
 
 ReactDOM.render(<Header />, document.getElementById('header'));
+
+import Game from 'gameExample/ticTacToe/index.jsx';
+ReactDOM.render(<Game />, document.getElementById('gameEntryNode'));

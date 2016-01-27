@@ -1,8 +1,6 @@
 import React from 'react';
 import Paper from 'material-ui/lib/paper';
 
-import Game from 'gameExample/ticTacToe/index.jsx';
-
 import Styles from 'Styles.jsx';
 
 const paperStyle = {
@@ -25,13 +23,23 @@ const nodeStyle = {
 };
 
 
-export default class CodingIndex extends React.Component {
+export default class GameBoard extends React.Component {
+    componentDidUpdate() {
+        var event = new CustomEvent('updateResult', {
+            detail: {
+                currentFrame: this.props.currentFrame,
+                result: this.props.result
+            }
+        });
+        window.dispatchEvent(event);
+    }
+    
     render() {
         return (
             <Paper zDepth={Styles.paper.zDepth} style={paperStyle}>
                 <Paper zDepth={0} style={pluginStyle}>
                     <div style={nodeStyle}>
-                        <Game result={this.props.result} />
+                        <div id="gameEntryNode" />
                     </div>
                 </Paper>
             </Paper>

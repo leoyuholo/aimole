@@ -1,174 +1,188 @@
 childProcess = require 'child_process'
 path = require 'path'
+events = require 'events'
 
 _ = require 'lodash'
 async = require 'async'
 fse = require 'fs-extra'
+Q = require 'q'
 
 module.exports = ($) ->
 	self = {}
 
-	names = ['verdict', 'player1', 'player2']
+	class GameEntity
+		constructor: (@cmd) ->
+			@process = childProcess.exec @cmd
+			@dataQueue = []
+			@emitter = new events()
+			@timer =
+				timeout: ''
+				stopWatch: Date.now()
 
-	killAll = () ->
-		console.log 'killing all'
-		names.forEach (name) ->
-			childProcess.exec "docker rm -f #{name}"
+			@process.stdout.on 'data', @onData
+			@process.on 'exit', @onExit
+			@process.stderr.on 'data', @onError
 
-	initProcess = (process, label, onData, onTimeout, onExit, onError) ->
-		console.log 'init', label
-		exited = false
+		onData: (data) =>
+			time = @stopTimer()
+			@enqueueData
+				event: 'data'
+				data: data.toString()
+				time: time
 
-		timer =
-			timeout: ''
-			timeLimit: 4000
-			stopWatch: Date.now()
+		onExit: (code) =>
+			time = @stopTimer()
+			@enqueueData
+				event: 'exit'
+				time: time
+				exitCode: code
 
-		process.stdout.on 'data', (data) ->
-			clearTimeout timer.timeout
-			console.log 'receive', label, 'data', data
-			onData data.toString(), (Date.now() - timer.stopWatch)
+			@exited = true
 
-		process.on 'exit', () ->
-			console.log 'exit', label
-			onExit()
+		onError: (errorMessage) =>
+			time = @stopTimer()
+			@enqueueData
+				event: 'error'
+				errorMessage: errorMessage
+				time: time
 
-		process.stderr.on 'data', (err) ->
-			console.log 'error', err
-			onError new Error(err)
+			# don't need to exit
 
-		write = (str) ->
-			if !exited
+		enqueueData: (data) =>
+			@dataQueue.push data
+			@emitter.emit 'data'
+
+		dequeueData: (done) =>
+			return done null, @dataQueue.shift() if @dataQueue.length > 0
+
+			onData = () =>
+				@emitter.removeListener 'data', onData
+				if @dataQueue.length > 0
+					done null, @dataQueue.shift()
+				else
+					done new Error('GameEntity error: emit data event illegally when data queue is empty.')
+
+			@emitter.on 'data', onData
+
+		stopTimer: () =>
+			clearTimeout @timer.timeout
+
+			now = Date.now()
+			time = now - @timer.stopWatch
+			@timer.stopWatch = now
+
+			@process.kill 'SIGSTOP'
+
+			return time
+
+		startTimer: (timeLimit) =>
+			@timer.stopWatch = Date.now()
+			@timer.timeout = setTimeout ( () =>
+				@onTimeout()
+			), timeLimit
+
+			@process.kill 'SIGCONT'
+
+			return
+
+		onTimeout: () =>
+			time = @stopTimer()
+
+			@dataQueue.push
+				event: 'timeout'
+				time: time
+
+		send: (str, timeLimit) =>
+			@defer = Q.defer()
+
+			process.nextTick () =>
+				return @defer.resolve new Error('GameEntity error: fail to write message since process already exited.') if @exited
+
+				str = JSON.stringify str if _.isObject str
 				str += '\n' if !/\n$/.test str
-				console.log 'write:', label, 'data', "[#{str}]"
-				process.stdin.write str
-				timer.stopWatch = Date.now()
-				timer.timeout = setTimeout ( () ->
-					onTimeout Date.now() - timer.stopWatch, label
-				), timer.timeLimit
 
-		writeJson = (obj) ->
-			write JSON.stringify obj if !exited
+				@process.stdin.write str
 
-		exit = () ->
-			exited = true
+				@startTimer timeLimit
 
-		return {
-			write: write
-			writeJson: writeJson
-			exit: exit
-		}
+				@dequeueData (err, data) =>
+					return @defer.resolve err if err
+					@defer.resolve data
 
-	initPlayer = (process, playerLabel, verdict) ->
+			return @defer.promise
 
-		onPlayerData = (data, timeElapsed) ->
-			console.log arguments
-			# playerData:
-			# 	command: 'player'
-			# 	player: [0, 1]
-			# 	time: 1234
-			# 	stdout: 'string'
-			console.log 'onPlayerData', data, "timeElapsed[#{timeElapsed}]"
-			playerData =
-				command: 'player'
-				player: playerLabel
-				time: timeElapsed
-				stdout: data
+		exit: () =>
+			return if @exited
 
-			verdict.writeJson playerData
+			@process.stdin.end()
 
-		onPlayerTimeout = (timeElapsed) ->
-			playerData =
-				command: 'timeout'
-				player: playerLabel
-				time: timeElapsed
+			@process.stdout.removeListener 'data', @onData
+			@process.removeListener 'exit', @onExit
+			@process.stderr.removeListener 'data', @onError
 
-			verdict.writeJson playerData
+			@exited = true
 
-		onPlayerExit = () ->
-			# playerData:
-			# 	command: 'terminated'
-			# 	player: [0, 1]
-			playerData =
-				command: 'terminated'
-				player: playerLabel
+	self.GameEntity = GameEntity
 
-			verdict.writeJson playerData
+	self.runGame = Q.async (players, verdict, verdictTimeLimit) ->
+		eventCommandMap =
+			data: 'player'
+			exit: 'terminated'
+			error: 'error'
 
-		onPlayerError = (err) ->
-			# playerData:
-			# 	command: 'error'
-			# 	player: [0, 1]
-			# 	errorMessage: 'string'
-			playerData =
-				command: 'error'
-				player: playerLabel
-				errorMessage: err.message
-
-			verdict.writeJson playerData
-
-		initProcess process, playerLabel, onPlayerData, onPlayerTimeout, onPlayerExit, onPlayerError
-
-	initVerdict = (process, players, done) ->
-		# TODO: use promise
 		verdictHistory = []
-		exited = false
 
-		exit = (err) ->
-			_.invoke players, 'exit'
-			verdict.exit()
-			if !exited
-				exited = true
-				killAll()
-				return done err if err
+		verdictData = yield verdict.send {command: 'start'}, verdictTimeLimit
+
+		loop
+			if verdictData.event == 'error'
+				verdictHistory.push {action: 'error', errorMessage: "Verdict error: #{errorMessage}"}
+				break
+			else if verdictData.event == 'exit'
+				verdictHistory.push {action: 'error', errorMessage: "Verdict exit with code [#{verdictData.exitCode}]"}
+				break
+			else if verdictData.event == 'data'
+				try
+					verdictAction = JSON.parse verdictData.data
+				catch err
+					verdictHistory.push {action: 'error', errorMessage: "Verdict data parse error: [#{err.message}], data: [#{verdictData.data}]"}
+					break
+
+				verdictHistory.push verdictAction
+
+				if verdictAction.action == 'stop' || verdictAction.action == 'error'
+					break
+				else if verdictAction.action == 'next'
+					playerData = yield players[verdictAction.nextPlayer].send verdictAction.writeMsg, verdictAction.timeLimit || 2000
+
+					verdictCommand =
+						player: verdictAction.nextPlayer
+						command: eventCommandMap[playerData.event]
+						time: playerData.time
+						stdout: playerData.data
+
+					verdictData = yield verdict.send verdictCommand, verdictTimeLimit
+
+		return verdictHistory
+
+	cleanUp = (sandboxConfig) ->
+		childProcess.exec "docker rm -f #{sandboxConfig.containerName}"
+
+	run = (playerConfigs, verdictConfig, done) ->
+		verdict = new GameEntity verdictConfig.cmd
+
+		players = _.map playerConfigs, (config) ->
+			new GameEntity config.cmd
+
+		self.runGame players, verdict, verdictConfig.timeLimit
+			.then (verdictHistory) ->
+				_.invoke players.concat(verdict), 'exit'
+				_.each playerConfigs.concat(verdictConfig), cleanUp
 				done null, verdictHistory
-
-		onVerdictData = (data) ->
-			# verdictCommand:
-			# 	command: ['start', 'player', 'terminated', 'error']
-			# 	player: [0, 1]
-			# 	timeMs: 1234
-			# 	stdout: 'string'
-			# 	errorMessage: 'string'
-			# verdictAction:
-			# 	action: ['stop', 'next', 'error']
-			# 	nextPlayer: [0, 1]
-			# 	score: [100, 0]
-			# 	writeMsg: 'string'
-			# 	errorMessage: 'string'
-			verdictAction = JSON.parse data
-			verdictHistory.push verdictAction
-			switch verdictAction.action
-				when 'stop'
-					# TODO: kill all process
-					exit()
-				when 'next'
-					players[verdictAction.nextPlayer].write "#{verdictAction.writeMsg}"
-				when 'error'
-					exit new Error(verdictAction.errorMessage)
-
-		onVerdictTimeout = () ->
-			exit new Error('Verdict timeout.')
-
-		onVerdictError = (err) ->
-			exit new Error('Verdict error.')
-
-		onVerdictExit = () ->
-			exit()
-
-		verdict = initProcess process, 'v', onVerdictData, onVerdictTimeout, onVerdictExit, onVerdictError
-		players = _.map players, (player, index) ->
-			initPlayer player, index, verdict
-
-		return verdict
-
-	runGame = (verdict, players, done) ->
-		verdict = initVerdict verdict, players, done
-		verdict.writeJson {command: 'start'}
 
 	sandboxrunPath = '/tmp/aimole/worker/'
 
-	makeRunCmd = (sandboxrunPath, sandboxConfig) ->
+	makeRunCmd = (sandboxConfig) ->
 		[
 			'docker'
 			'run'
@@ -177,7 +191,7 @@ module.exports = ($) ->
 			'--rm'
 			'--net', 'none'
 			'--security-opt', 'apparmor:unconfined'
-			'-v', sandboxrunPath + ':/vol/'
+			'-v', sandboxConfig.runPath + ':/vol/'
 			'-u', '$(id -u):$(id -g)'
 			'tomlau10/sandbox-run'
 			'-n', 1
@@ -185,54 +199,38 @@ module.exports = ($) ->
 			'-CR'
 			sandboxConfig.executableFilename
 		].join ' '
-
-	makeVerdictCmd = (sandboxrunPath, sandboxConfig) ->
-		# [
-		# 	'node'
-		# 	path.join sandboxrunPath, sandboxConfig.codeFilename
-		# ].join ' '
-		[
-			'docker'
-			'run'
-			'-i'
-			'--name', sandboxConfig.containerName
-			'--rm'
-			'--net', 'none'
-			'--security-opt', 'apparmor:unconfined'
-			'-v', sandboxrunPath + ':/vol/'
-			'-u', '$(id -u):$(id -g)'
-			'tomlau10/sandbox-run'
-			'-n', 1
-			'-c', sandboxConfig.codeFilename
-			'-CR'
-			sandboxConfig.executableFilename
-		].join ' '
-
-	runCode = (code, sandboxrunPath, sandboxConfig, done) ->
-		fse.outputFile path.join(sandboxrunPath, sandboxConfig.codeFilename), code, (err) ->
-			return $.utils.onError done, err if err
-
-			console.log makeRunCmd sandboxrunPath, sandboxConfig
-
-			done null, childProcess.exec makeRunCmd sandboxrunPath, sandboxConfig
-
-	runVerdict = (code, sandboxrunPath, sandboxConfig, done) ->
-		fse.outputFile path.join(sandboxrunPath, sandboxConfig.codeFilename), code, (err) ->
-			return $.utils.onError done, err if err
-
-			console.log makeVerdictCmd sandboxrunPath, sandboxConfig
-
-			done null, childProcess.exec makeVerdictCmd sandboxrunPath, sandboxConfig
 
 	self.run = (player1, player2, verdict, done) ->
+		verdictConfig =
+			runPath: path.join sandboxrunPath, 'verdict'
+			codeFilename: 'verdict.js'
+			executableFilename: 'verdict'
+			containerName: 'verdict'
+			timeLimit: 4000
+
+		player1Config =
+			runPath: path.join sandboxrunPath, 'player1'
+			codeFilename: 'player1.c'
+			executableFilename: 'player1'
+			containerName: 'player1'
+
+		player2Config =
+			runPath: path.join sandboxrunPath, 'player2'
+			codeFilename: 'player2.c'
+			executableFilename: 'player2'
+			containerName: 'player2'
+
 		async.parallel [
-			_.partial runVerdict, verdict, path.join(sandboxrunPath, 'verdict'), {codeFilename: 'verdict.py', executableFilename: 'verdict', containerName: 'verdict'}
-			# _.partial runVerdict, verdict, path.join(sandboxrunPath, 'verdict'), {codeFilename: 'verdict.js', executableFilename: 'verdict', containerName: 'verdict'}
-			_.partial runCode, player1, path.join(sandboxrunPath, 'player1'), {codeFilename: 'player1.c', executableFilename: 'player1', containerName: 'player1'}
-			_.partial runCode, player2, path.join(sandboxrunPath, 'player2'), {codeFilename: 'player2.c', executableFilename: 'player2', containerName: 'player2'}
-		], (err, [verdict, player1, player2]) ->
+			_.partial fse.outputFile, path.join(verdictConfig.runPath, verdictConfig.codeFilename), verdict
+			_.partial fse.outputFile, path.join(player1Config.runPath, player1Config.codeFilename), player1
+			_.partial fse.outputFile, path.join(player2Config.runPath, player2Config.codeFilename), player2
+		], (err) ->
 			return $.utils.onError done, err if err
 
-			runGame verdict, [player1, player2], done
+			verdictConfig.cmd = makeRunCmd verdictConfig
+			player1Config.cmd = makeRunCmd player1Config
+			player2Config.cmd = makeRunCmd player2Config
+
+			run [player1Config, player2Config], verdictConfig, done
 
 	return self

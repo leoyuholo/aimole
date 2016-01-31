@@ -4,9 +4,9 @@ require 'coffee-script/register'
 
 config = require './config'
 
-gulp.task('mocha', () ->
+gulp.task 'mocha', () ->
 	gulp.src(config.files.mocha, {read: false})
-	.pipe(plugins.mocha config.mocha)
-	.once 'error', () -> process.exit 1
-	.once 'end', () -> process.exit()
-)
+	.pipe plugins.mocha
+		timeout: 5000
+		require: ['coffee-errors']
+	.on 'error', plugins.util.log

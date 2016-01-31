@@ -10,7 +10,7 @@ gulp.task 'lint-coffee', () ->
 		.pipe plugins.coffeelint.reporter()
 
 gulp.task 'lint-js', () ->
-	gulp.src [].concat.apply config.files.js, config.files.jsx
+	gulp.src [].concat.apply config.files.js
 		.pipe plugins.jshint()
 		.pipe plugins.jshint.reporter()
 

@@ -34,41 +34,46 @@ export default class CodingIndex extends React.Component {
         this.state = {
             currentFrame: 0,
             submitted: false,
-            result: []
+            result: [],
+            playing: false
         };
         this.setCurrentFrame = this.setCurrentFrame.bind(this);
         this.getCurrentFrameResult = this.getCurrentFrameResult.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.setPlay = this.setPlay.bind(this);
     }
 
     setCurrentFrame(val) {
-        if (val >= 0 && val < this.state.result.length)
+        if (val >= 0 && this.state.result && val < this.state.result.length)
             this.setState({currentFrame: val});
     }
 
     getCurrentFrameResult() {
         //console.log('this.state.result ', this.state.result);
-        if (this.state.submitted === false)
+        if (this.state.submitted === false || !this.state.result)
             return undefined;
-        else {
-            console.log('hihihi ', this.state.result[this.state.currentFrame]);
+        else
             return this.state.result[this.state.currentFrame].display;
-        }
+    }
+
+    setPlay(play) {
+        this.setState({playing: play});
     }
 
     handleSubmit(code) {
-        this.setState({submitted: true});
+        this.setState({
+            submitted: true,
+            result: [],
+            currentFrame: 0,
+            playing: true
+        });
         $.ajax({
             url: '/api/game/submit',
             type: 'POST',
             data: JSON.stringify({code: code}),
             contentType: "application/json",
             success: msg => {
-                //console.log(msg);
-                this.setState({
-                    result: msg.gameResult,
-                    submitted: true
-                });
+                this.setState({result: msg.gameResult});
             },
             error: err => {
                 console.error(err);
@@ -85,9 +90,11 @@ export default class CodingIndex extends React.Component {
                         result={this.getCurrentFrameResult()}
                         currentFrame={this.state.currentFrame} />
                     <Player
+                        playing={this.state.playing}
+                        setPlay={this.setPlay}
                         setCurrentFrame={this.setCurrentFrame}
                         currentFrame={this.state.currentFrame}
-                        lastFrame={this.state.result.length - 1}
+                        lastFrame={this.state.result? this.state.result.length - 1: 0}
                         submitted={this.state.submitted} />
                 </div>
                 <div style={variableInnerStyle}>

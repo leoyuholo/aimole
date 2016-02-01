@@ -10,3 +10,4 @@ gulp.task 'mocha', () ->
 		timeout: 5000
 		require: ['coffee-errors']
 	.on 'error', plugins.util.log
+	.once 'end', () -> process.exit()

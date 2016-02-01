@@ -136,7 +136,7 @@ module.exports = ($) ->
 
 		loop
 			if verdictData.event == 'error'
-				verdictHistory.push {action: 'error', errorMessage: "Verdict error: #{errorMessage}"}
+				verdictHistory.push {action: 'error', errorMessage: "Verdict error: #{verdictData.errorMessage}"}
 				break
 			else if verdictData.event == 'exit'
 				verdictHistory.push {action: 'error', errorMessage: "Verdict exit with code [#{verdictData.exitCode}]"}
@@ -173,7 +173,6 @@ module.exports = ($) ->
 
 		players = _.map playerConfigs, (config) ->
 			new GameEntity config.cmd
-
 		self.runGame players, verdict, verdictConfig.timeLimit
 			.then (verdictHistory) ->
 				_.invoke players.concat(verdict), 'exit'

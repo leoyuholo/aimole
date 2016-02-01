@@ -7,8 +7,12 @@ babelify = require 'babelify'
 config = require './config'
 
 gulp.task 'browserify', () ->
-	browserify config.browserify
+	browserify
+		entries: ['client/jsx/App.jsx']
+		transform: [[babelify, {presets: ['react', 'es2015']}]]
+		paths: ['client/jsx/']
+		insertGlobals: true
 	.bundle()
 	.on 'error', (err) -> console.log 'Error in browserify: ', err.message
-	.pipe source config.browserify.outputName
+	.pipe source 'bundle.js'
 	.pipe gulp.dest config.publicDir

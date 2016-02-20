@@ -1,5 +1,5 @@
 #aimole
 	#login-view
-		padding-top: 10em
+		padding-top 5em
 		.panel-body
-			padding-top: 1em
+			padding-top 1em

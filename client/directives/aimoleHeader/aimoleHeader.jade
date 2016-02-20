@@ -1,0 +1,29 @@
+script
+	include:coffee-script aimoleHeader.coffee
+	include:coffee-script aimoleHeaderController.coffee
+script(type="text/ng-template", id="views/aimoleHeader")
+	nav.navbar.navbar-default.navbar-static-top
+		.container#aimoleHeader
+			.navbar-header
+				button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#aimoleHeaderNavbar")
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+				a.navbar-brand(ng-href="#/")
+					b aimole
+			div.navbar-collapse.collapse#aimoleHeaderNavbar
+				ul.nav.navbar-nav(ng-if="user")
+					li
+						a(ng-href="#/games") Games
+				ul.nav.navbar-nav.navbar-right(ng-if="!user")
+					li(ng-if="showSignIn")
+						a(href="javascript:void(0)" ng-click="openLoginModal()") Sign In
+				ul.nav.navbar-nav.navbar-right(ng-if="user")
+					li.dropdown
+						a.dropdown-toggle(href="javascript:void(0)" data-toggle="dropdown") Hi, {{user.get('username')}}
+							span.caret
+						ul.dropdown-menu
+							li
+								a(ng-href="#/settings") Settings
+					li
+						a(href="javascript:void(0)" ng-click="logout()") Logout

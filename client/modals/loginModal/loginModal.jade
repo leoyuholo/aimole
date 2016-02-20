@@ -1,0 +1,9 @@
+script
+	include:coffee-script loginModalController.coffee
+script(type="text/ng-template", id="views/loginModal")
+	.modal-header
+		h4.modal-little
+			| Log in & Sign Up
+			button.pull-right(type="button" class="close" ng-click="dismiss()") &times;
+	.modal-body
+		login-panel(on-complete="dismiss")

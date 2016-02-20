@@ -8,23 +8,23 @@ script(type="text/ng-template", id="views/loginPanel")
 			form#login-form
 				.form-group
 					label(for="input-loginEmail") Email
-					input#input-loginEmail.form-control(type='email', required='', ng-model="loginForm.email")
+					input#input-loginEmail.form-control(type="email", required="", ng-model="loginForm.email")
 				.form-group
 					label(for="input-loginPassword") Password
-					input#input-loginPassword.form-control(type='password', required='', ng-model="loginForm.password")
-				.message-text.text-danger(ng-if='loginMsg.errorMessage') {{loginMsg.errorMessage}}
-				button.btn.btn-lg.btn-primary.btn-block(type='submit', ng-click="login(loginForm.email, loginForm.password)") Log in
+					input#input-loginPassword.form-control(type="password", required="", ng-model="loginForm.password")
+				.message-text.text-danger(ng-if="loginMsg.errorMessage") {{loginMsg.errorMessage}}
+				button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-click="login(loginForm.email, loginForm.password)") Log in
 		.col-sm-6
 			h2 New to aimole?
 			form#signup-form
 				.form-group
 					label(for="input-signupEmail") Email
-					input#input-signupEmail.form-control(type='email', required='', ng-model="signupForm.email")
+					input#input-signupEmail.form-control(type="email", required="", ng-model="signupForm.email")
 				.form-group
 					label(for="input-signupPassword") Password
-					input#input-signupPassword.form-control(type='password', required='', ng-model="signupForm.password")
+					input#input-signupPassword.form-control(type="password", required="", ng-model="signupForm.password")
 				.form-group
 					label(for="input-signupConfirmPassword") Confirm Password
-					input#input-signupConfirmPassword.form-control(type='password', required='', ng-model="signupForm.confirmPassword")
-				.message-text.text-danger(ng-if='signupMsg.errorMessage') {{signupMsg.errorMessage}}
-				button.btn.btn-lg.btn-primary.btn-block(type='submit', ng-click="signup(signupForm.email, signupForm.password, signupForm.confirmPassword)") Sign up
+					input#input-signupConfirmPassword.form-control(type="password", required="", ng-model="signupForm.confirmPassword")
+				.message-text.text-danger(ng-if="signupMsg.errorMessage") {{signupMsg.errorMessage}}
+				button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-click="signup(signupForm.email, signupForm.password, signupForm.confirmPassword)") Sign up

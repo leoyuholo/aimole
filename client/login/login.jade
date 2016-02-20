@@ -1,0 +1,10 @@
+script
+	include:coffee-script loginController.coffee
+script(type="text/ng-template", id="views/login")
+	div(aimole-header)
+	.container#login-view
+		.panel.panel-default
+			.panel-heading
+				h1 Log In & Sign Up
+			.panel-body
+				login-panel(on-complete="onComplete")

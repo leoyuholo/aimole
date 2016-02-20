@@ -2,6 +2,7 @@ path = require 'path'
 events = require 'events'
 
 _ = require 'lodash'
+async = require 'async'
 express = require 'express'
 bodyParser = require 'body-parser'
 compression = require 'compression'
@@ -52,7 +53,7 @@ $.logger = new winston.Logger(
 		new (winston.transports.File)(
 			level: 'info'
 			filename: path.join $.rootDir, 'logs', 'all-logs.log'
-			handleExceptions: true
+			handleExceptions: !!$.env.production
 			json: true
 			maxsize: 5 * 1024 * 1024
 			maxFiles: 10

@@ -1,6 +1,9 @@
 
 module.exports =
 	port: 3000
+	rootUser:
+		email: 'aimole@aimole.com'
+		password: 'a1m0le'
 	Parse:
 		appId: 'aimole'
 		masterKey: 'aimole-master'

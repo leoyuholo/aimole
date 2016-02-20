@@ -1,5 +1,6 @@
+async = require 'async'
 amqp = require 'amqplib/callback_api'
-Parse = require 'parse'
+Parse = require 'parse/node'
 
 module.exports = ($) ->
 	self = {}
@@ -19,6 +20,7 @@ module.exports = ($) ->
 	setupParse = (done) ->
 		Parse.initialize $.config.Parse.appId, '', $.config.Parse.masterKey
 		Parse.serverURL = $.config.Parse.serverURL
+		Parse.Cloud.useMasterKey()
 
 		$.Parse = Parse
 

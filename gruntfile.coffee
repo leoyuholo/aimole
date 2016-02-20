@@ -9,6 +9,8 @@ module.exports = (grunt) ->
 	loadGruntTasks grunt
 	grunt.initConfig loadGruntConfigs grunt, options
 
+	grunt.registerTask 'dev', ['jade:dev', 'concurrent:dev']
+
 	grunt.registerTask 'lint', ['coffeelint:all']
 
 	grunt.registerTask 'test', ['mochaTest:all']

@@ -1,0 +1,41 @@
+doctype html
+html(ng-app="aimole")
+	head
+		meta(charset="utf-8")
+		title aimole
+		meta(name="Description", content="let ai play against ai")
+		meta(name="viewport", content="width=device-width, initial-scale=1")
+
+		link(href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css")
+		link(href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css")
+		link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css")
+		link(href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.8/css/bootstrap-material-design.min.css" rel="stylesheet" type="text/css")
+		link(href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.8/css/ripples.min.css" rel="stylesheet" type="text/css")
+
+		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js")
+		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.min.js")
+		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-cookies.min.js")
+
+	body#aimole
+
+		div(ng-view)
+
+		script
+			include:coffee-script aimole-main.coffee
+
+		script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js")
+		script(src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.0/lodash.min.js")
+		script(src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.min.js")
+		script(src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js")
+		script(src="https://www.parsecdn.com/js/parse-latest.js")
+		script(src="https://rawgit.com/leoyuholo/parse-angular-patch/master/src/parse-angular.js")
+
+		if config.env.development
+			script.
+				(function(){
+					document.write(
+						'<script src="http://' + 
+						window.location.hostname + 
+						':35729\/livereload.js" type="text\/javascript"><\/script>'
+					);
+				}).call(this);

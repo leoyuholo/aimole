@@ -5,6 +5,11 @@ app.service 'gameService', () ->
 
 	Game = Parse.Object.extend 'Game'
 
+	self.listGames = () ->
+		query = new Parse.Query(Game)
+		query.find()
+			.then (games) -> _.invokeMap games, 'toJSON'
+
 	self.addGame = (url) ->
 		return Parse.Promise.error new Error('Not a git url.') if !/.git$/.test url
 

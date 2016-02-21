@@ -3,13 +3,16 @@ app = angular.module 'aimole', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'parse-a
 app.config ($routeProvider, $locationProvider) ->
 	$routeProvider
 		.when '/',
-			redirectTo: '/admin'
+			redirectTo: '/games'
 		.when '/admin',
 			controller: 'adminController'
 			templateUrl: 'views/admin'
 		.when '/login',
 			controller: 'loginController'
 			templateUrl: 'views/login'
+		.when '/games',
+			controller: 'gamesController'
+			templateUrl: 'views/games'
 		.otherwise
 			redirectTo: '/'
 

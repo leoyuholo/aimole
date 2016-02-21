@@ -2,11 +2,11 @@
 module.exports = (grunt, options) ->
 	config =
 		options:
-			spawn: false
+			spawn: true
 			debounceDelay: 2000
 		test:
 			files: ['**/*.coffee', '!**/node_modules/**']
-			tasks: ['coffeelint:all', 'mochaTest:all']
+			tasks: ['mochaTest:all']
 		dev:
 			files: ['client/**']
 			tasks: ['jade:dev']

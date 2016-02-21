@@ -11,7 +11,8 @@ script(type="text/ng-template", id="views/admin")
 					.form-group
 						label(for="input-githubUrl") GitHub Url
 						input#input-githubUrl.form-control(type="text", required="", ng-model="addGameForm.url")
-						p.help-block e.g. https://github.com/leoyuholo/aimole.git
+						p.help-block e.g. https://github.com/leoyuholo/aimole-example.git
 					.message-text.text-success(ng-if="addGameMsg.successMessage") {{addGameMsg.successMessage}}
+					.message-text.text-warning(ng-if="addGameMsg.warningMessage") {{addGameMsg.warningMessage}}
 					.message-text.text-danger(ng-if="addGameMsg.errorMessage") {{addGameMsg.errorMessage}}
-					button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-click="addGame(addGameForm.url)") Add
+					button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-click="addGame(addGameForm.url)", ng-disabled="addGameMsg.warningMessage") Add

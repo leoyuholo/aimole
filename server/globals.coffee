@@ -23,6 +23,7 @@ module.exports = $ = {}
 $.serverDir = __dirname
 $.rootDir = path.join $.serverDir, '..'
 $.publicDir = path.join $.rootDir, 'public'
+$.tmpDir = path.join $.rootDir, 'tmp'
 
 # configs
 $.config = require path.join $.rootDir, 'configs', 'config'
@@ -68,6 +69,7 @@ $.app.use morgan 'tiny', {stream: {write: (msg) -> $.logger.info msg}}
 [
 	'utils'
 	'setups'
+	'services'
 	'listeners'
 	'clouds'
 ].forEach (component) ->

@@ -24,8 +24,8 @@ else
 	echo "${sandboxrun} docker image exists, skip pulling."
 fi
 
-echo "app_dir:" ${app_dir}
 echo "container_name:" ${container_name}
+echo "app_dir:" ${app_dir}
 echo "arguments": ${arguments}
 
 docker run  -i \

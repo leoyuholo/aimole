@@ -7,6 +7,7 @@ app.controller 'adminController', ($scope, messageService, gameService) ->
 		url: ''
 
 	$scope.addGame = (url) ->
+		messageService.warning $scope.addGameMsg, 'Adding game... Please wait.'
 		gameService.addGame url
 			.then () -> messageService.success $scope.addGameMsg, 'Game added.'
 			.fail (err) -> messageService.error $scope.addGameMsg, err.message

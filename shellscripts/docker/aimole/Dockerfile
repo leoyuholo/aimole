@@ -1,4 +1,4 @@
-FROM node:4.3
+FROM node:5
 
 VOLUME /app
 

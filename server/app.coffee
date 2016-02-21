@@ -24,7 +24,7 @@ injectRootUser = (done) ->
 			addAdminRole = (user) ->
 				roleACL = new Parse.ACL()
 				roleACL.setPublicReadAccess true
-				role = new Parse.Role 'Administrator', roleACL
+				role = new Parse.Role('Administrator', roleACL)
 				role.getUsers().add user
 
 				role.save()

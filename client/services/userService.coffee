@@ -18,7 +18,7 @@ app.service 'userService', ($rootScope) ->
 
 		user.signUp null
 			.then (user) ->
-				user.setACL new Parse.ACL user
+				user.setACL new Parse.ACL(user)
 				user.save()
 
 	self.logout = () ->

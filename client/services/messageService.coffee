@@ -6,6 +6,7 @@ app.service 'messageService', ($rootScope) ->
 	self.clear = (target) ->
 		target = target || $rootScope
 		target.successMessage = ''
+		target.warningMessage = ''
 		target.errorMessage = ''
 
 	self.error = (target, errorMessage) ->
@@ -23,5 +24,13 @@ app.service 'messageService', ($rootScope) ->
 
 		self.clear target
 		target.successMessage = successMessage
+
+	self.warning = (target, warningMessage) ->
+		if _.isString target
+			successMessage = target
+			target = $rootScope
+
+		self.clear target
+		target.warningMessage = warningMessage
 
 	return self

@@ -2,7 +2,7 @@ script
 	include:coffee-script adminController.coffee
 script(type="text/ng-template", id="views/admin")
 	div(aimole-header)
-	.container#admin-view
+	.container#admin-view(ng-init="requireRole('Administrator')")
 		.panel.panel-default
 			.panel-heading
 				h1 Add Game

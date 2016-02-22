@@ -18,6 +18,8 @@ app.config ($routeProvider, $locationProvider) ->
 
 	return
 
-app.run ($rootScope) ->
+app.run ($rootScope, userService) ->
 	Parse.initialize 'aimole'
 	Parse.serverURL = "#{window.location.origin}/parse"
+
+	$rootScope.requireRole = userService.requireRole

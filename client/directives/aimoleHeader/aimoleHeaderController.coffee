@@ -4,6 +4,8 @@ app.controller 'aimoleHeaderController', ($scope, $rootScope, $location, $uibMod
 
 	$scope.showSignIn = $location.path() != '/login'
 
+	$scope.user = userService.getUser()
+
 	loginModal = {}
 
 	$scope.logout = () ->

@@ -1,7 +1,15 @@
 app = angular.module 'aimole'
 
-app.service 'userService', ($rootScope) ->
+app.service 'userService', ($rootScope, redirectService) ->
 	self = {}
+
+	self.hasRole = (roleName) ->
+		Parse.Cloud.run 'hasRole', {roleName: roleName}
+
+	self.requireRole = (roleName) ->
+		self.hasRole roleName
+			.then (result) -> redirectService.redirectToHome() if !result
+			.fail (err) -> redirectService.redirectToHome()
 
 	self.getUser = () ->
 		Parse.User.current()
@@ -19,6 +27,9 @@ app.service 'userService', ($rootScope) ->
 		user.signUp null
 			.then (user) ->
 				user.setACL new Parse.ACL(user)
+				role = new Parse.Role('Player')
+				role.getUsers().add user
+				role.save()
 				user.save()
 
 	self.logout = () ->

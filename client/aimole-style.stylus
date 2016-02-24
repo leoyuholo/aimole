@@ -3,3 +3,7 @@
 		padding-top 5em
 		.panel-body
 			padding-top 1em
+	.ace-font
+		font-family Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace
+	.ace_editor
+		height 100%

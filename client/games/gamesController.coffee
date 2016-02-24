@@ -7,8 +7,7 @@ app.controller 'gamesController', ($scope, messageService, gameService) ->
 
 	listGames = () ->
 		gameService.listGames()
-			.then (games) ->
-				$scope.games = games
+			.then (games) -> $scope.games = games
 			.fail (err) -> messageService.error gamesMsg, err.message
 
 	listGames()

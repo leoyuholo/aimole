@@ -5,6 +5,11 @@ app.service 'gameService', () ->
 
 	Game = Parse.Object.extend 'Game'
 
+	self.findGame = (objectId) ->
+		query = new Parse.Query(Game)
+		query.get objectId
+			.then (game) -> game?.toJSON()
+
 	self.listGames = () ->
 		query = new Parse.Query(Game)
 		query.find()

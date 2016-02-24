@@ -1,4 +1,4 @@
-app = angular.module 'aimole', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'parse-angular']
+app = angular.module 'aimole', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'parse-angular', 'fillHeight', 'ui.ace']
 
 app.config ($routeProvider, $locationProvider) ->
 	$routeProvider
@@ -13,6 +13,9 @@ app.config ($routeProvider, $locationProvider) ->
 		.when '/games',
 			controller: 'gamesController'
 			templateUrl: 'views/games'
+		.when '/game/:objectId',
+			controller: 'gameController'
+			templateUrl: 'views/game'
 		.otherwise
 			redirectTo: '/'
 

@@ -28,7 +28,7 @@ app.controller 'aimoleEditorController', ($scope) ->
 
 		editor.setReadOnly $scope.readOnly
 
-		editor.setValue localStorage.getItem $scope.localStorageKey if !$scope.ngModel && !editor.getValue() && $scope.localStorageKey
+		editor.setValue localStorage.getItem($scope.localStorageKey) || '' if !$scope.ngModel && !editor.getValue() && $scope.localStorageKey
 
 	setAceOptions = () ->
 		defaultOptions =

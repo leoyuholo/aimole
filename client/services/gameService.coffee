@@ -5,9 +5,16 @@ app.service 'gameService', () ->
 
 	Game = Parse.Object.extend 'Game'
 
-	self.findGame = (objectId) ->
+	self.runGame = (gameObjectId, players) ->
+		gameInfo =
+			gameObjectId: gameObjectId
+			players: players
+
+		Parse.Cloud.run 'runGame', {gameInfo: gameInfo}
+
+	self.findGame = (gameObjectId) ->
 		query = new Parse.Query(Game)
-		query.get objectId
+		query.get gameObjectId
 			.then (game) -> game?.toJSON()
 
 	self.listGames = () ->

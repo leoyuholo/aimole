@@ -4,6 +4,15 @@ _ = require 'lodash'
 
 module.exports = ($) ->
 	return (Parse) ->
+		Parse.Cloud.define 'runGame', (req, res) ->
+			gameInfo = req.params.gameInfo
+			gameInfo.user =
+				email: req.user.get 'email'
+				username: req.user.get 'username'
+			$.services.submissionService.run gameInfo, (err, result) ->
+				return res.error err.message if err
+				res.success result
+
 		Parse.Cloud.beforeSave 'Game', (req, res) ->
 			url = req.object.get 'url'
 			return res.error('Invalid url.') if !url || !_.isString url

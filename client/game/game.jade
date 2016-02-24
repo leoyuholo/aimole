@@ -6,6 +6,7 @@ script(type="text/ng-template", id="views/game")
 		.row
 			.col-md-6
 				.panel.panel-default(fill-height additional-padding="100")
+					.message-text.text-danger(ng-if="gameMsg.errorMessage") {{gameMsg.errorMessage}}
 					iframe(ng-if="iframeUrl" ng-src="{{iframeUrl}}" width="100%" height="100%")
 			.col-md-6
 				.panel.panel-default(fill-height additional-padding="100")

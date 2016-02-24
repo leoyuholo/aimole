@@ -13,7 +13,7 @@ app.config ($routeProvider, $locationProvider) ->
 		.when '/games',
 			controller: 'gamesController'
 			templateUrl: 'views/games'
-		.when '/game/:objectId',
+		.when '/game/:gameObjectId',
 			controller: 'gameController'
 			templateUrl: 'views/game'
 		.otherwise

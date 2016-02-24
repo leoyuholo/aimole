@@ -39,6 +39,7 @@ async.series [
 	$.run.setup
 	$.run.server
 	injectRootUser
+	$.services.workerService.registerWorker
 ], (err) ->
 	return $.logger.error "error starting up aimole #{err.message}" if err
 	$.logger.info "[#{$.app.get 'env'}] aimole listen on port #{$.config.port}"

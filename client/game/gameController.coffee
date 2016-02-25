@@ -22,7 +22,6 @@ app.controller 'gameController', ($scope, $routeParams, $sce, messageService, ga
 
 		gameService.runGame $scope.gameObjectId, players
 			.then (result) ->
-				console.log JSON.stringify result
 				$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.gameConfig.viewUrl + '#display=' + _.escape JSON.stringify result
 			.fail (err) -> messageService.error $scope.gameRunMsg, err.message
 

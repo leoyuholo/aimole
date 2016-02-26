@@ -4,6 +4,7 @@ app.service 'gameService', () ->
 	self = {}
 
 	Game = Parse.Object.extend 'Game'
+	GameConfig = Parse.Object.extend 'GameConfig'
 
 	self.runGame = (gameObjectId, players) ->
 		gameInfo =
@@ -29,14 +30,24 @@ app.service 'gameService', () ->
 		query.equalTo 'url', url
 			.first()
 			.then (game) ->
-				return game if game
-				game = new Game()
-				game.set 'url', url
-			.then (game) ->
-				gameACL = new Parse.ACL()
-				gameACL.setRoleWriteAccess 'Administrator', true
-				gameACL.setPublicReadAccess true
-				game.setACL gameACL
+				console.log 'game', game
+				if !game
+					gameACL = new Parse.ACL()
+					gameACL.setRoleWriteAccess 'Administrator', true
+					gameACL.setPublicReadAccess true
+					game = new Game()
+					game.set 'url', url
+					game.set 'name', ''
+					game.set 'description', ''
+					game.set 'author', ''
+					game.set 'version', ''
+					game.set 'players', 0
+					game.set 'ai', []
+					game.set 'viewUrl', 'string'
+					game.set 'gameConfig', new GameConfig()
+
+					game.setACL gameACL
+
 				game.save()
 
 	return self

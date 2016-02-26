@@ -3,10 +3,35 @@ path = require 'path'
 _ = require 'lodash'
 async = require 'async'
 fse = require 'fs-extra'
-NodeGit = require 'nodegit'
 
 module.exports = ($) ->
 	self = {}
+
+	readAiCode = (installInfo, done) ->
+		async.map installInfo.gameConfig.ai, ( (ai, done) ->
+			aiPath = path.join installInfo.cloneToPath, ai.file
+			fse.readFile aiPath, {encoding: 'utf8'}, (err, aiCode) ->
+				return $.utils.onError done, err if err
+
+				ai.type = 'ai'
+				ai.code = aiCode
+
+				done null, ai
+		), (err, aiList) ->
+			return $.utils.onError done, err if err
+
+			installInfo.gameConfig.ai = aiList
+
+			done null
+
+	readVerdictCode = (installInfo, done) ->
+		verdictPath = path.join installInfo.cloneToPath, installInfo.gameConfig.verdict.file
+		fse.readFile verdictPath, {encoding: 'utf8'}, (err, verdictCode) ->
+			return $.utils.onError done, err if err
+
+			installInfo.gameConfig.verdict.code = verdictCode
+
+			done null
 
 	readGameConfig = (installInfo, done) ->
 		fse.readJson installInfo.gameConfigPath, {encoding: 'utf8'}, (err, gameConfig) ->
@@ -16,30 +41,24 @@ module.exports = ($) ->
 
 			done null
 
-	tarGame = (installInfo, done) ->
-		$.utils.tar.targz installInfo.cloneToPath, installInfo.tarFilePath, done
-
-	gitClone = (installInfo, done) ->
-		NodeGit.Clone installInfo.url, installInfo.cloneToPath
-			.then () -> done null
-			.catch (err) -> done err
-
 	self.install = (url, done) ->
-		tmpId = $.utils.rng.generateId()
+		tmpId = 'NyZKDNKjl'
+		# tmpId = $.utils.rng.generateId()
 		cloneToPath = path.join $.tmpDir, 'git', tmpId
 		installInfo =
 			url: url
-			tmpId: tmpId
+			tmpId: 'tmpId'
 			cloneToPath: cloneToPath
 			gameConfigPath: path.join cloneToPath, 'aimole.json'
-			tarFilePath: path.join $.tmpDir, 'gametar', "#{tmpId}.tar.gz"
 
 		async.series [
-			_.partial gitClone, installInfo
+			# _.partial $.utils.git.clone, installInfo.url, installInfo.cloneToPath
 			_.partial readGameConfig, installInfo
-			_.partial tarGame, installInfo
+			_.partial readVerdictCode, installInfo
+			_.partial readAiCode, installInfo
 		], (err) ->
 			return $.utils.onError done, err if err
-			done null, installInfo
+
+			done null, installInfo.gameConfig
 
 	return self

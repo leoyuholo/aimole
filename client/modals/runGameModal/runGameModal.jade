@@ -1,0 +1,24 @@
+script
+	include:coffee-script runGameModalController.coffee
+script(type="text/ng-template", id="views/runGameModal")
+	.modal-header
+		h4.modal-little
+			| Who do you want to play with?
+			button.pull-right(type="button" class="close" ng-click="dismiss()") &times;
+	.modal-body
+		ul.list-group
+			li.list-group-item(ng-repeat="player in players track by $index")
+				small Player {{$index + 1}}
+				ul.list-inline(ng-switch="player.type")
+					li(ng-switch-when="ai")
+						h4 Default AI: {{player.name}}
+					//- h2(ng-switch-when="human") {{player.human.displayName}}
+					li(ng-switch-when="me")
+						h4 Me
+					li(ng-switch-default)
+						h4 Not selected yet
+					li.pull-right
+						button.btn.btn-primary(type="button" ng-click="pick($index)") {{player.type === 'ai' || player.type === 'me' ? 'Change' : 'Pick'}}
+	.modal-footer
+		button.btn.btn-primary(type="button" ng-click="run()") Run
+		button.btn.btn-default(type="button" ng-click="dismiss()") Cancel

@@ -26,4 +26,4 @@ script(type="text/ng-template", id="views/game")
 							.message-text.text-success(ng-if="gameRunMsg.successMessage") {{gameRunMsg.successMessage}}
 						.btn-toolbar.pull-right
 							button.btn.btn-default(type="button" ng-click="run()" ng-disabled="gameRunMsg.successMessage == 'Running...'") Run
-							button.btn.btn-primary(type="button" ng-click="submit()" ng-disabled="true") Submit
+							//- button.btn.btn-primary(type="button" ng-click="submit()" ng-disabled="true") Submit

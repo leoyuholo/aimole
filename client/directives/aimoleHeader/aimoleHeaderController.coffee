@@ -25,5 +25,6 @@ app.controller 'aimoleHeaderController', ($scope, $rootScope, $location, $uibMod
 		loginModal.result.then () ->
 			$scope.user = userService.getUser()
 
-	$rootScope.$on '$routeChangeStart', () ->
+	dismissModalListener = $rootScope.$on '$routeChangeStart', () ->
 		loginModal.close() if loginModal.close
+		dismissModalListener()

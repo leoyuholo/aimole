@@ -28,11 +28,14 @@ html(ng-app="aimole")
 			include:coffee-script services/messageService.coffee
 			include:coffee-script services/redirectService.coffee
 			include:coffee-script services/gameService.coffee
+			include:coffee-script services/submissionService.coffee
 
 		include directives/loginPanel/loginPanel.jade
 		include directives/aimoleHeader/aimoleHeader.jade
 		include directives/aimoleEditor/aimoleEditor.jade
 		include modals/loginModal/loginModal.jade
+		include modals/runGameModal/runGameModal.jade
+		include modals/selectPlayerModal/selectPlayerModal.jade
 		include login/login.jade
 		include admin/admin.jade
 		include games/games.jade

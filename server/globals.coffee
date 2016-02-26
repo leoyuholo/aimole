@@ -69,6 +69,7 @@ $.app.use morgan 'tiny', {stream: {write: (msg) -> $.logger.info msg}}
 [
 	'utils'
 	'setups'
+	'models'
 	'services'
 	'listeners'
 	'clouds'

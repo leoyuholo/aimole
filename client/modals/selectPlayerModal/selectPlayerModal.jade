@@ -1,0 +1,17 @@
+script
+	include:coffee-script selectPlayerModalController.coffee
+script(type="text/ng-template", id="views/selectPlayerModal")
+	.modal-header
+		h4.modal-little
+			| Who do you want to play with?
+			button.close.pull-right(type="button" ng-click="dismiss()") &times;
+	.modal-body
+		.list-group
+			a.list-group-item.list-group-item-info(href="javascript:void(0)" ng-click="pick({type: 'me'})")
+				h4 Me
+		h3 Default AI:
+		.list-group
+			a.list-group-item(href="javascript:void(0)" ng-repeat="ai in ais" ng-click="pick(ai)")
+				h4 {{ai.name}}
+	.modal-footer
+		button.btn.btn-default(type="button" ng-click="dismiss()") Cancel

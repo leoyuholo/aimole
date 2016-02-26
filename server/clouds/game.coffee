@@ -7,6 +7,7 @@ module.exports = ($) ->
 		Parse.Cloud.define 'runGame', (req, res) ->
 			gameInfo = req.params.gameInfo
 			gameInfo.user =
+				id: req.user.get 'id'
 				email: req.user.get 'email'
 				username: req.user.get 'username'
 			$.services.submissionService.run gameInfo, (err, result) ->
@@ -22,21 +23,19 @@ module.exports = ($) ->
 			else
 				$.logger.info "updating game with url [#{url}]"
 
-			$.services.gameService.install url, (err, installInfo) ->
+			$.services.gameService.install url, (err, gameConfig) ->
 				return res.error err.message if err
 
-				fs.readFile installInfo.tarFilePath, (err, data) ->
-					return res.error err.message if err
+				(new $.models.GameConfig()).save gameConfig
+					.then (gameConfig) ->
+						req.object.set 'name', gameConfig.get 'name'
+						req.object.set 'description', gameConfig.get 'description'
+						req.object.set 'author', gameConfig.get 'author'
+						req.object.set 'version', gameConfig.get 'version'
+						req.object.set 'players', gameConfig.get 'players'
+						req.object.set 'ai', _.map gameConfig.get('ai'), _.partialRight _.pick, ['name', 'type']
+						req.object.set 'viewUrl', gameConfig.get 'viewUrl'
+						req.object.set 'gameConfig', gameConfig
 
-					gameFile = new Parse.File('gameFile.tar.gz', Array.prototype.slice.call new Buffer(data), 0)
-					gameFile.save()
-						.then () ->
-							req.object.set 'name', installInfo.gameConfig.name
-							req.object.set 'description', installInfo.gameConfig.description
-							req.object.set 'author', installInfo.gameConfig.author
-							req.object.set 'version', installInfo.gameConfig.version
-							req.object.set 'gameConfig', installInfo.gameConfig
-							req.object.set 'gameFile', gameFile
-
-							res.success()
-						.fail (err) -> res.error err.message
+						res.success()
+					.fail (err) -> res.error err.message

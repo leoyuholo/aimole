@@ -37,6 +37,7 @@
     "compression": "^1.6.1",
     "express": "^4.13.4",
     "fs-extra": "^0.26.5",
+    "httpreq": "^0.4.16",
     "lodash": "^4.5.0",
     "morgan": "^1.7.0",
     "nodegit": "^0.11.2",

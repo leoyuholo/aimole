@@ -42,8 +42,7 @@ module.exports = ($) ->
 			done null
 
 	self.install = (url, done) ->
-		tmpId = 'NyZKDNKjl'
-		# tmpId = $.utils.rng.generateId()
+		tmpId = $.utils.rng.generateId()
 		cloneToPath = path.join $.tmpDir, 'git', tmpId
 		installInfo =
 			url: url
@@ -52,7 +51,7 @@ module.exports = ($) ->
 			gameConfigPath: path.join cloneToPath, 'aimole.json'
 
 		async.series [
-			# _.partial $.utils.git.clone, installInfo.url, installInfo.cloneToPath
+			_.partial $.utils.git.clone, installInfo.url, installInfo.cloneToPath
 			_.partial readGameConfig, installInfo
 			_.partial readVerdictCode, installInfo
 			_.partial readAiCode, installInfo

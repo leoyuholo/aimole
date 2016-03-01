@@ -208,7 +208,6 @@ module.exports = ($) ->
 			'--name', sandboxConfig.containerName
 			'--rm'
 			'--net', 'none'
-			'--security-opt', 'apparmor:unconfined'
 			'-v', sandboxConfig.runPath + ':/vol/'
 			'-u', '$(id -u):$(id -g)'
 			'tomlau10/sandbox-run'

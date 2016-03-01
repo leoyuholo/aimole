@@ -6,7 +6,7 @@ container_name="aimole"
 app_dir=$(readlink -f "${script_dir}/../../../")
 arguments=${@:-dev}
 
-worker_dir=${app_dir}/tmp/worker/
+worker_dir=/tmp/worker/
 mkdir -p ${worker_dir}
 
 docker build -t ${USER}:${container_name} ${script_dir}
@@ -39,6 +39,7 @@ docker run  -i \
 			-v ${worker_dir}:${worker_dir} \
 			-v /var/run/docker.sock:/var/run/docker.sock \
 			-v $(which docker):/bin/docker \
+			-v /usr/lib/x86_64-linux-gnu/libapparmor.so.1.1.0:/lib/x86_64-linux-gnu/libapparmor.so.1 \
 			--name ${container_name} \
 			${USER}:${container_name} \
 			${arguments}

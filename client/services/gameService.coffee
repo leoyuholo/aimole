@@ -6,10 +6,12 @@ app.service 'gameService', () ->
 	Game = Parse.Object.extend 'Game'
 	GameConfig = Parse.Object.extend 'GameConfig'
 
-	self.runGame = (gameObjectId, players) ->
+	self.runGame = (gameObjectId, players, submissionId) ->
 		gameInfo =
 			gameObjectId: gameObjectId
 			players: players
+
+		gameInfo.submissionId = submissionId if submissionId
 
 		Parse.Cloud.run 'runGame', {gameInfo: gameInfo}
 

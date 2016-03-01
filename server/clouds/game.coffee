@@ -12,7 +12,20 @@ module.exports = ($) ->
 				username: req.user.get 'username'
 			$.services.submissionService.run gameInfo, (err, result) ->
 				return res.error err.message if err
-				res.success result
+
+				gameInfo.result = result
+
+				(new $.models.GameResult()).save gameInfo
+					.then (gameResult) ->
+						if gameInfo.submissionId
+							submissionPromise = (new Parse.Query($.models.Submission)).get gameInfo.submissionId
+								.then (submission) ->
+									submission.set 'gameResult', gameResult
+									submission.save()
+						else
+							submissionPromise = Parse.Promise.as()
+						submissionPromise.then () -> res.success _.map _.map(_.filter(result, (r) -> r.type == 'action'), 'data'), 'display'
+					.fail (err) -> res.error err
 
 		Parse.Cloud.beforeSave 'Game', (req, res) ->
 			url = req.object.get 'url'

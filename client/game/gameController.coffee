@@ -36,6 +36,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $uibMo
 		runGameModal.result
 			.then (players) ->
 				involveMe = _.filter(players, (p) -> p.type == 'me').length > 0
+				submissionId = ''
 
 				if involveMe
 					submitPromise = submissionService.submit $scope.gameObjectId, $scope.code
@@ -46,19 +47,20 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $uibMo
 								return p if p.type != 'me'
 								return {
 									type: 'human'
-									human:
-										playerId: playerId
-										submissionId: submissionId
+									playerId: playerId
+									submissionId: submissionId
 								}
 							return
 				else
 					submitPromise = Parse.Promise.as()
 
 				submitPromise
-					.then () -> gameService.runGame $scope.gameObjectId, players
+					.then () -> gameService.runGame $scope.gameObjectId, players, submissionId
 					.then (result) ->
 						$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl + '#display=' + _.escape JSON.stringify result
-					.fail (err) -> messageService.error $scope.gameRunMsg, err.message
+					.fail (err) ->
+						# TODO: handle compile error
+						messageService.error $scope.gameRunMsg, err.message
 
 	$scope.submit = () ->
 		'Not implemented yet.'

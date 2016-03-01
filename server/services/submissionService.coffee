@@ -38,10 +38,13 @@ module.exports = ($) ->
 		checkGameInfo gameInfo, (err) ->
 			return $.utils.onError done, err if err
 
-			console.log 'gameInfo', gameInfo
-
 			$.utils.amqp.rpcClient $.config.rabbitmq.queues.submission, JSON.stringify(gameInfo), (err, gameResult) ->
 				return $.utils.onError done, err if err
+
+				try
+					gameResult = JSON.parse gameResult
+				catch err
+					return $.utils.onError done, err
 
 				done null, gameResult
 

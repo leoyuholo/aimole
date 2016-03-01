@@ -2,6 +2,7 @@ path = require 'path'
 
 _ = require 'lodash'
 fse = require 'fs-extra'
+async = require 'async'
 
 module.exports = ($) ->
 	self = {}
@@ -9,28 +10,31 @@ module.exports = ($) ->
 	gameCache = {}
 
 	self.runGame = (gameInfo, done) ->
-		console.log 'runGame', gameInfo
-		done null, [
-			[[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-			[[1, 0, 0], [0, 0, 0], [0, 0, 0]],
-			[[1, 2, 0], [0, 0, 0], [0, 0, 0]],
-			[[1, 2, 0], [0, 1, 0], [0, 0, 0]],
-			[[1, 2, 0], [0, 1, 0], [0, 0, 2]],
-			[[1, 2, 0], [0, 1, 0], [1, 0, 2]],
-			[[1, 2, 0], [2, 1, 0], [1, 0, 2]],
-			[[1, 2, 0], [2, 1, 0], [1, 1, 2]],
-			[[1, 2, 0], [2, 1, 2], [1, 1, 2]],
-			[[1, 2, 1], [2, 1, 2], [1, 1, 2]]
-		]
+		gameInfo.verdictConfig = gameInfo.game.gameConfig.verdict
+		async.map gameInfo.players, ( (player, done) ->
+			return done null, _.find gameInfo.game.gameConfig.ai, {name: player.name} if player.type == 'ai'
+			(new $.Parse.Query($.models.Submission)).get player.submissionId
+				.then (submission) -> done null, submission
+				.fail done new Error("Submission #{player.submissionId} not found.")
+		), (err, players) ->
+			return $.utils.onError done, err if err
+
+			gameInfo.playerConfigs = players
+
+			$.services.sandboxService.runGame gameInfo.verdictConfig, gameInfo.playerConfigs, done
 
 	self.findGame = (gameObjectId, done) ->
 		(new $.Parse.Query($.models.Game)).get gameObjectId
 			.then (game) ->
 				return done new Error("Game not found for id #{gameInfo.gameObjectId}.") if !game
 
-				# TODO: fetch gameConfig for game
+				game.get 'gameConfig'
+					.fetch()
+					.then (gameConfig) ->
+						game = game.toJSON()
+						game.gameConfig = gameConfig.toJSON()
 
-				done null, game
+						done null, game
 			.fail (err) -> done err
 
 	self.gameWorker = (gameInfo, done) ->

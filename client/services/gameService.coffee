@@ -32,7 +32,6 @@ app.service 'gameService', () ->
 		query.equalTo 'url', url
 			.first()
 			.then (game) ->
-				console.log 'game', game
 				if !game
 					gameACL = new Parse.ACL()
 					gameACL.setRoleWriteAccess 'Administrator', true

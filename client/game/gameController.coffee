@@ -17,6 +17,8 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $uibMo
 	playersLocalStorageKey = "players/#{$scope.gameObjectId}"
 
 	$scope.run = () ->
+		$scope.compileError = ''
+		messageService.clear $scope.gameRunMsg
 		options =
 			templateUrl: 'views/runGameModal'
 			controller: 'runGameModalController'
@@ -41,8 +43,8 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $uibMo
 				if involveMe
 					submitPromise = submissionService.submit $scope.gameObjectId, $scope.code
 						.then (submission) ->
-							playerId = submission.get('user').get 'id'
-							submissionId = submission.get 'id'
+							playerId = Parse.User.current().id
+							submissionId = submission.id
 							players = _.map players, (p) ->
 								return p if p.type != 'me'
 								return {
@@ -57,9 +59,10 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $uibMo
 				submitPromise
 					.then () -> gameService.runGame $scope.gameObjectId, players, submissionId
 					.then (result) ->
+						return messageService.error $scope.gameRunMsg, result.errorMessage if result.errorMessage
 						$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl + '#display=' + _.escape JSON.stringify result
 					.fail (err) ->
-						# TODO: handle compile error
+						return $scope.compileError = err.message if /^Compile Error/.test err.message
 						messageService.error $scope.gameRunMsg, err.message
 
 	$scope.submit = () ->

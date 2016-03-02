@@ -14,8 +14,10 @@ module.exports = ($) ->
 		async.map gameInfo.players, ( (player, done) ->
 			return done null, _.find gameInfo.game.gameConfig.ai, {name: player.name} if player.type == 'ai'
 			(new $.Parse.Query($.models.Submission)).get player.submissionId
-				.then (submission) -> done null, submission
-				.fail done new Error("Submission #{player.submissionId} not found.")
+				.then (submission) ->
+					done null, submission.toJSON()
+				.fail (err) ->
+					done new Error("Submission #{player.submissionId} not found.")
 		), (err, players) ->
 			return $.utils.onError done, err if err
 
@@ -37,7 +39,7 @@ module.exports = ($) ->
 						done null, game
 			.fail (err) -> done err
 
-	self.gameWorker = (gameInfo, done) ->
+	self.runGameWorker = (gameInfo, done) ->
 		self.findGame gameInfo.gameObjectId, (err, game) ->
 			return $.utils.onError done, err if err
 
@@ -49,12 +51,27 @@ module.exports = ($) ->
 				done null, gameResult
 
 	self.registerWorker = (done) ->
-		$.utils.amqp.rpcServer $.config.rabbitmq.queues.submission, self.worker, done
+		async.parallel [
+			_.partial $.utils.amqp.rpcServer, $.config.rabbitmq.queues.game, self.gameWorker
+			_.partial $.utils.amqp.rpcServer, $.config.rabbitmq.queues.submission, self.submissionWorker
+		], done
 
-	self.worker = (msg, done) ->
+	self.submissionWorker = (msg, done) ->
+		submissionInfo = JSON.parse msg
+
+		return done JSON.stringify {errorMessage: 'Unspecified programming language.'} if !submissionInfo.language
+		return done JSON.stringify {errorMessage: 'Empty code.'} if !submissionInfo.code
+
+		$.services.sandboxService.compile submissionInfo.language, submissionInfo.code, (err, result) ->
+			return done JSON.stringify {errorMessage: err.message, compileErrorMessage: err.compileErrorMessage} if err && err.message == 'Compile Error'
+			return done JSON.stringify {errorMessage: err.message} if err
+
+			done JSON.stringify result
+
+	self.gameWorker = (msg, done) ->
 		gameInfo = JSON.parse msg
 
-		self.gameWorker gameInfo, (err, gameResult) ->
+		self.runGameWorker gameInfo, (err, gameResult) ->
 			return done JSON.stringify {errorMessage: err.message} if err
 
 			done JSON.stringify gameResult

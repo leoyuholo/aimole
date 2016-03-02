@@ -24,6 +24,7 @@ $.serverDir = __dirname
 $.rootDir = path.join $.serverDir, '..'
 $.publicDir = path.join $.rootDir, 'public'
 $.tmpDir = path.join $.rootDir, 'tmp'
+$.workerDir = path.join '/', 'tmp', 'worker'
 
 # configs
 $.config = require path.join $.rootDir, 'configs', 'config'

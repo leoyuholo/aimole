@@ -6,10 +6,11 @@ module.exports = ($) ->
 	return (Parse) ->
 		Parse.Cloud.define 'runGame', (req, res) ->
 			gameInfo = req.params.gameInfo
-			gameInfo.user =
-				id: req.user.get 'id'
-				email: req.user.get 'email'
-				username: req.user.get 'username'
+			if req.user
+				gameInfo.user =
+					id: req.user.get 'id'
+					email: req.user.get 'email'
+					username: req.user.get 'username'
 			$.services.submissionService.run gameInfo, (err, result) ->
 				return res.error err.message if err
 

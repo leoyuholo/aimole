@@ -28,17 +28,21 @@ module.exports = ($) ->
 		submissionId = $.utils.rng.generateId()
 		try
 			gameInfo.players = _.map gameInfo.players, (player) ->
-				return {type: 'ai', name: player.name} if player.type == 'ai'
-				return {type: 'human', human: {playerId: player.human.playerId, submissionId: player.human.submissionId}} if player.type == 'human'
+				if player.type == 'ai'
+					throw new Error('Unspecified AI.') if !player.name
+					return {type: 'ai', name: player.name}
+				if player.type == 'human'
+					throw new Error('Unspecified player.') if !player.playerId
+					throw new Error('Unspecified submission.') if !player.submissionId
+					return {type: 'human', playerId: player.playerId, submissionId: player.submissionId}
 				throw new Error('Unknow player type. Player type must be one of [ai], [human]')
 		catch err
-			# TODO: catch object traversal error
 			return done err
 
 		checkGameInfo gameInfo, (err) ->
 			return $.utils.onError done, err if err
 
-			$.utils.amqp.rpcClient $.config.rabbitmq.queues.submission, JSON.stringify(gameInfo), (err, gameResult) ->
+			$.utils.amqp.rpcClient $.config.rabbitmq.queues.game, JSON.stringify(gameInfo), (err, gameResult) ->
 				return $.utils.onError done, err if err
 
 				try

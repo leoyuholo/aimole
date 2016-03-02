@@ -19,8 +19,10 @@ script(type="text/ng-template", id="views/game")
 									.text-right
 										a(ng-href="https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts" target="_blank") Editor Hotkeys
 					div(fill-height additional-padding="100" footer-element-id="submit-btn-toolbar")
-						aimole-editor(local-storage-key="codeLocalStorageKey" editor-options="codeAceOptions" language="c" ng-model="code")
+						aimole-editor(local-storage-key="codeLocalStorageKey" editor-options="codeAceOptions" language="'c'" ng-model="code")
 					.panel-footer.clearfix#submit-btn-toolbar
+						p
+							pre(ng-if="compileError") {{compileError}}
 						.pull-left
 							.message-text.text-danger(ng-if="gameRunMsg.errorMessage") {{gameRunMsg.errorMessage}}
 							.message-text.text-success(ng-if="gameRunMsg.successMessage") {{gameRunMsg.successMessage}}

@@ -5,6 +5,8 @@ module.exports = ($) ->
 			roleName = req.params.roleName
 			user = req.user
 
+			return res.success false if !user
+
 			query = new Parse.Query(Parse.Role)
 			query.equalTo 'name', roleName
 			query.equalTo 'users', user

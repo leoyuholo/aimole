@@ -10,6 +10,41 @@ Q = require 'q'
 module.exports = ($) ->
 	self = {}
 
+	self.compile = (language, code, done) ->
+		return done null if language != 'c'
+
+		tmpId = containerName = $.utils.rng.generateId()
+		sandboxrunPath = path.join $.workerDir, 'code', tmpId
+		codePath = path.join sandboxrunPath, 'code.c'
+
+		fse.outputFile codePath, code, (err) ->
+			return $.utils.onError done, err if err
+
+			compileCommand = [
+				'docker'
+				'run'
+				'--name', tmpId
+				'--rm'
+				'--net', 'none'
+				'--security-opt', 'apparmor:unconfined'
+				'--entrypoint', 'sh'
+				'-v', sandboxrunPath + ':/vol/'
+				'-u', '$(id -u):$(id -g)'
+				'tomlau10/sandbox-run'
+				'-c', "'gcc -Wall -Wfatal-errors code.c -o code'"
+			].join ' '
+
+			childProcess.exec compileCommand, {timeout: 2000}, (err, stdout, stderr) ->
+				childProcess.exec "docker rm  -f #{containerName}"
+				fse.remove sandboxrunPath, () ->
+					if stderr
+						error = new Error('Compile Error')
+						error.compileErrorMessage = stderr
+						return done error
+
+					return $.utils.onError done, err if err
+					done null, {ok: true}
+
 	class GameEntity
 		constructor: (@cmd, @containerName) ->
 			@process = childProcess.exec @cmd
@@ -218,7 +253,7 @@ module.exports = ($) ->
 
 	self.runGame = (verdictConfig, playerConfigs, done) ->
 		tmpId = $.utils.rng.generateId()
-		runPath = path.join '/', 'tmp', 'worker', tmpId
+		runPath = path.join $.workerDir, tmpId
 
 		configs = playerConfigs.concat verdictConfig
 

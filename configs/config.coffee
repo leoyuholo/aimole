@@ -18,3 +18,4 @@ module.exports =
 		port: process.env.RABBITMQ_PORT_5672_TCP_PORT || 5672
 		queues:
 			submission: 'submission'
+			game: 'game'

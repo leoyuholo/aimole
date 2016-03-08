@@ -60,7 +60,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $uibMo
 					.then () -> gameService.runGame $scope.gameObjectId, players, submissionId
 					.then (result) ->
 						return messageService.error $scope.gameRunMsg, result.errorMessage if result.errorMessage
-						$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl + '#display=' + _.escape JSON.stringify result
+						$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl + '#display=' + encodeURIComponent JSON.stringify result
 					.fail (err) ->
 						return $scope.compileError = err.message if /^Compile Error/.test err.message
 						messageService.error $scope.gameRunMsg, err.message

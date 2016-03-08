@@ -12,7 +12,7 @@ module.exports = ($) ->
 	self.runGame = (gameInfo, done) ->
 		gameInfo.verdictConfig = gameInfo.game.gameConfig.verdict
 		async.map gameInfo.players, ( (player, done) ->
-			return done null, _.find gameInfo.game.gameConfig.ai, {name: player.name} if player.type == 'ai'
+			return done null, _.cloneDeep _.find gameInfo.game.gameConfig.ai, {name: player.name} if player.type == 'ai'
 			(new $.Parse.Query($.models.Submission)).get player.submissionId
 				.then (submission) ->
 					done null, submission.toJSON()

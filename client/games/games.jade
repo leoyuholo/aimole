@@ -1,15 +1,16 @@
 script
 	include:coffee-script gamesController.coffee
 script(type="text/ng-template", id="views/games")
-	div(aimole-header)
-	.container#games-view
-		.panel.panel-default
-			.panel-heading
-				h1 Games
-			ul.list-group
-				li.list-group-item(ng-repeat="game in games")
-					h3 {{game.name}}
-					ul.list-inline
-						li {{game.description}}
-						li
-							a.btn.btn-primary(ng-href="#/game/{{game.objectId}}") Enter Arena
+	div#games-bg(fill-height dynamic-background="" background-image="{{backgroundImageUrl}}" background-size="cover" background-repeat="no-repeat" background-position="top center")
+		div(aimole-header)
+		.container#games-view
+			.panel.panel-default
+				.panel-heading
+					h1 Games
+				ul.list-group
+					li.list-group-item(ng-repeat="game in games")
+						h3 {{game.name}}
+						ul.list-inline
+							li {{game.description}}
+							li
+								a.btn.btn-primary(ng-href="#/game/{{game.objectId}}") Enter Arena

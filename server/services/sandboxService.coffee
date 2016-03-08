@@ -140,7 +140,7 @@ module.exports = ($) ->
 			@defer = Q.defer()
 
 			process.nextTick () =>
-				return @defer.resolve new Error('GameEntity error: fail to write message because process already exited.') if @exited
+				return @defer.resolve {event: 'error', errorMessage: 'GameEntity error: fail to write message because process already exited.', time: 0} if @exited
 
 				str = JSON.stringify str if _.isObject str
 				str += '\n' if !/\n$/.test str
@@ -151,7 +151,7 @@ module.exports = ($) ->
 				@startTimer timeLimit
 
 				@dequeueData (err, data) =>
-					return @defer.resolve err if err
+					return @defer.resolve {event: 'error', errorMessage: err.message, time: 0} if err
 					@defer.resolve data
 
 			return @defer.promise

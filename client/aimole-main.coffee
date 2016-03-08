@@ -1,4 +1,4 @@
-app = angular.module 'aimole', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'parse-angular', 'fillHeight', 'ui.ace']
+app = angular.module 'aimole', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'parse-angular', 'fillHeight', 'ui.ace', '720kb.background']
 
 app.config ($routeProvider, $locationProvider) ->
 	$routeProvider

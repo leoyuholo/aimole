@@ -11,7 +11,7 @@ module.exports = ($) ->
 			query.equalTo 'name', roleName
 			query.equalTo 'users', user
 
-			query.first()
+			query.first {useMasterKey: true}
 				.then (role) -> res.success !!role
 				.fail (err) -> res.error err.message
 

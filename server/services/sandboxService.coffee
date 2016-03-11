@@ -85,6 +85,7 @@ module.exports = ($) ->
 			# don't need to exit
 
 		enqueueData: (data) =>
+			# console.log 'receive', data
 			@dataQueue.push data
 			@emitter.emit 'data'
 
@@ -145,6 +146,7 @@ module.exports = ($) ->
 				str = JSON.stringify str if _.isObject str
 				str += '\n' if !/\n$/.test str
 
+				console.log 'send', str
 
 				@process.stdin.write str
 

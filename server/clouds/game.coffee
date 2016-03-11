@@ -16,10 +16,10 @@ module.exports = ($) ->
 
 				gameInfo.result = result
 
-				(new $.models.GameResult()).save gameInfo
+				(new $.models.GameResult()).save gameInfo, {useMasterKey: true}
 					.then (gameResult) ->
 						if gameInfo.submissionId
-							submissionPromise = (new Parse.Query($.models.Submission)).get gameInfo.submissionId
+							submissionPromise = (new Parse.Query($.models.Submission)).get gameInfo.submissionId, {useMasterKey: true}
 								.then (submission) ->
 									submission.set 'gameResult', gameResult
 									submission.save()

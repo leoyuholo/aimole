@@ -1,4 +1,3 @@
-
 import json
 class Verdict:
     def __init__(self):
@@ -15,6 +14,7 @@ class Verdict:
         self.score = [2, 2]
         self.dx = [0, 1, 0, -1, 1, 1, -1, -1]
         self.dy = [1, 0, -1, 0, 1, -1, 1, -1]
+        self.display = {}
 
     def send_action(self, action):
 #        self.log.write(json.dumps(action) + '\n')
@@ -25,38 +25,25 @@ class Verdict:
         action = {
                     'action' : 'error',
                     'errorMessage' : error_message
-                }
+                 }
         self.send_action(action)
 
     def report_winner(self):
-        if self.winner == -1:
-            if self.score[0] == self.score[1]:
-                self.winner = 2
-            else:
-                self.winner = 1 if self.score[1] > self.score[0] else 0
-        board = [[x + 1 for x in row] for row in self.board]
-
-        display = {
-                    'board' : board,
-                    'message' : 'draw' if self.winner == 2 else 'winner is %d' % (self.winner + 1)
-                  }
-
+        self.display['board'] = [[x + 1 for x in row] for row in self.board]
         action = {
                     'action' : 'stop',
                     'winner' : self.winner,
                     'score' : self.score,
-                    'display' : display,
+                    'display' : self.display,
                  }
-
-        mp = {
-                self.EMPTY : '.',
-                self.BLACK : 'B',
-                self.WHITE : 'W'
-             }
+#        mp = {
+#                self.EMPTY : '.',
+#                self.BLACK : 'B',
+#                self.WHITE : 'W'
+#             }
 #        message = '\n'.join([''.join([mp[_] for _ in row]) for row in self.board]) + '\n'
 #        self.log.write(message)
 #        print(message)
-
         self.send_action(action)
 
     def query_command(self):
@@ -74,18 +61,13 @@ class Verdict:
         player_input = mp[player] + ' ' + mp[1 - player] + '\n'
         player_input += '\n'.join([''.join([mp[_] for _ in row]) for row in self.board]) + '\n'
  #       self.log.write(message)
-        board = [[x + 1 for x in row] for row in self.board]
-
-        display = {
-                    'board' : board
- #                   'message' : ''
-                  }
+        self.display['board'] = [[x + 1 for x in row] for row in self.board]
 
         action = {
                     'action' : 'next',
                     'nextPlayer' : player,
                     'writeMsg' : player_input,
-                    'display' : display
+                    'display' : self.display
                  }
 
         self.send_action(action)
@@ -105,7 +87,6 @@ class Verdict:
             for j in range(8):
                 if self.valid_move(player, i, j):
                     return player
-
         return -1
 
     def update(self, player, x, y, trial):
@@ -149,7 +130,7 @@ class Verdict:
 
     def prt(self):
         return
-        mp = { self.EMPTY : ' ', self.BLACK : '@', self.WHITE : 'O' }
+        mp = { self.EMPTY : ' ', self.BLACK : 'B', self.WHITE : 'W' }
         self.out = open('out', 'a')
         self.out.write('    0   1   2   3   4   5   6   7 \n')
         self.out.write('  +---+---+---+---+---+---+---+---+\n')
@@ -176,43 +157,56 @@ class Verdict:
         if command['command'] != 'start':
             self.report_error('Expect start command')
             return
-        #max number of turn is 60
         self.turn = 0
      #   flag = 1
-        for i in range(100):
+        #max number of turn is 60
+        for i in range(60):
        #     if flag:
             #self.prt()
       #      flag = 1
 
             command = self.query_player(self.turn)
 
+            self.display = { 'player' : self.turn, 'score' : self.score }
             #Assuming command is either 'player', 'error' or 'terminated'
             #If command is 'error' or 'terminated', the other player win
             if command['command'] != 'player':
+                self.display['message'] = [(command['command'])]
                 self.winner = 1 - self.turn
                 break
-
             player = command['player']
             if player != self.turn:
                 break
-
+            self.display['stdout'] = command['stdout']
             try:
                 x, y = (int(_) for _ in command['stdout'].split())
      #           self.coor.write(command['stdout'])
             except:
                 self.winner = 1 - self.turn
+                self.display['message'] = ['invalid %d' % (player + 1)]
                 break
+
+            self.display['position'] = [x, y]
 
             if not self.valid_move(player, x, y):
      #           flag = 0
      #           continue
                 self.winner = 1 - self.turn
+                self.display['message'] = ['invalid %d' % (player + 1)]
                 break
-
+            self.display['message'] = ['ok']
             self.update(player, x, y, False)
             self.turn = self.next_player()
             if self.turn == -1:
                 break
+
+        if self.winner == -1:
+            if self.score[0] == self.score[1]:
+                self.winner = 2
+            else:
+                self.winner = 1 if self.score[1] > self.score[0] else 0
+
+        self.display['message'].append('draw' if self.winner == 2 else 'winner %d' % (self.winner + 1))
         self.report_winner()
      #   self.prt()
 

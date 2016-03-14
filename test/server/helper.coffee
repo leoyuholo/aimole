@@ -1,5 +1,9 @@
 path = require 'path'
 
+async = require 'async'
+DatabaseCleaner = require 'database-cleaner'
+mongodb = require 'mongodb'
+
 module.exports = self = {}
 
 self.rootDir = path.join __dirname, '..', '..'
@@ -10,3 +14,30 @@ self.getScriptPath = (args...) ->
 
 self.getRootPath = (args...) ->
 	path.join self.rootDir, args...
+
+$ = (require self.getScriptPath 'globals') {}
+self.getGlobals = () ->
+	return $
+
+serverRunning = false
+self.setupServer = ($, done) ->
+	return done null if serverRunning
+
+	async.series [
+		$.run.setup
+		$.run.server
+		$.run.parseSchemaSetup
+	], (err) ->
+		return done err if err
+		serverRunning = true
+		done null
+
+self.cleanDB = (done) ->
+	databaseCleaner = new DatabaseCleaner('mongodb')
+
+	mongodb.connect "mongodb://#{$.config.mongodb.host}:#{$.config.mongodb.port}/#{$.config.mongodb.db}", (err, db) ->
+		return done err if err
+		databaseCleaner.clean db, () ->
+			console.log 'Database cleaned.'
+			db.close()
+			done null

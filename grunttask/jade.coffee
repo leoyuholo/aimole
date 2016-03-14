@@ -10,5 +10,13 @@ module.exports = (grunt, options) ->
 							development: true
 			files:
 				'public/index.html': 'client/index.jade'
+		minify:
+			options:
+				data:
+					config:
+						env:
+							development: false
+			files:
+				'public/index.html': 'client/index.jade'
 
 	return config

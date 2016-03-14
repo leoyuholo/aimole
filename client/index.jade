@@ -6,34 +6,31 @@ html(ng-app="aimole")
 		meta(name="Description", content="let ai play against ai")
 		meta(name="viewport", content="width=device-width, initial-scale=1")
 
-		//- link(href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css")
-		link(href="https://bootswatch.com/cerulean/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/cosmo/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/cyborg/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/darkly/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/flatly/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/journal/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/lumen/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/paper/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/readable/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/sandstone/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/simplex/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/slate/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/spacelab/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/superhero/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/united/bootstrap.min.css" rel="stylesheet" type="text/css")
-		//- link(href="https://bootswatch.com/yeti/bootstrap.min.css" rel="stylesheet" type="text/css")
-
 		style
 			include:stylus aimole-style.stylus
 
-		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js")
-		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.min.js")
-		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-cookies.min.js")
-		script(src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.2/ace.js")
-		script(src="https://cdn.rawgit.com/angular-ui/ui-ace/36844ff7c0e0d9445bc8e31514d7f0f59cb8b048/ui-ace.min.js")
-		script(src="https://cdn.rawgit.com/anthonychu/angular-fill-height-directive/3a44591b6aa19376a93c85b5e419f9d3d7494b85/src/fill-height.js")
-		script(src="https://cdn.rawgit.com/720kb/angular-background/5eee6184802cdf9ed57894a1e9450c7f340e6c08/dist/angular-background.min.js")
+		if config && config.env && config.env.development
+			link(href="/libs/ajax/libs/bootswatch/3.3.6/cerulean/bootstrap.min.css" rel="stylesheet" type="text/css")
+			script(src="/ajax/libs/angularjs/1.5.0/angular.min.js")
+			script(src="/ajax/libs/angularjs/1.5.0/angular-route.min.js")
+			script(src="/ajax/libs/angularjs/1.5.0/angular-cookies.min.js")
+			script(src="/ajax/libs/ace/1.2.3/ace.js")
+			script(src="/ajax/libs/jquery/2.2.0/jquery.min.js")
+			script(src="/ajax/libs/lodash.js/4.6.1/lodash.min.js")
+			script(src="/ajax/libs/angular-ui-bootstrap/1.2.4/ui-bootstrap-tpls.min.js")
+			script(src="/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js")
+		else
+			style
+				include ../public/libs/ajax/libs/bootswatch/3.3.6/cerulean/bootstrap.min.css
+			script
+				include ../public/libs/ajax/libs/angularjs/1.5.0/angular.min.js
+				include ../public/libs/ajax/libs/angularjs/1.5.0/angular-route.min.js
+				include ../public/libs/ajax/libs/angularjs/1.5.0/angular-cookies.min.js
+				include ../public/libs/ajax/libs/ace/1.2.3/ace.js
+				include ../public/libs/ajax/libs/jquery/2.2.0/jquery.min.js
+				include ../public/libs/ajax/libs/lodash.js/4.6.1/lodash.min.js
+				include ../public/libs/ajax/libs/angular-ui-bootstrap/1.2.4/ui-bootstrap-tpls.min.js
+				include ../public/libs/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js
 
 	body#aimole
 
@@ -41,31 +38,8 @@ html(ng-app="aimole")
 
 		script
 			include:coffee-script aimole-main.coffee
-			include:coffee-script services/userService.coffee
-			include:coffee-script services/messageService.coffee
-			include:coffee-script services/redirectService.coffee
-			include:coffee-script services/gameService.coffee
-			include:coffee-script services/submissionService.coffee
 
-		include directives/loginPanel/loginPanel.jade
-		include directives/aimoleHeader/aimoleHeader.jade
-		include directives/aimoleEditor/aimoleEditor.jade
-		include modals/loginModal/loginModal.jade
-		include modals/runGameModal/runGameModal.jade
-		include modals/selectPlayerModal/selectPlayerModal.jade
-		include login/login.jade
-		include admin/admin.jade
-		include games/games.jade
-		include game/game.jade
-
-		script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js")
-		script(src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.0/lodash.min.js")
-		script(src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.min.js")
-		script(src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js")
-		script(src="https://www.parsecdn.com/js/parse-latest.js")
-		script(src="https://cdn.rawgit.com/leoyuholo/parse-angular-patch/801fe2485b2719048d3e8c72f58c9542012b2417/dist/parse-angular.js")
-
-		if config.env.development
+		if config && config.env && config.env.development
 			script.
 				(function(){
 					document.write(

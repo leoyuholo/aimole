@@ -3,7 +3,6 @@ module.exports = (grunt, options) ->
 	config =
 		options:
 			spawn: true
-			debounceDelay: 2000
 		test:
 			files: ['**/*.coffee', '!**/node_modules/**']
 			tasks: ['mochaTest:all']

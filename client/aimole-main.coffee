@@ -1,13 +1,13 @@
-app = angular.module 'aimole', ['ngRoute', 'ngCookies', 'ui.bootstrap']
+app = angular.module 'aimole', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'parse-angular', 'ui.ace']
 
 app.config ($routeProvider, $locationProvider) ->
 	$routeProvider
 		.when '/',
 			controller: 'gamesController'
 			templateUrl: 'views/games'
-		# .when '/game/:gameId',
-		# 	controller: 'gameController'
-		# 	templateUrl: 'views/game'
+		.when '/game/:gameId',
+			controller: 'gameController'
+			templateUrl: 'views/game'
 		# .when '/replay/:gameId/:replayId',
 		# 	controller: 'replayController'
 		# 	templateUrl: 'views/replay'
@@ -17,4 +17,7 @@ app.config ($routeProvider, $locationProvider) ->
 	return
 
 app.run ($rootScope, userService) ->
-	console.log 'aimole init'
+	Parse.initialize 'aimole'
+	Parse.serverURL = "#{window.location.origin}/parse"
+
+	$rootScope.user = userService.getUser()

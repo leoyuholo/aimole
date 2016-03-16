@@ -1,4 +1,5 @@
 
+_ = require 'lodash'
 Parse = require 'parse/node'
 
 module.exports = ($) ->
@@ -22,5 +23,11 @@ module.exports = ($) ->
 	# 		language: {type: String, enum: languages, default: 'c'}
 	# 		code: {type: String, default: 'Missing verdict code'}
 	# 		file: {type: String, default: ''}
+	Game = Parse.Object.extend 'Game'
 
-	return Parse.Object.extend 'Game'
+	Game.envelop = (game) ->
+		slim = _.pick game, ['objectId', 'name', 'description', 'author', 'version', 'viewUrl', 'players']
+		slim.ai = _.map game.ai, (ai) -> _.pick ai, ['type', 'name']
+		return slim
+
+	return Game

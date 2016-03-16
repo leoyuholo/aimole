@@ -15,5 +15,6 @@ module.exports = (grunt, options) ->
 				url.replace('https://ajax.googleapis.com/', '')
 					.replace('https://cdn.rawgit.com/', '')
 					.replace('https://cdnjs.cloudflare.com/', '')
+					.replace('https://www.parsecdn.com/', '')
 
 	return config

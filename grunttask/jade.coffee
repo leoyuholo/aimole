@@ -1,11 +1,15 @@
+path = require 'path'
 
 module.exports = (grunt, options) ->
+	aimoleConfig = require path.join __dirname, '..', 'configs', 'clientConfig'
+
 	config =
 		dev:
 			options:
 				pretty: true
 				data:
 					config:
+						aimole: aimoleConfig
 						env:
 							development: true
 			files:
@@ -14,6 +18,7 @@ module.exports = (grunt, options) ->
 			options:
 				data:
 					config:
+						aimole: aimoleConfig
 						env:
 							development: false
 			files:

@@ -1,0 +1,31 @@
+script
+	include:coffee-script gameController.coffee
+script(type="text/ng-template", id="views/game")
+	div(aimole-header)
+	.container-fuild#game-view
+		.flex-row.row
+			.flex.col-md-6
+				.flex.panel.panel-default
+					.message-text.text-danger(ng-if="gameMsg.errorMessage") {{gameMsg.errorMessage}}
+					iframe.flex(ng-if="iframeUrl" ng-src="{{iframeUrl}}")
+			.flex.col-md-6
+				.flex.panel.panel-default
+					.flex-header.panel-body
+						.row
+							p
+								.col-sm-6
+									strong {{game.name}}
+								.col-sm-6
+									.text-right
+										a(ng-href="https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts" target="_blank") Editor Hotkeys
+					.flex.aimole-editor
+						aimole-editor.flex(local-storage-key="codeLocalStorageKey" editor-options="codeAceOptions" language="'c'" ng-model="code")
+					.flex-footer.panel-footer.clearfix#submit-btn-toolbar
+						p
+							pre(ng-if="compileError") {{compileError}}
+						.pull-left
+							.message-text.text-danger(ng-if="gameRunMsg.errorMessage") {{gameRunMsg.errorMessage}}
+							.message-text.text-success(ng-if="gameRunMsg.successMessage") {{gameRunMsg.successMessage}}
+						.btn-toolbar.pull-right
+							button.btn.btn-default(type="button" ng-click="run()" ng-disabled="gameRunMsg.successMessage == 'Running...'") Go!
+							//- button.btn.btn-primary(type="button" ng-click="submit()" ng-disabled="true") Submit

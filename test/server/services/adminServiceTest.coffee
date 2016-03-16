@@ -10,7 +10,7 @@ describe 'aimole', () ->
 	describe 'server', () ->
 		describe 'services', () ->
 			describe 'adminService', () ->
-				$ = (require helper.getScriptPath 'globals') {}
+				$ = helper.getGlobals()
 
 				describe.skip 'readGame', () ->
 					it 'should read game from https://github.com/leoyuholo/aimole-tictactoe.git', (done) ->

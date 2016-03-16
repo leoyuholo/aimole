@@ -6,6 +6,7 @@ module.exports =
 		masterKey: 'aimole-master'
 		serverURL: 'http://localhost:3000/parse'
 		serverURLPath: '/parse'
+		facebookAppIds: ['602913469862662']
 	mongodb:
 		host: process.env.MONGODB_PORT_27017_TCP_ADDR || process.env.HOST_IP  || 'localhost'
 		port: process.env.MONGODB_PORT_27017_TCP_PORT || 27017

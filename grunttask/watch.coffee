@@ -4,7 +4,7 @@ module.exports = (grunt, options) ->
 		options:
 			spawn: true
 		test:
-			files: ['**/*.coffee', '!**/node_modules/**']
+			files: ['**/*.coffee', '!**/node_modules/**', '!tmp/**']
 			tasks: ['mochaTest:all']
 		dev:
 			files: ['client/**']

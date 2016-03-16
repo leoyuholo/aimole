@@ -26,9 +26,7 @@ module.exports = ($) ->
 				game.setACL gameACL
 
 				game.save newGame, {useMasterKey: true}
-					.then (game) ->
-						$.emitter.emit 'gameUpdated'
-						done null, if game then game.toJSON() else game
+					.then (game) -> done null, if game then game.toJSON() else game
 			.fail (err) -> done err
 
 	self.list = (done) ->

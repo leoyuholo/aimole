@@ -17,6 +17,7 @@ module.exports = ($) ->
 				return $.utils.onError done, err if err
 
 				aiConfig.code = code
+				aiConfig.type = 'ai'
 
 				done null, aiConfig
 		), (err, aiList) ->

@@ -27,16 +27,26 @@ installGame = (githubUrl, done) ->
 			ai: gameConfig.ai
 			verdict: gameConfig.verdict
 
-		$.stores.gameStore.upsertByGithubUrl githubUrl, game, done
+		async.series [
+			_.partial async.waterfall, [
+				_.partial $.stores.gameStore.upsertByGithubUrl, githubUrl, game
+				(game, done) ->
+					$.stores.cacheStore.upsert "game-#{game.objectId}", $.models.Game.envelop(game), done
+			]
+			_.partial async.waterfall, [
+				$.stores.gameStore.list
+				(games, done) ->
+					$.stores.cacheStore.upsert 'games', _.map(games, $.models.Game.envelop), done
+			]
+		], done
 
 async.series [
 	$.run.setup
-	$.run.server
 	_.partial installGame, githubUrl
 ], (err) ->
 	if err
-		console.log "error installing game [#{githubUrl}]: #{err.message}"
+		console.log "error installing game [#{githubUrl}]: #{err.message} Please make sure aimole web server is running"
 		return process.exit 0
 
 	console.log "game [#{githubUrl}] installed."
-	process.exit 0
+	return process.exit 0

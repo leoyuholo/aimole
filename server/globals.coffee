@@ -68,7 +68,7 @@ module.exports = ($) ->
 		]
 		exitOnError: false
 	)
-	$.app.use morgan 'tiny', {stream: {write: (msg) -> $.logger.info msg}}
+	$.app.use morgan 'tiny', {skip: ( (req, res) -> /(^\/libs\/|^\/$)/.test req.path), stream: {write: (msg) -> $.logger.info msg}}
 
 	# initialzation sequence is important
 	[
@@ -98,12 +98,11 @@ module.exports = ($) ->
 			appId: $.config.Parse.appId
 			masterKey: $.config.Parse.masterKey
 			serverURL: $.config.Parse.serverURL
+			facebookAppIds: $.config.Parse.facebookAppIds
 			cloud: (Parse) -> _.each $.clouds, (cloud) -> cloud Parse
 		)
 
-		$.app.listen $.config.port, (err) ->
-			return $.utils.onError done, err if err
-
+		$.app.listen $.config.port, () ->
 			$.emitter.emit 'serverStarted'
 
 			done null

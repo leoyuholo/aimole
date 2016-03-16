@@ -1,0 +1,22 @@
+script
+	include:coffee-script aimoleHeader.coffee
+	include:coffee-script aimoleHeaderController.coffee
+script(type="text/ng-template", id="views/aimoleHeader")
+	nav.navbar.navbar-default.navbar-static-top
+		.container#aimoleHeader
+			.navbar-header
+				button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#aimoleHeaderNavbar")
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+				a.navbar-brand(ng-href="#/")
+					b aimole
+			div.navbar-collapse.collapse#aimoleHeaderNavbar
+				ul.nav.navbar-nav.navbar-right(ng-if="!user")
+					li
+						a(href="javascript:void(0)" ng-click="signIn()") Sign In With Facebook
+				ul.nav.navbar-nav.navbar-right(ng-if="user")
+					li
+						.navbar-text Signed in as {{user.displayName}}
+					li
+						a(href="javascript:void(0)" ng-click="logout()") Logout

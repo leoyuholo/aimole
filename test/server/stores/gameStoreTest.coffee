@@ -20,9 +20,6 @@ describe 'aimole', () ->
 						helper.cleanDB
 					], done
 
-				after (done) ->
-					helper.cleanDB done
-
 				describe 'findByGithubUrl', () ->
 					it 'should find no games', (done) ->
 						$.stores.gameStore.findByGithubUrl $.utils.rng.generateId(), (err, game) ->

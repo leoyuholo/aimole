@@ -1,14 +1,35 @@
 @import url(https://fonts.googleapis.com/css?family=Raleway)
 
+html
+	height 100%
+html, #aimole, [ng-view], #game-view
+	display flex
+	flex-flow column
+	flex 1 1 auto
 #aimole
 	font-family 'Raleway', sans-serif !important
 	body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6
 		font-family 'Raleway', sans-serif !important
-	#login-view
-		padding-top 5em
-		.panel-body
-			padding-top 1em
 	.ace-font
 		font-family Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace
 	.ace_editor
-		height 100%
+		flex 1 1 auto
+	#game-view
+		.flex
+			display flex
+			flex-flow column
+			flex 1 1 auto
+		.flex-row
+			display flex
+			flex-flow row
+			flex 1 1 auto
+		.flex-header
+			flex 0 1 auto
+		.flex-footer
+			flex 0 1 auto
+		> .row
+			margin 0px
+			> .col-md-6
+				padding 5px
+		aimole-editor > div
+				flex 1 1 auto

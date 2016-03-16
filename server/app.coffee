@@ -1,6 +1,6 @@
 async = require 'async'
 
-$ = require './globals'
+$ = require('./globals') {}
 
 async.series [
 	$.run.setup

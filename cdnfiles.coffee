@@ -15,4 +15,5 @@ module.exports = [
 	'https://www.parsecdn.com/js/parse-latest.js'
 	'https://cdn.rawgit.com/leoyuholo/parse-angular-patch/801fe2485b2719048d3e8c72f58c9542012b2417/dist/parse-angular.js'
 	'https://cdn.rawgit.com/angular-ui/ui-ace/36844ff7c0e0d9445bc8e31514d7f0f59cb8b048/ui-ace.min.js'
+	'https://cdn.rawgit.com/720kb/angular-background/5eee6184802cdf9ed57894a1e9450c7f340e6c08/dist/angular-background.min.js'
 ]

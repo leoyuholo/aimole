@@ -12,6 +12,7 @@ module.exports = ($) ->
 	# 	author: {type: String, default: ''}
 	# 	version: {type: String, default: '0.0.0'}
 	# 	viewUrl: {type: String, default: ''}
+	# 	bgUrl: {type: String, default: ''}
 	# 	players: {type: Number, default: 1}
 	# 	ai: [
 	# 		type: {type: String, default: 'ai'}
@@ -28,7 +29,7 @@ module.exports = ($) ->
 	Game = Parse.Object.extend 'Game'
 
 	Game.envelop = (game) ->
-		slim = _.pick game, ['objectId', 'name', 'description', 'author', 'version', 'viewUrl', 'players']
+		slim = _.pick game, ['objectId', 'name', 'description', 'author', 'version', 'viewUrl', 'bgUrl', 'players']
 		slim.ai = _.map game.ai, (ai) -> _.pick ai, ['type', 'name']
 		return slim
 

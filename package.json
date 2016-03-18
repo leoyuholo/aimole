@@ -5,7 +5,9 @@
   "version": "0.0.0",
   "scripts": {
     "test": "grunt",
-    "installGame": "coffee server/installGame.coffee"
+    "installGame": "coffee server/installGame.coffee",
+    "web": "coffee server/app.coffee",
+    "worker": "coffee server/worker.coffee"
   },
   "devDependencies": {
     "chai": "^3.5.0",

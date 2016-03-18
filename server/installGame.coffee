@@ -23,6 +23,7 @@ installGame = (githubUrl, done) ->
 			author: gameConfig.author
 			version: gameConfig.version
 			viewUrl: gameConfig.viewUrl
+			bgUrl: gameConfig.bgUrl
 			players: gameConfig.players
 			ai: gameConfig.ai
 			verdict: gameConfig.verdict

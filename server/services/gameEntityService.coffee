@@ -134,7 +134,7 @@ module.exports = ($) ->
 		containerName = $.utils.rng.generateId()
 		sandboxConfig =
 			compileCommands:
-				c: 'gcc -O2 -lm -o code code.c'
+				c: 'gcc -O2 -lm -w -o code code.c'
 				javascript: ''
 				python: ''
 				ruby: ''

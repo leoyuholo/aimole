@@ -1,9 +1,11 @@
 app = angular.module 'aimole'
 
-app.controller 'gamesController', ($scope, messageService, parseService) ->
+app.controller 'gamesController', ($scope, $sce, messageService, parseService) ->
 
 	$scope.games = []
 	$scope.gamesMsg = {}
+
+	$scope.bgUrl = ''
 
 	$scope.users = []
 	$scope.userCount = 0
@@ -22,6 +24,8 @@ app.controller 'gamesController', ($scope, messageService, parseService) ->
 		parseService.getCache 'games', (err, games) ->
 			return messageService.error gamesMsg, err.message if err
 			$scope.games = games
+
+			$scope.bgUrl = $sce.trustAsResourceUrl games[0].bgUrl if games.length > 0 && games[0].bgUrl
 
 	listGames()
 	listUsers()

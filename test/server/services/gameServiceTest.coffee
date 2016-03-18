@@ -12,7 +12,7 @@ helper = require '../helper'
 describe 'aimole', () ->
 	describe 'server', () ->
 		describe 'services', () ->
-			describe.only 'gameService', () ->
+			describe.skip 'gameService', () ->
 				$ = helper.getGlobals()
 
 				it 'should run two-player game', (done) ->

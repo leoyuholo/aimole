@@ -11,17 +11,6 @@ app.service 'matchService', (parseService, userService) ->
 
 		return parseService.run 'newMatch', {gameId: gameId, players: players}, done if !involveMe
 
-		parseService.run 'submit', {gameId: gameId, language: myCode.language, code: myCode.code}, (err, submissionId) ->
-			return done err if err
-
-			submission =
-				submissionId: submissionId
-				userId: userService.getUser().objectId
-
-			match =
-				gameId: gameId
-				players: _.map players, (player) -> if player.type == 'me' then submission else player
-
-			parseService.run 'newMatch', match, done
+		parseService.run 'submit', {gameId: gameId, players: players, language: myCode.language, code: myCode.code}, done
 
 	return self

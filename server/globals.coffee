@@ -22,7 +22,7 @@ module.exports = ($) ->
 	# express
 	$.express = express
 	$.app = express()
-	$.app.use bodyParser.json {limit: '1000kb'}
+	$.app.use bodyParser.json {limit: '10mb'}
 	# $.app.use bodyParser.urlencoded {extended: true}
 	$.app.use compression()
 
@@ -37,13 +37,15 @@ module.exports = ($) ->
 	$.rootDir = path.join $.serverDir, '..'
 	$.publicDir = path.join $.rootDir, 'public'
 	$.tmpDir = path.join $.rootDir, 'tmp'
-	$.workerDir = path.join '/', 'tmp', 'worker'
 
 	# configs
 	$.configs = requireAll path.join $.rootDir, 'configs'
 	$.config = $.configs.testingConfig if $.env.testing
 	$.config = $.configs.developmentConfig if $.env.development
 	$.config = $.configs.productionConfig if $.env.production
+
+	# config defined dirs
+	$.workerDir = $.config.workerDir
 
 	# emitters
 	$.emitter = new events.EventEmitter()
@@ -68,10 +70,12 @@ module.exports = ($) ->
 		]
 		exitOnError: false
 	)
-	$.app.use morgan 'tiny', {skip: ( (req, res) -> /(^\/libs\/|^\/$)/.test req.path), stream: {write: (msg) -> $.logger.info msg}}
+	if !$.env.testing
+		$.app.use morgan 'tiny', {skip: ( (req, res) -> /(^\/libs\/|^\/$)/.test req.path), stream: {write: (msg) -> $.logger.info msg}}
 
 	# initialzation sequence is important
 	[
+		'constants'
 		'utils'
 		'models'
 		'stores'
@@ -108,7 +112,9 @@ module.exports = ($) ->
 			done null
 	$.run.parseSchemaSetup = (done) ->
 		done null
-	$.run.worker = (done) ->
-		$.services.workerService.registerWorker done
+	$.run.analysisWorker = (done) ->
+		$.services.workerService.registerAnalysisWorker done
+	$.run.playMatchWorker = (done) ->
+		$.services.workerService.registerPlayMatchWorker done
 
 	return $

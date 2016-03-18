@@ -5,18 +5,15 @@ app.service 'parseService', () ->
 
 	Cache = Parse.Object.extend 'Cache'
 
-	self.getCache = (key, done) ->
+	_first = (tags) ->
+		tags = {key: tags} if _.isString tags
 		new Parse.Query(Cache)
-			.equalTo 'key', key
+			.containsAll 'tags', _.map tags, (v, k) -> "#{k}:#{v}"
 			.first()
-			.then (cache) -> done null, if cache then JSON.parse cache.get 'value' else cache
-			.fail (err) -> done err
 
-	self.getCount = (key, done) ->
-		new Parse.Query(Cache)
-			.equalTo 'key', key
-			.first()
-			.then (cache) -> done null, if cache then cache.get 'count' else 0
+	self.getCache = (tags, done) ->
+		_first tags
+			.then (cache) -> done null, if cache then cache.get cache.get 'type' else cache
 			.fail (err) -> done err
 
 	self.run = (key, data, done) ->

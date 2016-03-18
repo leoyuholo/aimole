@@ -15,6 +15,25 @@ module.exports = ($) ->
 
 			done null
 
+	self.rpcServerJSON = (queueName, workerFunc, done) ->
+		func = (msg, done) ->
+			try
+				msgObj = JSON.parse msg
+			catch err
+				return done {ok: false, errorMessage: err.message}
+			workerFunc msgObj, (replyObj) -> done JSON.stringify replyObj
+		self.rpcServer queueName, func, done
+
+	self.rpcClientJSON = (queueName, msgObj, done) ->
+		msgContent = JSON.stringify msgObj
+		self.rpcClient queueName, msgContent, (err, replyContent) ->
+			return done err if err
+			try
+				replyObj = JSON.parse replyContent
+			catch err
+				return done err
+			done null, replyObj
+
 	self.rpcServer = (queueName, workerFunc, done) ->
 		self.conn.createChannel (err, ch) ->
 			return done err if err
@@ -23,7 +42,9 @@ module.exports = ($) ->
 			ch.prefetch 1
 
 			ch.consume queueName, (msg) ->
+				# console.log 'rpcServer msg', msg.content.toString()
 				workerFunc msg.content.toString(), (reply) ->
+					# console.log 'rpcServer reply', reply
 					ch.sendToQueue msg.properties.replyTo, new Buffer(reply.toString()), {correlationId: msg.properties.correlationId}
 
 					ch.ack msg
@@ -31,6 +52,7 @@ module.exports = ($) ->
 			done null
 
 	self.rpcClient = (queueName, msgContent, done) ->
+		# console.log 'rpcClient msg', msgContent
 		self.conn.createChannel (err, ch) ->
 			return done err if err
 
@@ -41,6 +63,7 @@ module.exports = ($) ->
 				ch.consume q.queue, (msg) ->
 					if msg.properties.correlationId == correlationId
 						ch.cancel consumerTag, (err) ->
+							# console.log 'rpcClient reply', msg.content.toString()
 							done err, msg.content.toString()
 				, {noAck: true, consumerTag: consumerTag}
 

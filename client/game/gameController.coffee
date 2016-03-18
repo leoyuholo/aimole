@@ -18,9 +18,6 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 	playersLocalStorageKey = "players/#{$scope.gameId}"
 
 	$scope.run = () ->
-		$scope.compileError = ''
-		messageService.clear $scope.runMsg
-
 		modalOptions =
 			templateUrl: 'views/playMatchModal'
 			controller: 'playMatchModalController'
@@ -32,6 +29,8 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 				playersLocalStorageKey: () -> playersLocalStorageKey
 
 		modalService.openModal modalOptions, (err, players) ->
+			$scope.compileError = ''
+			messageService.clear $scope.runMsg
 			return messageService.error $scope.runMsg, err.message if err
 
 			myCode =
@@ -40,10 +39,18 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 
 			async.waterfall [
 				_.partial matchService.newMatch, $scope.gameId, players, myCode
+				(matchId, done) ->
+					messageService.success $scope.runMsg, 'Running...'
+					done null, matchId
 				matchService.playMatch
-			], (err, result) ->
+			], (err, match) ->
+				if err && /^Compile Error:/.test err.message
+					messageService.error $scope.runMsg, 'Compile Error'
+					$scope.compileError = err.message
+					return
 				return messageService.error $scope.runMsg, err.message if err
-				$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl + '#display=' + encodeURIComponent JSON.stringify result
+				$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl + '#display=' + encodeURIComponent JSON.stringify match.result
+				messageService.clear $scope.runMsg
 
 	findGame = (gameId) ->
 		parseService.getCache "game-#{$scope.gameId}", (err, game) ->

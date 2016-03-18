@@ -7,6 +7,8 @@ fse = require 'fs-extra'
 module.exports = ($) ->
 	self = {}
 
+	# TODO: validate
+
 	readAiCode = (cloneToPath, info, done) ->
 		return $.utils.onError done, new Error('Error reading AI code.') if !cloneToPath || !info?.gameConfig?.ai || !_.isArray info.gameConfig.ai
 

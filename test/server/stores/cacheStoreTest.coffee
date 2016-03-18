@@ -20,9 +20,9 @@ describe 'aimole', () ->
 						helper.cleanDB
 					], done
 
-				describe 'find', () ->
+				describe 'first', () ->
 					it 'should find no cache', (done) ->
-						$.stores.cacheStore.find $.utils.rng.generateId(), (err, value) ->
+						$.stores.cacheStore.first $.utils.rng.generateId(), (err, value) ->
 							should.not.exist err
 
 							should.not.exist value
@@ -33,10 +33,21 @@ describe 'aimole', () ->
 						$.stores.cacheStore.upsert 'foo', {foo: 'bar'}, (err, value) ->
 							should.not.exist err
 
-							$.stores.cacheStore.find 'foo', (err, value) ->
+							$.stores.cacheStore.first 'foo', (err, value) ->
 								should.not.exist err
 
 								value.foo.should.equal 'bar'
+
+								done null
+
+					it 'should find someCount', (done) ->
+						$.stores.cacheStore.increment 'someCount', (err, count) ->
+							should.not.exist err
+
+							$.stores.cacheStore.first 'someCount', (err, count) ->
+								should.not.exist err
+
+								count.should.equal 1
 
 								done null
 
@@ -48,6 +59,18 @@ describe 'aimole', () ->
 							value.foo.should.equal 'bar'
 
 							done null
+
+					it 'should update cache', (done) ->
+						$.stores.cacheStore.upsert 'foo', {foo: 'bar'}, (err, value) ->
+							should.not.exist err
+							$.stores.cacheStore.upsert 'foo', {foo: 'baz'}, (err, value) ->
+								should.not.exist err
+								$.stores.cacheStore.first 'foo', (err, value) ->
+									should.not.exist err
+
+									value.foo.should.equal 'baz'
+
+									done null
 
 				describe 'increment', () ->
 					it 'should increase userCount', (done) ->
@@ -66,11 +89,20 @@ describe 'aimole', () ->
 
 							done null
 
-				describe 'findCount', () ->
-					it 'should find userCount', (done) ->
-						$.stores.cacheStore.findCount 'userCount', (err, count) ->
+				describe 'addItem', () ->
+					it 'should create a new array', (done) ->
+						$.stores.cacheStore.addItem 'games', {name: 'tictactoe'}, (err, array) ->
 							should.not.exist err
 
-							count.should.equal 2
+							array[0].should.be.deep.equal {name: 'tictactoe'}
+
+							done null
+
+					it 'should add item to an existing array', (done) ->
+						$.stores.cacheStore.addItem 'games', {name: 'othello'}, (err, array) ->
+							should.not.exist err
+
+							array[0].should.be.deep.equal {name: 'tictactoe'}
+							array[1].should.be.deep.equal {name: 'othello'}
 
 							done null

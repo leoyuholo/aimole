@@ -1,10 +1,10 @@
 async = require 'async'
 
-$ = require './globals'
+$ = require('./globals') {}
 
 async.series [
 	$.run.setup
-	$.run.worker
+	$.run.playMatchWorker
 ], (err) ->
 	return $.logger.log 'error', "error starting up aimole worker #{err.message}" if err
 	$.logger.log 'info', "[#{$.app.get('env')}]aimole worker starts working"

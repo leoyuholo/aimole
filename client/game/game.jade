@@ -6,7 +6,10 @@ script(type="text/ng-template", id="views/game")
 		.flex-row.row
 			.flex.col-md-6
 				.flex.panel.panel-default
-					.message-text.text-danger(ng-if="gameMsg.errorMessage") {{gameMsg.errorMessage}}
+					.flex-header.panel-heading(ng-if="gameMsg.errorMessage || compileError")
+						.message-text.text-danger(ng-if="gameMsg.errorMessage") {{gameMsg.errorMessage}}
+						p
+							pre.compile-error(ng-if="compileError") {{compileError}}
 					iframe.flex(ng-if="iframeUrl" ng-src="{{iframeUrl}}")
 			.flex.col-md-6
 				.flex.panel.panel-default
@@ -21,11 +24,9 @@ script(type="text/ng-template", id="views/game")
 					.flex.aimole-editor
 						aimole-editor.flex(local-storage-key="codeLocalStorageKey" editor-options="codeAceOptions" language="'c'" ng-model="code")
 					.flex-footer.panel-footer.clearfix#submit-btn-toolbar
-						p
-							pre(ng-if="compileError") {{compileError}}
 						.pull-left
-							.message-text.text-danger(ng-if="gameRunMsg.errorMessage") {{gameRunMsg.errorMessage}}
-							.message-text.text-success(ng-if="gameRunMsg.successMessage") {{gameRunMsg.successMessage}}
+							.message-text.text-danger(ng-if="runMsg.errorMessage") {{runMsg.errorMessage}}
+							.message-text.text-success(ng-if="runMsg.successMessage") {{runMsg.successMessage}}
 						.btn-toolbar.pull-right
-							button.btn.btn-default(type="button" ng-click="run()" ng-disabled="gameRunMsg.successMessage == 'Running...'") Go!
+							button.btn.btn-default(type="button" ng-click="run()" ng-disabled="runMsg.successMessage == 'Running...'") Go!
 							//- button.btn.btn-primary(type="button" ng-click="submit()" ng-disabled="true") Submit

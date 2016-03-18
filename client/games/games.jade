@@ -1,5 +1,12 @@
 script
 	include:coffee-script gamesController.coffee
+script(type="text/ng-template", id="views/games-users")
+	div#games-user
+		p(ng-repeat="user in users | limitTo: 10")
+			img(height="24" width="24" ng-src="https://graph.facebook.com/{{user.facebookId}}/picture?height=24&width=24")
+			|  
+			b.text-info {{user.displayName}}
+		div.pull-right(ng-if="userCount > 5") and {{userCount - 5}} more...
 script(type="text/ng-template", id="views/games")
 	div#games-bg(fill-height dynamic-background="" background-image="{{backgroundImageUrl}}" background-size="cover" background-repeat="no-repeat" background-position="top center")
 		div(aimole-header)
@@ -8,8 +15,10 @@ script(type="text/ng-template", id="views/games")
 				.panel-heading
 					h1 Welcome to aimole!
 						.pull-right
+							small
 								small
-									small {{userCount}}
+									a(href="javascript:void(0)" popover-trigger="outsideClick" popover-placement="bottom" uib-popover-template="'views/games-users'")
+										| See who is playing aimole!
 				ul.list-group
 					li.list-group-item(ng-repeat="game in games")
 						h3 {{game.name}}

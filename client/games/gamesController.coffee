@@ -9,7 +9,7 @@ app.controller 'gamesController', ($scope, messageService, parseService) ->
 	$scope.userCount = 0
 
 	getUserCount = () ->
-		parseService.getCount 'userCount', (err, userCount) ->
+		parseService.getCache 'userCount', (err, userCount) ->
 			# ignore error
 			$scope.userCount = userCount
 

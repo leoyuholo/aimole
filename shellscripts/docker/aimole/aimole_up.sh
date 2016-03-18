@@ -31,6 +31,7 @@ echo "arguments": ${arguments}
 docker run  -i \
 			-t \
 			-u $(id -u):$(getent group docker | cut -d: -f3) \
+			-e "WORKER_DIR=${worker_dir}"\
 			--link mongodb:mongodb \
 			--link rabbitmq:rabbitmq \
 			-p 3000:3000 \

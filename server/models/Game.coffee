@@ -3,6 +3,7 @@ _ = require 'lodash'
 Parse = require 'parse/node'
 
 module.exports = ($) ->
+	# languages = ['c', 'javascript', 'python', 'ruby']
 
 	# gameSchema =
 	# 	githubUrl: {type: String, required: true}
@@ -13,16 +14,17 @@ module.exports = ($) ->
 	# 	viewUrl: {type: String, default: ''}
 	# 	players: {type: Number, default: 1}
 	# 	ai: [
+	# 		type: {type: String, default: 'ai'}
 	# 		name: {type: String, default: 'Anonymous AI'}
 	# 		language: {type: String, enum: languages, default: 'c'}
 	# 		code: {type: String, default: 'Missing ai code'}
 	# 		file: {type: String, default: ''}
-	# 		type: {type: String, default: 'ai'}
 	# 	]
 	# 	verdict:
 	# 		language: {type: String, enum: languages, default: 'c'}
 	# 		code: {type: String, default: 'Missing verdict code'}
 	# 		file: {type: String, default: ''}
+	# 		timeLimit: {type: Number, default: 2000}
 	Game = Parse.Object.extend 'Game'
 
 	Game.envelop = (game) ->

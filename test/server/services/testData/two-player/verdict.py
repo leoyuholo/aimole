@@ -1,3 +1,4 @@
+# by Peter Poon (https://github.com/peterz2)
 import json
 class TicTacToeVerdict:
     def __init__(self):

@@ -1,3 +1,4 @@
+// by Janice Chen (https://github.com/jjanicechen)
 #include <stdio.h>
 /*
 strategy:

@@ -25,7 +25,7 @@ app.controller 'gamesController', ($scope, $sce, messageService, parseService) -
 			return messageService.error gamesMsg, err.message if err
 			$scope.games = games
 
-			$scope.bgUrl = $sce.trustAsResourceUrl games[0].bgUrl if games.length > 0 && games[0].bgUrl
+			$scope.bgUrl = $sce.trustAsResourceUrl games[0].bgUrl if games && games.length > 0 && games[0].bgUrl
 
 	listGames()
 	listUsers()

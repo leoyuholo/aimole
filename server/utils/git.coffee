@@ -1,6 +1,4 @@
-
-NodeGit = require 'nodegit'
-fse = require 'fs-extra'
+childProcess = require 'child_process'
 
 module.exports = ($) ->
 	self = {}
@@ -9,8 +7,8 @@ module.exports = ($) ->
 		return done new Error('Missing url for git clone.') if !url
 		return done new Error('Missing target directory for git clone.') if !cloneToPath
 
-		NodeGit.Clone url, cloneToPath
-			.then () -> done null
-			.catch (err) -> done err
+		childProcess.exec "git clone #{url} #{cloneToPath}", (err) ->
+			return done err if err
+			done null
 
 	return self

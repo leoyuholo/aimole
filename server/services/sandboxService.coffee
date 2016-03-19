@@ -50,7 +50,7 @@ module.exports = ($) ->
 	self.runSandbox = (cmd, opt, containerName, done) ->
 		childProcess.exec cmd, opt, (err, stdout, stderr) ->
 			childProcess.exec makeRmCmd(containerName), (err, stdout, stderr) ->
-				$.utils.onError _.noop, err if err && !/no such id/.test err.message
+				$.utils.onError _.noop, err if err && !/No such container/.test err.message
 
 			done err, stdout, stderr
 

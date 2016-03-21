@@ -42,10 +42,11 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 				language: 'c'
 				code: $scope.code
 
+			messageService.success $scope.runMsg, 'Running...'
 			async.waterfall [
 				_.partial matchService.newMatch, $scope.gameId, players, myCode
 				(matchId, done) ->
-					messageService.success $scope.runMsg, 'Running...'
+					messageService.success $scope.runMsg, 'Running......'
 					done null, matchId
 				matchService.playMatch
 			], (err, match) ->
@@ -58,7 +59,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 				$scope.iframeUrl = ''
 				_.delay () ->
 					$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl.replace('http://', 'https://') + '#display=' + encodeURIComponent JSON.stringify match.result
-				messageService.clear $scope.runMsg
+				messageService.success $scope.runMsg, 'Playing...'
 
 	findGame = (gameId) ->
 		parseService.getCache "game-#{$scope.gameId}", (err, game) ->

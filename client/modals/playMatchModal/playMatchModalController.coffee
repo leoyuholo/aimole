@@ -19,10 +19,10 @@ app.controller 'playMatchModalController', ($scope, $rootScope, $uibModalInstanc
 
 			$scope.players[index] = player
 			$scope.involveMe = _.filter($scope.players, (player) -> player.type == 'me').length > 0
-			localStorage.setItem playersLocalStorageKey, JSON.stringify $scope.players
+			localStorage.setItem playersLocalStorageKey, angular.toJson $scope.players
 
 	$scope.run = () ->
-		$uibModalInstance.close $scope.players
+		$uibModalInstance.close angular.copy $scope.players
 
 	$scope.signIn = () ->
 		analyticService.trackGame game, 'signInOnRun'
@@ -36,8 +36,8 @@ app.controller 'playMatchModalController', ($scope, $rootScope, $uibModalInstanc
 	involveMe = (players) ->
 		_.filter($scope.players, (player) -> player.type == 'me').length > 0
 
-	try players = JSON.parse localStorage.getItem playersLocalStorageKey if playersLocalStorageKey
+	try players = angular.fromJson localStorage.getItem playersLocalStorageKey if playersLocalStorageKey
 
-	defaultPlayer = game.ai?[0] || {}
+	defaultPlayer = if game.ai?[0] then _.cloneDeep game.ai[0] else {}
 	$scope.players = if players?.length then players else _.fill new Array(game.players), defaultPlayer, 0, game.players
 	$scope.involveMe = involveMe $scope.players

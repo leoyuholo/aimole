@@ -1,6 +1,6 @@
 app = angular.module 'aimole'
 
-app.controller 'playMatchModalController', ($scope, $rootScope, $uibModalInstance, messageService, modalService, userService, game, playersLocalStorageKey) ->
+app.controller 'playMatchModalController', ($scope, $rootScope, $uibModalInstance, messageService, modalService, userService, analyticService, game, playersLocalStorageKey) ->
 
 	$scope.msg = {}
 
@@ -25,8 +25,9 @@ app.controller 'playMatchModalController', ($scope, $rootScope, $uibModalInstanc
 		$uibModalInstance.close $scope.players
 
 	$scope.signIn = () ->
+		analyticService.trackGame game, 'signInOnRun'
 		userService.signIn (err, user) ->
-			return messageService.error $scope.msg, err.message if errsfac
+			return messageService.error $scope.msg, err.message if err
 			$scope.user = user
 
 	$scope.dismiss = () ->
@@ -37,5 +38,6 @@ app.controller 'playMatchModalController', ($scope, $rootScope, $uibModalInstanc
 
 	try players = JSON.parse localStorage.getItem playersLocalStorageKey if playersLocalStorageKey
 
-	$scope.players = if players?.length then players else _.fill new Array(game.players), {}, 0, game.players
+	defaultPlayer = game.ai?[0] || {}
+	$scope.players = if players?.length then players else _.fill new Array(game.players), defaultPlayer, 0, game.players
 	$scope.involveMe = involveMe $scope.players

@@ -1,6 +1,6 @@
 app = angular.module 'aimole'
 
-app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messageService, parseService, modalService, matchService) ->
+app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messageService, parseService, modalService, matchService, analyticService) ->
 
 	$scope.gameId = $routeParams.gameId
 
@@ -14,10 +14,13 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 	$scope.codeLocalStorageKey = "game/#{$scope.gameId}"
 	$scope.codeAceOptions =
 		maxLines: Infinity
+	$scope.editorOnChange = _.throttle ( () -> analyticService.trackActiveEditing $scope.game), 10 * 60 * 1000
 
 	playersLocalStorageKey = "players/#{$scope.gameId}"
 
 	$scope.run = () ->
+		analyticService.trackGame $scope.game, 'selectPlayer'
+
 		modalOptions =
 			templateUrl: 'views/playMatchModal'
 			controller: 'playMatchModalController'
@@ -29,6 +32,8 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 				playersLocalStorageKey: () -> playersLocalStorageKey
 
 		modalService.openModal modalOptions, (err, players) ->
+			analyticService.trackPlayers $scope.game, players
+
 			$scope.compileError = ''
 			messageService.clear $scope.runMsg
 			return messageService.error $scope.runMsg, err.message if err
@@ -44,12 +49,13 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 					done null, matchId
 				matchService.playMatch
 			], (err, match) ->
+				# TODO: track how many user leaves before getting match result
 				if err && /^Compile Error:/.test err.message
 					messageService.error $scope.runMsg, 'Compile Error'
 					$scope.compileError = err.message
 					return
 				return messageService.error $scope.runMsg, err.message if err
-				$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl + '#display=' + encodeURIComponent JSON.stringify match.result
+				$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl.replace('http://', 'https://') + '#display=' + encodeURIComponent JSON.stringify match.result
 				messageService.clear $scope.runMsg
 
 	findGame = (gameId) ->
@@ -57,6 +63,8 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 			return messageService.error $scope.gameMsg, err.message if err
 
 			$scope.game = game
-			$scope.iframeUrl = $sce.trustAsResourceUrl game.viewUrl
+			$scope.iframeUrl = $sce.trustAsResourceUrl game.viewUrl.replace('http://', 'https://')
+
+			analyticService.trackGame $scope.game, 'load'
 
 	findGame $scope.gameId

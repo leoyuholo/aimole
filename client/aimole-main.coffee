@@ -1,4 +1,4 @@
-app = angular.module 'aimole', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'parse-angular', 'ui.ace', '720kb.background']
+app = angular.module 'aimole', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'parse-angular', 'ui.ace', '720kb.background', 'angulartics', 'angulartics.google.analytics']
 
 app.config ($routeProvider, $locationProvider) ->
 	$routeProvider
@@ -19,5 +19,7 @@ app.config ($routeProvider, $locationProvider) ->
 Parse.initialize 'aimole'
 Parse.serverURL = "#{window.location.origin}/parse"
 
-app.run ($rootScope, userService) ->
-	$rootScope.user = userService.getUser()
+app.run ($rootScope, userService, analyticService) ->
+	userService.getUser()
+
+	analyticService.setUserId()

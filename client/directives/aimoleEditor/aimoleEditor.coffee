@@ -9,6 +9,7 @@ app.directive 'aimoleEditor', () ->
 			language: '='
 			readOnly: '='
 			ngModel: '='
+			onChange: '='
 			editorOptions: '='
 		controller: 'aimoleEditorController'
 	}

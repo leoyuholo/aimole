@@ -3,3 +3,5 @@ node_modules
 public
 logs
 configs/credentials.coffee
+configs/*.key
+configs/*.crt

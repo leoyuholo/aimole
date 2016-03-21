@@ -11,9 +11,11 @@ module.exports =
 	https:
 		key: credentials.https?.key
 		cert: credentials.https?.cert
+	analytics:
+		trackingId: credentials.analytics?.trackingId
 	Parse:
 		masterKey: credentials.Parse.masterKey
-		serverURL: if process.env.HOST_IP then "http://#{process.env.HOST_IP}/parse" else 'http://localhost/parse'
+		serverURL: if process.env.HOST_IP then "https://#{process.env.HOST_IP}/parse" else 'https://localhost/parse'
 		facebookAppIds: credentials.Parse.facebookAppIds
 	mongodb:
 		db: 'aimole-prod'

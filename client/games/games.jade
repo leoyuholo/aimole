@@ -18,7 +18,7 @@ script(type="text/ng-template", id="views/games")
 							small
 								small
 									a(href="javascript:void(0)" popover-trigger="outsideClick" popover-placement="bottom" uib-popover-template="'views/games-users'")
-										| See who is playing aimole!
+										i(ng-click="listUsers()") See who is playing aimole!
 				ul.list-group
 					li.list-group-item(ng-repeat="game in games")
 						h3 {{game.name}}

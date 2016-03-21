@@ -1,6 +1,6 @@
 app = angular.module 'aimole'
 
-app.controller 'gamesController', ($scope, $sce, messageService, parseService) ->
+app.controller 'gamesController', ($scope, $sce, messageService, parseService, analyticService) ->
 
 	$scope.games = []
 	$scope.gamesMsg = {}
@@ -15,7 +15,9 @@ app.controller 'gamesController', ($scope, $sce, messageService, parseService) -
 			# ignore error
 			$scope.userCount = userCount
 
-	listUsers = () ->
+	$scope.listUsers = () ->
+		analyticService.trackViewWhoisplaying()
+		getUserCount()
 		parseService.getCache 'users', (err, users) ->
 			# ignore error
 			$scope.users = users
@@ -28,5 +30,3 @@ app.controller 'gamesController', ($scope, $sce, messageService, parseService) -
 			$scope.bgUrl = $sce.trustAsResourceUrl games[0].bgUrl if games && games.length > 0 && games[0].bgUrl
 
 	listGames()
-	listUsers()
-	getUserCount()

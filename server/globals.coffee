@@ -8,6 +8,7 @@ async = require 'async'
 express = require 'express'
 bodyParser = require 'body-parser'
 compression = require 'compression'
+forceSSL = require 'express-force-ssl'
 winston = require 'winston'
 morgan = require 'morgan'
 parseServer = require 'parse-server'
@@ -86,8 +87,9 @@ module.exports = ($) ->
 		$[component] = requireAll path.join(__dirname, component), $
 	$.utils.requireAll = requireAll
 
-	# console.log 'config', $.config
+	console.log 'config', $.config
 	useHttps = $.config.https.key && $.config.https.cert
+	$.app.use forceSSL if useHttps
 
 	# methods
 	$.run = {}
@@ -103,19 +105,16 @@ module.exports = ($) ->
 			databaseURI: "mongodb://#{$.config.mongodb.host}:#{$.config.mongodb.port}/#{$.config.mongodb.db}"
 			appId: $.config.Parse.appId
 			masterKey: $.config.Parse.masterKey
-			serverURL: if $.useHttps then 'https://localhost/parse' else "http://localhost:#{$.config.port}/parse"
+			serverURL: $.config.Parse.serverURL
 			facebookAppIds: $.config.Parse.facebookAppIds
 			cloud: (Parse) -> _.each $.clouds, (cloud) -> cloud Parse
 		)
 
-		if useHttps
-			https.createServer({key: $.config.https.key, cert: $.config.https.cert}, $.app).listen $.config.httpsPort, () ->
-				$.emitter.emit 'serverStarted'
-				done null
-		else
-			$.app.listen $.config.port, () ->
-				$.emitter.emit 'serverStarted'
-				done null
+		https.createServer({key: $.config.https.key, cert: $.config.https.cert}, $.app).listen $.config.httpsPort if useHttps
+
+		$.app.listen $.config.port, () ->
+			$.emitter.emit 'serverStarted'
+			done null
 	$.run.parseSchemaSetup = (done) ->
 		done null
 	$.run.analysisWorker = (done) ->

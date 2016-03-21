@@ -12,8 +12,11 @@ module.exports = [
 	'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js'
 	'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/mode-c_cpp.js'
 	'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/theme-twilight.js'
+	'https://cdnjs.cloudflare.com/ajax/libs/angulartics/1.0.3/angulartics.min.js'
+	'https://cdnjs.cloudflare.com/ajax/libs/angulartics-google-analytics/0.1.4/angulartics-google-analytics.min.js'
 	'https://www.parsecdn.com/js/parse-latest.js'
 	'https://cdn.rawgit.com/leoyuholo/parse-angular-patch/801fe2485b2719048d3e8c72f58c9542012b2417/dist/parse-angular.js'
 	'https://cdn.rawgit.com/angular-ui/ui-ace/36844ff7c0e0d9445bc8e31514d7f0f59cb8b048/ui-ace.min.js'
 	'https://cdn.rawgit.com/720kb/angular-background/5eee6184802cdf9ed57894a1e9450c7f340e6c08/dist/angular-background.min.js'
+	'https://cdn.rawgit.com/broofa/node-uuid/857ed6644f670cd3e94d6bf27328855d3a48d95f/uuid.js'
 ]

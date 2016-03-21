@@ -36,6 +36,7 @@ app.controller 'aimoleEditorController', ($scope) ->
 			onChange: () ->
 				$scope.ngModel = editor.getValue()
 				saveCodeThrottled()
+				$scope.onChange() if _.isFunction $scope.onChange
 
 		$scope.aceOptions = _.defaults _.cloneDeep($scope.editorOptions) || {}, defaultOptions
 

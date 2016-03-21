@@ -22,7 +22,7 @@ script(type="text/ng-template", id="views/game")
 									.text-right
 										a(ng-href="https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts" target="_blank") Editor Hotkeys
 					.flex.aimole-editor
-						aimole-editor.flex(local-storage-key="codeLocalStorageKey" editor-options="codeAceOptions" language="'c'" ng-model="code")
+						aimole-editor.flex(local-storage-key="codeLocalStorageKey" editor-options="codeAceOptions" language="'c'" ng-model="code" on-change="editorOnChange")
 					.flex-footer.panel-footer.clearfix#submit-btn-toolbar
 						.pull-left
 							.message-text.text-danger(ng-if="runMsg.errorMessage") {{runMsg.errorMessage}}

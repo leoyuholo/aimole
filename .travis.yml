@@ -8,5 +8,5 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - libstdc++-4.9-dev
-  notifications:
-    email: false
+notifications:
+  email: false

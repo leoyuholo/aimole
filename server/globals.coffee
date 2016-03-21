@@ -71,7 +71,7 @@ module.exports = ($) ->
 		exitOnError: false
 	)
 	if !$.env.testing
-		$.app.use morgan 'tiny', {skip: ( (req, res) -> /(^\/libs\/|^\/$)/.test req.path), stream: {write: (msg) -> $.logger.info msg}}
+		$.app.use morgan 'tiny', {skip: ( (req, res) -> /(^\/libs\/|^\/$|^\/favicon.ico$)/.test req.path), stream: {write: (msg) -> $.logger.info msg}}
 
 	# initialzation sequence is important
 	[
@@ -87,7 +87,7 @@ module.exports = ($) ->
 		$[component] = requireAll path.join(__dirname, component), $
 	$.utils.requireAll = requireAll
 
-	console.log 'config', $.config
+	console.log 'config', _.omit $.config, 'https'
 	useHttps = $.config.https.key && $.config.https.cert
 	$.app.use forceSSL if useHttps
 
@@ -107,7 +107,10 @@ module.exports = ($) ->
 			masterKey: $.config.Parse.masterKey
 			serverURL: $.config.Parse.serverURL
 			facebookAppIds: $.config.Parse.facebookAppIds
-			cloud: (Parse) -> _.each $.clouds, (cloud) -> cloud Parse
+			cloud: (Parse) ->
+				$.Parse = Parse
+				$.Parse.Cloud.useMasterKey()
+				_.each $.clouds, (cloud) -> cloud Parse
 		)
 
 		https.createServer({key: $.config.https.key, cert: $.config.https.cert}, $.app).listen $.config.httpsPort if useHttps

@@ -15,7 +15,7 @@ module.exports =
 		trackingId: credentials.analytics?.trackingId
 	Parse:
 		masterKey: credentials.Parse.masterKey
-		serverURL: if process.env.HOST_IP then "https://#{process.env.HOST_IP}/parse" else 'https://localhost/parse'
+		serverURL: credentials.Parse.serverURL
 		facebookAppIds: credentials.Parse.facebookAppIds
 	mongodb:
 		db: 'aimole-prod'

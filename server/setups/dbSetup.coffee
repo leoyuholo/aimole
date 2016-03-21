@@ -5,6 +5,7 @@ module.exports = ($) ->
 	self = {}
 
 	parseSetup = (done) ->
+		return done null if $.Parse
 		Parse.initialize $.config.Parse.appId, '', $.config.Parse.masterKey
 		Parse.serverURL = $.config.Parse.serverURL
 		Parse.Cloud.useMasterKey()

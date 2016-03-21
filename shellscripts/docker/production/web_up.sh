@@ -34,7 +34,7 @@ echo "container_name:" ${container_name}
 echo "app_dir:" ${app_dir}
 echo "arguments": ${arguments}
 
-docker run  -i \
+docker run  -d \
 			-e NODE_ENV=production \
 			-u $(id -u):$(getent group docker | cut -d: -f3) \
 			-e "WORKER_DIR=${worker_dir}"\

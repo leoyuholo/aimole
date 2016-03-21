@@ -107,6 +107,7 @@ module.exports = ($) ->
 			masterKey: $.config.Parse.masterKey
 			serverURL: $.config.Parse.serverURL
 			facebookAppIds: $.config.Parse.facebookAppIds
+			allowClientClassCreation: false
 			cloud: (Parse) ->
 				$.Parse = Parse
 				$.Parse.Cloud.useMasterKey()

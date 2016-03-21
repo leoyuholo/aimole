@@ -1,5 +1,7 @@
 path = require 'path'
 events = require 'events'
+http = require 'http'
+https = require 'https'
 
 _ = require 'lodash'
 async = require 'async'
@@ -39,10 +41,7 @@ module.exports = ($) ->
 	$.tmpDir = path.join $.rootDir, 'tmp'
 
 	# configs
-	$.configs = requireAll path.join $.rootDir, 'configs'
-	$.config = $.configs.testingConfig if $.env.testing
-	$.config = $.configs.developmentConfig if $.env.development
-	$.config = $.configs.productionConfig if $.env.production
+	$.config = require path.join $.rootDir, 'configs', 'config'
 
 	# config defined dirs
 	$.workerDir = $.config.workerDir
@@ -87,6 +86,9 @@ module.exports = ($) ->
 		$[component] = requireAll path.join(__dirname, component), $
 	$.utils.requireAll = requireAll
 
+	# console.log 'config', $.config
+	useHttps = $.config.https.key && $.config.https.cert
+
 	# methods
 	$.run = {}
 	$.run.setup = (done) ->
@@ -101,15 +103,19 @@ module.exports = ($) ->
 			databaseURI: "mongodb://#{$.config.mongodb.host}:#{$.config.mongodb.port}/#{$.config.mongodb.db}"
 			appId: $.config.Parse.appId
 			masterKey: $.config.Parse.masterKey
-			serverURL: $.config.Parse.serverURL
+			serverURL: if $.useHttps then 'https://localhost/parse' else "http://localhost:#{$.config.port}/parse"
 			facebookAppIds: $.config.Parse.facebookAppIds
 			cloud: (Parse) -> _.each $.clouds, (cloud) -> cloud Parse
 		)
 
-		$.app.listen $.config.port, () ->
-			$.emitter.emit 'serverStarted'
-
-			done null
+		if useHttps
+			https.createServer({key: $.config.https.key, cert: $.config.https.cert}, $.app).listen $.config.httpsPort, () ->
+				$.emitter.emit 'serverStarted'
+				done null
+		else
+			$.app.listen $.config.port, () ->
+				$.emitter.emit 'serverStarted'
+				done null
 	$.run.parseSchemaSetup = (done) ->
 		done null
 	$.run.analysisWorker = (done) ->

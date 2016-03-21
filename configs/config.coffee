@@ -1,8 +1,17 @@
 path = require 'path'
 
-module.exports =
+_ = require 'lodash'
+
+defaultConfig =
+	env: 'development'
 	port: 3000
+	httpsPort: 3001
 	workerDir: process.env.WORKER_DIR || path.join '/', 'tmp', 'worker'
+	https:
+		key: ''
+		cert: ''
+	analytics:
+		trackingId: ''
 	Parse:
 		appId: 'aimole'
 		masterKey: 'aimole-master'
@@ -19,3 +28,14 @@ module.exports =
 		queues:
 			codeAnalysis: 'codeAnalysis'
 			playMatch: 'playMatch'
+
+config = {}
+switch process.env.NODE_ENV
+	when 'production'
+		config = require './productionConfig'
+	when 'testing'
+		config = require './testingConfig'
+	else
+		config = require './developmentConfig'
+
+module.exports = _.defaultsDeep config, defaultConfig

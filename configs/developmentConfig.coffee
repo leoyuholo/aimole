@@ -1,9 +1,9 @@
-_ = require 'lodash'
 
-config =
+try credentials = require './credentials'
+
+module.exports =
+	env: 'development'
 	Parse:
-		facebookAppIds: ['123456789012345']
+		facebookAppIds: credentials?.Parse?.facebookAppIds || ['123456789012345']
 	mongodb:
 		db: 'aimole-dev'
-
-module.exports = _.defaultsDeep config, require './commonConfig'

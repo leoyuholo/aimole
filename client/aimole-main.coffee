@@ -16,8 +16,8 @@ app.config ($routeProvider, $locationProvider) ->
 
 	return
 
-app.run ($rootScope, userService) ->
-	Parse.initialize 'aimole'
-	Parse.serverURL = "#{window.location.origin}/parse"
+Parse.initialize 'aimole'
+Parse.serverURL = "#{window.location.origin}/parse"
 
+app.run ($rootScope, userService) ->
 	$rootScope.user = userService.getUser()

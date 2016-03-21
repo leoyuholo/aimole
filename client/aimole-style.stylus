@@ -1,22 +1,15 @@
 @import url(https://fonts.googleapis.com/css?family=Raleway)
 
-html
-	height 100%
-html, #aimole, [ng-view], #game-view
-	display flex
-	flex-flow column
-	flex 1 1 auto
-	min-height 0
-	height 100%
-#aimole
-	font-family 'Raleway', sans-serif !important
-	body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6
-		font-family 'Raleway', sans-serif !important
-	.ace-font
-		font-family Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace
-	.ace_editor
+mediaWidth = 720px
+@media screen and (min-width: mediaWidth)
+	html
+		height 100%
+	html, #aimole, [ng-view], #game-view
+		display flex
+		flex-flow column
 		flex 1 1 auto
 		min-height 0
+		height 100%
 	.flex
 		display flex
 		flex-flow column
@@ -28,9 +21,28 @@ html, #aimole, [ng-view], #game-view
 		flex 1 1 auto
 		min-height 0
 	.flex-header
-		flex 0 1 inherit
+		flex 0 1
 	.flex-footer
-		flex 0 1 inherit
+		flex 0 1
+	.ace_editor
+		flex 1 1 auto
+		min-height 0
+	aimole-editor > div
+		flex 1 1 auto
+		min-height 0
+@media screen and (max-width: mediaWidth)
+	html, #aimole, [ng-view], #game-view, .flex, .flex-row, .ace_editor
+	aimole-editor > div
+		height 100%
+	iframe
+		height 100%
+		width 100%
+#aimole
+	font-family 'Raleway', sans-serif !important
+	body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6
+		font-family 'Raleway', sans-serif !important
+	.ace-font
+		font-family Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace
 	#games-bg
 		background-size cover
 		background-repeat no-repeat
@@ -39,10 +51,6 @@ html, #aimole, [ng-view], #game-view
 		> .row
 			margin 0px
 			> .col-md-6
-				-webkit-box-flex 1
 				padding 5px
-		aimole-editor > div
-			flex 1 1 auto
-			min-height 0
 		.compile-error
 			background-color #f2dede

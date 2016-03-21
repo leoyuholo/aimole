@@ -7,10 +7,10 @@ module.exports = (grunt, options) ->
 		dev:
 			script: 'server/app.coffee'
 			options:
-				watch: ['server/', 'configs/config']
+				watch: ['server/', 'configs/']
 		worker:
 			script: 'server/worker.coffee'
 			options:
-				watch: ['server/', 'configs/config']
+				watch: ['server/', 'configs/']
 
 	return config

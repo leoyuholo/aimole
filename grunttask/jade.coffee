@@ -1,26 +1,20 @@
 path = require 'path'
 
 module.exports = (grunt, options) ->
-	aimoleConfig = require path.join __dirname, '..', 'configs', 'clientConfig'
+	appConfig = require path.join __dirname, '..', 'configs', 'config'
 
 	config =
 		dev:
 			options:
 				pretty: true
 				data:
-					config:
-						aimole: aimoleConfig
-						env:
-							development: true
+					config: appConfig
 			files:
 				'public/index.html': 'client/index.jade'
 		minify:
 			options:
 				data:
-					config:
-						aimole: aimoleConfig
-						env:
-							development: false
+					config: appConfig
 			files:
 				'public/index.html': 'client/index.jade'
 

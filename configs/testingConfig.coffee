@@ -1,7 +1,5 @@
-_ = require 'lodash'
 
-config =
+module.exports =
+	env: 'testing'
 	mongodb:
 		db: 'aimole-test'
-
-module.exports = _.defaultsDeep config, require './commonConfig'

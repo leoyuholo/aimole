@@ -55,7 +55,9 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 					$scope.compileError = err.message
 					return
 				return messageService.error $scope.runMsg, err.message if err
-				$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl.replace('http://', 'https://') + '#display=' + encodeURIComponent JSON.stringify match.result
+				$scope.iframeUrl = ''
+				_.delay () ->
+					$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl.replace('http://', 'https://') + '#display=' + encodeURIComponent JSON.stringify match.result
 				messageService.clear $scope.runMsg
 
 	findGame = (gameId) ->

@@ -1,14 +1,16 @@
+path = require 'path'
 childProcess = require 'child_process'
 events = require 'events'
 
 _ = require 'lodash'
 Q = require 'q'
+fse = require 'fs-extra'
 
 module.exports = ($) ->
 	self = {}
 
 	class GameEntity
-		constructor: (@process, @containerName) ->
+		constructor: (@process, @containerName, @processDir) ->
 			@dataQueue = []
 			@emitter = new events()
 			@timer =
@@ -30,12 +32,13 @@ module.exports = ($) ->
 				time: time
 				data: data.toString()
 
-		onExit: (code) =>
+		onExit: (code, signal) =>
 			time = @stopTimer()
 			@enqueueData
 				event: 'exit'
 				time: time
 				exitCode: code
+				signalStr: fse.readJsonSync(path.join @processDir, 'result.json')?.result?[0] || 'Unexpected termination.'
 
 			@exited = true
 
@@ -146,7 +149,7 @@ module.exports = ($) ->
 
 		$.services.sandboxService.compileAndRun entity.sandboxPath, sandboxConfig, containerName, (err, process) ->
 			return $.utils.onError done, err if err
-			done null, new GameEntity(process, containerName)
+			done null, new GameEntity(process, containerName, entity.sandboxPath)
 
 	self.makeVerdictEntity = (verdict, game, done) ->
 		makeEntity verdict, done

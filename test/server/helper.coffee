@@ -1,4 +1,5 @@
 path = require 'path'
+util = require 'util'
 
 async = require 'async'
 DatabaseCleaner = require 'database-cleaner'
@@ -41,3 +42,6 @@ self.cleanDB = (done) ->
 			console.log 'Database cleaned.'
 			db.close()
 			done null
+
+self.inspect = (obj) ->
+	util.inspect obj, {showHidden: false, depth: null}

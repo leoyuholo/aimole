@@ -45,6 +45,7 @@ module.exports = ($) ->
 	# 				stdout: {type: String} # when command == 'player'
 	# 				errorMessage: {type: String} # when command == 'error'
 	# 				exitCode: {type: Number} # when command == 'terminated'
+	# 				signalStr: {type: String} # when command == 'terminated'
 	# 			}
 	# 		}
 	# 	]

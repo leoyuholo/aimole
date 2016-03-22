@@ -75,7 +75,14 @@ module.exports = ($) ->
 						player: verdictAction.nextPlayer
 						command: eventCommandMap[playerData.event]
 						time: playerData.time
-						stdout: playerData.data
+					switch verdictCommand.command
+						when 'player'
+							verdictCommand.stdout = playerData.data
+						when 'error'
+							verdictCommand.errorMessage = playerData.errorMessage
+						when 'terminated'
+							verdictCommand.exitCode = playerData.exitCode
+							verdictCommand.signalStr = playerData.signalStr
 
 					gameHistory.logCommand verdictCommand
 
@@ -132,7 +139,7 @@ module.exports = ($) ->
 					# TODO: update elo score if applicable
 					async.series [
 						_.partial async.parallel, _.map [verdictEntity].concat(playerEntities), 'exit'
-						_.partial fse.remove, gameDir
+						# _.partial fse.remove, gameDir
 					], (err) ->
 						return $.utils.onError done, err if err
 						done null, result

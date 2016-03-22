@@ -10,8 +10,12 @@ module.exports = ($) ->
 			# TODO: log who is calling this
 			$.stores.cacheStore.first 'userCount', (err, userCount) ->
 				return res.error err.message if err
+				return res.success {users: [], userCount: 0} if userCount == 0
 
-				userNos = _.map _.range(0, _.min [userCount, 5]), _.partial _.random, 1, userCount
+				if userCount <= 5
+					userNos = _.shuffle _.range 1, userCount + 1
+				else
+					userNos = _.sampleSize _.range(1, userCount + 1), 5
 
 				async.map userNos, $.stores.userStore.findByUserNo, (err, users) ->
 					return res.error err.message if err

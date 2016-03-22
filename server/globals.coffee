@@ -88,7 +88,7 @@ module.exports = ($) ->
 		$[component] = requireAll path.join(__dirname, component), $
 	$.utils.requireAll = requireAll
 
-	console.log 'config', _.omit $.config, 'https'
+	# console.log 'config', _.omit $.config, 'https'
 	useHttps = $.config.https.key && $.config.https.cert
 	$.app.use forceSSL if useHttps
 
@@ -121,6 +121,7 @@ module.exports = ($) ->
 			$.emitter.emit 'serverStarted'
 			done null
 	$.run.parseSchemaSetup = (done) ->
+		return done null if !$.config.env.production
 		initSchema = (modelName, model, schema, done) ->
 			new model()
 				.save null, {useMasterKey: true}

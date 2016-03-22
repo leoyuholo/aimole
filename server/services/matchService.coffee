@@ -126,7 +126,14 @@ module.exports = ($) ->
 	self.create = (newMatch, done) ->
 		async.series [
 			_.partial self.validate, newMatch
-			_.partial $.stores.matchStore.create, newMatch
+			_.partial async.waterfall, [
+				_.partial $.stores.matchStore.findByGameIdAndPlayers, newMatch.gameId, newMatch.players
+				(match, done) ->
+					if match
+						done null, match
+					else
+						$.stores.matchStore.create newMatch, done
+			]
 		], (err, [__, match]) ->
 			return $.utils.onError done, err if err
 			done null, match

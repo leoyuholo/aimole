@@ -12,8 +12,13 @@ module.exports = ($) ->
 			return res.error 'Missing match id.' if !matchId
 
 			async.waterfall [
-				_.partial $.services.matchService.play, matchId
-				_.partial $.stores.matchStore.updateResult, matchId
+				_.partial $.stores.matchStore.findById, matchId
+				(match, done) ->
+					return done null, match if match?.status == 'evaluated'
+					async.waterfall [
+						_.partial $.services.matchService.play, matchId
+						_.partial $.stores.matchStore.finalizeResult, matchId
+					], done
 			], (err, match) ->
 				return res.error err.message if err
 				res.success $.models.Match.envelop match

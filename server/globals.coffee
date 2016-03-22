@@ -12,6 +12,7 @@ forceSSL = require 'express-force-ssl'
 winston = require 'winston'
 morgan = require 'morgan'
 parseServer = require 'parse-server'
+ParseConfig = require 'parse-server/lib/Config'
 _requireAll = require 'require-all'
 requireAll = (dir, injections...) ->
 	_requireAll
@@ -120,7 +121,21 @@ module.exports = ($) ->
 			$.emitter.emit 'serverStarted'
 			done null
 	$.run.parseSchemaSetup = (done) ->
-		done null
+		initSchema = (modelName, model, schema, done) ->
+			new model()
+				.save null, {useMasterKey: true}
+				.then (modelObj) -> modelObj.destroy {useMasterKey: true}
+				.then () -> schema.setPermissions modelName, model.parsePermissions || $.constants.parsePermissions.grantNone
+				.then () -> done null
+				.fail (err) -> done err
+
+		new ParseConfig($.config.Parse.appId, '/parse')
+			.database.loadSchema()
+			.then (schema) ->
+				async.forEachOf $.models, ( (model, modelName, done) ->
+					initSchema modelName, model, schema, done
+				), (err) -> done err
+			.catch (err) -> done err
 	$.run.analysisWorker = (done) ->
 		$.services.workerService.registerAnalysisWorker done
 	$.run.playMatchWorker = (done) ->

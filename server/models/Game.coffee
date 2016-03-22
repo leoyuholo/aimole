@@ -28,6 +28,18 @@ module.exports = ($) ->
 	# 		timeLimit: {type: Number, default: 2000}
 	Game = Parse.Object.extend 'Game'
 
+	# Game.GameSchema =
+	# 	githubUrl: 'str'
+	# 	name: 'str'
+	# 	description: 'str'
+	# 	author: 'str'
+	# 	version: 'str'
+	# 	viewUrl: 'str'
+	# 	bgUrl: 'str'
+	# 	players: []
+	# 	ai: []
+	# 	verdict: {}
+
 	Game.envelop = (game) ->
 		slim = _.pick game, ['objectId', 'name', 'description', 'author', 'version', 'viewUrl', 'bgUrl', 'players']
 		slim.ai = _.map game.ai, (ai) -> _.pick ai, ['type', 'name']

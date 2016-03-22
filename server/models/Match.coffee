@@ -51,6 +51,13 @@ module.exports = ($) ->
 	# 	]
 	Match = Parse.Object.extend 'Match'
 
+	# Match.MatchSchema =
+	# 	submitBy: {}
+	# 	gameId: 'str'
+	# 	status: 'str'
+	# 	players: []
+	# 	result: []
+
 	Match.envelop = (match) ->
 		slim = _.pick match, ['objectId', 'submitBy', 'gameId', 'players']
 		slim.result = _.map _.map(_.filter(match.result, (r) -> r.type == 'action' || r.type == 'error'), 'action'), 'display'

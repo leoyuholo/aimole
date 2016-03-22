@@ -11,5 +11,14 @@ module.exports = ($) ->
 	# 	language: {type: String, default: 'c'}
 	# 	code: {type: String, default: 'Missing submission code'}
 	# 	matchId: {type: String, default: 'Missing match id'}
+	Submission = Parse.Object.extend 'Submission'
 
-	return Parse.Object.extend 'Submission'
+	# Submission.SubmissionSchema =
+	# 	userId: 'str'
+	# 	displayName: 'str'
+	# 	gameId: 'str'
+	# 	language: 'str'
+	# 	code: 'str'
+	# 	matchId: 'str'
+
+	return Submission

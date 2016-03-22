@@ -2,6 +2,7 @@
 module.exports = ($) ->
 	return (Parse) ->
 		Parse.Cloud.beforeSave Parse.User, (req, res) ->
+			return res.success() if !req.object.isNew()
 			user = req.object.toJSON()
 			facebookId = user.authData.facebook.id
 			accessToken = user.authData.facebook.access_token

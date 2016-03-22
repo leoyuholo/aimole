@@ -71,7 +71,7 @@ module.exports = ($) ->
 		exitOnError: false
 	)
 	if !$.env.testing
-		$.app.use morgan 'tiny', {skip: ( (req, res) -> /(^\/libs\/|^\/$|^\/favicon.ico$)/.test req.path), stream: {write: (msg) -> $.logger.info msg}}
+		$.app.use morgan 'tiny', {skip: ( (req, res) -> /(^\/libs\/|^\/$|^\/favicon.ico$|\.map$)/.test req.path), stream: {write: (msg) -> $.logger.info msg}}
 
 	# initialzation sequence is important
 	[

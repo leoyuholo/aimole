@@ -10,21 +10,17 @@ app.controller 'gamesController', ($scope, $sce, messageService, parseService, a
 	$scope.users = []
 	$scope.userCount = 0
 
-	getUserCount = () ->
-		parseService.getCache 'userCount', (err, userCount) ->
-			# ignore error
-			$scope.userCount = userCount
-
 	$scope.listUsers = () ->
 		analyticService.trackViewWhoisplaying()
-		getUserCount()
-		parseService.getCache 'users', (err, users) ->
-			# ignore error
-			$scope.users = users
+
+		parseService.run 'whoisplaying', {}, (err, result) ->
+			return if err# ignore error
+			$scope.userCount = result.userCount
+			$scope.users = result.users
 
 	listGames = () ->
 		parseService.getCache 'games', (err, games) ->
-			return messageService.error gamesMsg, err.message if err
+			return messageService.error $scope.gamesMsg, err.message if err
 			$scope.games = games
 
 			$scope.bgUrl = $sce.trustAsResourceUrl games[0].bgUrl if games && games.length > 0 && games[0].bgUrl

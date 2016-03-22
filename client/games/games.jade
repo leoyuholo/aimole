@@ -2,7 +2,7 @@ script
 	include:coffee-script gamesController.coffee
 script(type="text/ng-template", id="views/games-users")
 	div#games-user
-		p(ng-repeat="user in users | limitTo: 10")
+		p(ng-repeat="user in users | limitTo: 5")
 			img(height="24" width="24" ng-src="https://graph.facebook.com/{{user.facebookId}}/picture?height=24&width=24")
 			|  
 			b.text-info {{user.displayName}}

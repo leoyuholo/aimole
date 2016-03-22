@@ -8,7 +8,6 @@ app.controller 'aimoleHeaderController', ($scope, $rootScope, messageService, us
 		$scope.user = $rootScope.user
 
 	$scope.logout = () ->
-		$scope.user = ''
 		userService.logout()
 
 	$scope.signIn = () ->

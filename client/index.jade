@@ -9,23 +9,59 @@ html(ng-app="aimole")
 		style
 			include:stylus aimole-style.stylus
 
-		link(href="/libs/ajax/libs/bootswatch/3.3.6/cerulean/bootstrap.min.css" rel="stylesheet" type="text/css")
-		script(src="/libs/ajax/libs/angularjs/1.5.0/angular.min.js")
-		script(src="/libs/ajax/libs/angularjs/1.5.0/angular-route.min.js")
-		script(src="/libs/ajax/libs/angularjs/1.5.0/angular-cookies.min.js")
-		script(src="/libs/ajax/libs/jquery/2.2.0/jquery.min.js")
-		script(src="/libs/ajax/libs/lodash.js/4.6.1/lodash.min.js")
-		script(src="/libs/ajax/libs/async/1.5.2/async.min.js")
-		script(src="/libs/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js")
-		script(src="/libs/ajax/libs/angular-ui-bootstrap/1.2.4/ui-bootstrap-tpls.min.js")
-		script(src="/libs/ajax/libs/ace/1.2.3/ace.js")
-		script(src="/libs/ajax/libs/angulartics/1.0.3/angulartics.min.js")
-		script(src="/libs/ajax/libs/angulartics-google-analytics/0.1.4/angulartics-google-analytics.min.js")
-		script(src="/libs/js/parse-latest.js")
-		script(src="/libs/leoyuholo/parse-angular-patch/801fe2485b2719048d3e8c72f58c9542012b2417/dist/parse-angular.js")
-		script(src="/libs/angular-ui/ui-ace/36844ff7c0e0d9445bc8e31514d7f0f59cb8b048/ui-ace.min.js")
-		script(src="/libs/720kb/angular-background/5eee6184802cdf9ed57894a1e9450c7f340e6c08/dist/angular-background.min.js")
-		script(src="/libs/broofa/node-uuid/857ed6644f670cd3e94d6bf27328855d3a48d95f/uuid.js")
+		if config && config.env && config.env == 'dvelopment'
+			link(href="/libs/ajax/libs/bootswatch/3.3.6/cerulean/bootstrap.min.css" rel="stylesheet" type="text/css")
+			script(src="/libs/ajax/libs/angularjs/1.5.0/angular.min.js")
+			script(src="/libs/ajax/libs/angularjs/1.5.0/angular-route.min.js")
+			script(src="/libs/ajax/libs/angularjs/1.5.0/angular-cookies.min.js")
+			script(src="/libs/ajax/libs/jquery/2.2.0/jquery.min.js")
+			script(src="/libs/ajax/libs/lodash.js/4.6.1/lodash.min.js")
+			script(src="/libs/ajax/libs/async/1.5.2/async.min.js")
+			script(src="/libs/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js")
+			script(src="/libs/ajax/libs/angular-ui-bootstrap/1.2.4/ui-bootstrap-tpls.min.js")
+			script(src="/libs/ajax/libs/ace/1.2.3/ace.js")
+			script(src="/libs/ajax/libs/angulartics/1.0.3/angulartics.min.js")
+			script(src="/libs/ajax/libs/angulartics-google-analytics/0.1.4/angulartics-google-analytics.min.js")
+			script(src="/libs/js/parse-latest.min.js")
+			script(src="/libs/leoyuholo/parse-angular-patch/801fe2485b2719048d3e8c72f58c9542012b2417/dist/parse-angular.js")
+			script(src="/libs/angular-ui/ui-ace/36844ff7c0e0d9445bc8e31514d7f0f59cb8b048/ui-ace.min.js")
+			script(src="/libs/720kb/angular-background/5eee6184802cdf9ed57894a1e9450c7f340e6c08/dist/angular-background.min.js")
+			script(src="/libs/broofa/node-uuid/857ed6644f670cd3e94d6bf27328855d3a48d95f/uuid.js")
+		else
+			style
+				include ../public/libs/ajax/libs/bootswatch/3.3.6/cerulean/bootstrap.min.css
+			script
+				include ../public/libs/ajax/libs/angularjs/1.5.0/angular.min.js
+			script
+				include ../public/libs/ajax/libs/angularjs/1.5.0/angular-route.min.js
+			script
+				include ../public/libs/ajax/libs/angularjs/1.5.0/angular-cookies.min.js
+			script
+				include ../public/libs/ajax/libs/jquery/2.2.0/jquery.min.js
+			script
+				include ../public/libs/ajax/libs/lodash.js/4.6.1/lodash.min.js
+			script
+				include ../public/libs/ajax/libs/async/1.5.2/async.min.js
+			script
+				include ../public/libs/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js
+			script
+				include ../public/libs/ajax/libs/angular-ui-bootstrap/1.2.4/ui-bootstrap-tpls.min.js
+			script
+				include ../public/libs/ajax/libs/ace/1.2.3/ace.js
+			script
+				include ../public/libs/ajax/libs/angulartics/1.0.3/angulartics.min.js
+			script
+				include ../public/libs/ajax/libs/angulartics-google-analytics/0.1.4/angulartics-google-analytics.min.js
+			script
+				include ../public/libs/js/parse-latest.min.js
+			script
+				include ../public/libs/leoyuholo/parse-angular-patch/801fe2485b2719048d3e8c72f58c9542012b2417/dist/parse-angular.js
+			script
+				include ../public/libs/angular-ui/ui-ace/36844ff7c0e0d9445bc8e31514d7f0f59cb8b048/ui-ace.min.js
+			script
+				include ../public/libs/720kb/angular-background/5eee6184802cdf9ed57894a1e9450c7f340e6c08/dist/angular-background.min.js
+			script
+				include ../public/libs/broofa/node-uuid/857ed6644f670cd3e94d6bf27328855d3a48d95f/uuid.js
 
 	body#aimole
 

@@ -59,7 +59,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 				$scope.iframeUrl = ''
 				_.delay () ->
 					$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl.replace('http://', 'https://') + '#display=' + encodeURIComponent JSON.stringify match.result
-				messageService.success $scope.runMsg, 'Enjoy the match!'
+				messageService.success $scope.runMsg, 'Enjoy the game!'
 
 	findGame = (gameId) ->
 		parseService.getCache "game-#{$scope.gameId}", (err, game) ->

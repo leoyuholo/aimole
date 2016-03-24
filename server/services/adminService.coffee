@@ -9,6 +9,21 @@ module.exports = ($) ->
 
 	# TODO: validate
 
+	readCodeTpl = (cloneToPath, info, done) ->
+		return done null if !cloneToPath || !info?.gameConfig?.codeTpl || !_.isObject info.gameConfig.codeTpl
+
+		async.forEachOf info.gameConfig.codeTpl, ( (file, language, done) ->
+			fse.readFile path.join(cloneToPath, file), {encoding: 'utf8'}, (err, codeTpl) ->
+				return $.utils.onError done, err if err
+
+				info.gameConfig.codeTpl[language] = codeTpl
+
+				done null, codeTpl
+		), (err) ->
+			return $.utils.onError done, err if err
+
+			done null, info.gameConfig.codeTpl
+
 	readAiCode = (cloneToPath, info, done) ->
 		return $.utils.onError done, new Error('Error reading AI code.') if !cloneToPath || !info?.gameConfig?.ai || !_.isArray info.gameConfig.ai
 
@@ -56,6 +71,7 @@ module.exports = ($) ->
 			_.partial readGameConfig, cloneToPath, info
 			_.partial readVerdictCode, cloneToPath, info
 			_.partial readAiCode, cloneToPath, info
+			_.partial readCodeTpl, cloneToPath, info
 			_.partial fse.remove, cloneToPath
 		], (err) ->
 			return $.utils.onError done, err if err

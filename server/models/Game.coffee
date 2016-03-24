@@ -21,6 +21,9 @@ module.exports = ($) ->
 	# 		code: {type: String, default: 'Missing ai code'}
 	# 		file: {type: String, default: ''}
 	# 	]
+	# 	codetpl: {
+	# 		c: {type: 'String', default: ''}
+	# 	}
 	# 	verdict:
 	# 		language: {type: String, enum: languages, default: 'c'}
 	# 		code: {type: String, default: 'Missing verdict code'}
@@ -38,10 +41,11 @@ module.exports = ($) ->
 	# 	bgUrl: 'str'
 	# 	players: []
 	# 	ai: []
+	#	codetpl: {}
 	# 	verdict: {}
 
 	Game.envelop = (game) ->
-		slim = _.pick game, ['objectId', 'name', 'description', 'author', 'version', 'viewUrl', 'bgUrl', 'players']
+		slim = _.pick game, ['objectId', 'name', 'description', 'author', 'version', 'viewUrl', 'bgUrl', 'players', 'codeTpl']
 		slim.ai = _.map game.ai, (ai) -> _.pick ai, ['type', 'name']
 		return slim
 

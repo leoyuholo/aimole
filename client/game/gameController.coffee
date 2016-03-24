@@ -11,6 +11,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 	$scope.iframeUrl = ''
 
 	$scope.code = ''
+	$scope.codeTpl = ''
 	$scope.codeLocalStorageKey = "game/#{$scope.gameId}"
 	$scope.codeAceOptions =
 		maxLines: Infinity
@@ -68,6 +69,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 
 			$scope.game = game
 			$scope.iframeUrl = $sce.trustAsResourceUrl game.viewUrl.replace('http://', 'https://')
+			$scope.code = game.codeTpl?.c || '// Enter your code here' if !$scope.code
 
 			analyticService.trackGame $scope.game, 'load'
 

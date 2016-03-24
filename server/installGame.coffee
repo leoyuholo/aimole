@@ -25,6 +25,7 @@ installGame = (githubUrl, done) ->
 			viewUrl: gameConfig.viewUrl
 			bgUrl: gameConfig.bgUrl
 			players: gameConfig.players
+			codeTpl: gameConfig.codeTpl
 			ai: gameConfig.ai
 			verdict: gameConfig.verdict
 

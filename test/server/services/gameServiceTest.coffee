@@ -55,7 +55,7 @@ describe 'aimole', () ->
 
 						done null
 
-				it.only 'should run error-player-1 game', (done) ->
+				it 'should run error-player-1 game', (done) ->
 					this.timeout 200000
 
 					fse.readFile path.join(__dirname, 'testData', 'error-player-1', 'player1.c'), {encoding: 'utf8'}, (err, player1Code) ->

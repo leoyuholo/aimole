@@ -16,6 +16,7 @@ app.service 'userService', ($rootScope, redirectService) ->
 
 	self.logout = () ->
 		Parse.User.logOut()
+		window.location.reload()
 		$rootScope.user = ''
 
 	return self

@@ -7,8 +7,7 @@ app.service 'analyticService', ($analytics, userService) ->
 
 	self.trackGame = (game, eventName) ->
 		self.track eventName, {
-			category: 'game'
-			label: game.name
+			category: game.name
 		}
 
 	self.trackPlayers = (game, players, eventName) ->
@@ -17,17 +16,16 @@ app.service 'analyticService', ($analytics, userService) ->
 
 		_.each players, (p) ->
 			self.track 'beSelected', {
-				category: 'player'
-				label: game.name
-				value: if p.name then p.name else p.type
+				category: game.name
+				label: if p.name then p.name else p.type
 			}
 
-	self.trackActiveEditing = (game) ->
+	self.trackActiveEditing = (game, since) ->
 		now = new Date()
 		self.track 'activeEditing', {
-			category: 'game'
-			label: game.name
-			value: "#{now.getFullYear()} #{now.getMonth()} #{now.getDate()} #{now.getDay()} #{now.getHours()} #{now.getMinutes()}"
+			category: game.name
+			label: "#{now.getFullYear()} #{now.getMonth()} #{now.getDate()}"
+			value: now - since
 		}
 
 	viewWhoisplayingCount = 0

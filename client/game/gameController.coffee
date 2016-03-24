@@ -14,7 +14,8 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 	$scope.codeLocalStorageKey = "game/#{$scope.gameId}"
 	$scope.codeAceOptions =
 		maxLines: Infinity
-	$scope.editorOnChange = _.throttle ( () -> analyticService.trackActiveEditing $scope.game), 10 * 60 * 1000
+	timer = Date.now()
+	$scope.editorOnChange = _.throttle ( () -> analyticService.trackActiveEditing $scope.game, timer), 10 * 60 * 1000
 
 	playersLocalStorageKey = "players/#{$scope.gameId}"
 

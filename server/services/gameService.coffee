@@ -15,23 +15,32 @@ module.exports = ($) ->
 		timeout: 'timeout'
 
 	class GameHistory
-		constructor: () ->
+		constructor: (@listeners) ->
 			@history = []
 
 		logCommand: (command) =>
-			@history.push
+			record =
 				type: 'command'
 				command: command
+			index = @history.push record
+			@listeners.onData record, index - 1 if @listeners.onData
 
 		logAction: (action) =>
-			@history.push
+			record =
 				type: 'action'
 				action: action
+			index = @history.push record
+			@listeners.onData record, index - 1 if @listeners.onData
 
 		logError: (error) =>
-			@history.push
-				type: 'action'
+			record =
+				type: 'error'
 				errorMessage: error.message
+				action:
+					display:
+						errorMessage: error.message
+			index = @history.push record
+			@listeners.onError record, index - 1 if @listeners.onError
 
 		getHistory: () =>
 			@history
@@ -43,7 +52,7 @@ module.exports = ($) ->
 		verdictCommand =
 			command: 'start'
 			players: _.map match.players, (p) -> {name: p.name}
-		gameHistory = new GameHistory()
+		gameHistory = new GameHistory(listeners)
 		gameHistory.logCommand verdictCommand
 
 		verdictData = yield verdictEntity.send verdictCommand, verdictTimeLimit

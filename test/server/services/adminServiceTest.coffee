@@ -10,7 +10,7 @@ helper = require '../helper'
 describe 'aimole', () ->
 	describe 'server', () ->
 		describe 'services', () ->
-			describe 'adminService', () ->
+			describe.skip 'adminService', () ->
 				$ = helper.getGlobals()
 
 				describe 'readGame', () ->
@@ -31,7 +31,7 @@ describe 'aimole', () ->
 
 							done null
 
-					it.only 'should read game from https://github.com/leoyuholo/aimole-othello.git', (done) ->
+					it 'should read game from https://github.com/leoyuholo/aimole-othello.git', (done) ->
 						this.timeout 20000
 
 						$.services.adminService.readGame 'https://github.com/leoyuholo/aimole-othello.git', (err, gameConfig) ->

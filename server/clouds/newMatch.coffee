@@ -14,4 +14,4 @@ module.exports = ($) ->
 
 			$.services.matchService.create newMatch, (err, match) ->
 				return res.error err.message if err
-				res.success match.objectId
+				res.success $.models.Match.envelop match

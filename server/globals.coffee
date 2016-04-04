@@ -6,6 +6,7 @@ https = require 'https'
 _ = require 'lodash'
 async = require 'async'
 express = require 'express'
+socketio = require 'socket.io'
 bodyParser = require 'body-parser'
 compression = require 'compression'
 forceSSL = require 'express-force-ssl'
@@ -44,6 +45,12 @@ module.exports = ($) ->
 
 	# configs
 	$.config = require path.join $.rootDir, 'configs', 'config'
+	# console.log 'config', _.omit $.config, 'https'
+
+	# https and socket.io
+	$.httpsServer = https.createServer {key: $.config.https.key, cert: $.config.https.cert}, $.app if $.config.https?.key && $.config.https?.cert
+	$.httpServer = http.createServer $.app
+	$.io = socketio $.httpsServer || $.httpServer
 
 	# config defined dirs
 	$.workerDir = $.config.workerDir
@@ -84,13 +91,10 @@ module.exports = ($) ->
 		'setups'
 		'listeners'
 		'clouds'
+		'sockets'
 	].forEach (component) ->
 		$[component] = requireAll path.join(__dirname, component), $
 	$.utils.requireAll = requireAll
-
-	# console.log 'config', _.omit $.config, 'https'
-	useHttps = $.config.https.key && $.config.https.cert
-	$.app.use forceSSL if useHttps
 
 	# methods
 	$.run = {}
@@ -100,6 +104,8 @@ module.exports = ($) ->
 				setup.run done
 			), done
 	$.run.server = (done) ->
+		$.app.use forceSSL if $.httpsServer
+
 		# routes
 		$.app.use $.express.static $.publicDir
 		$.app.use $.config.Parse.serverURLPath, new parseServer.ParseServer(
@@ -115,9 +121,8 @@ module.exports = ($) ->
 				_.each $.clouds, (cloud) -> cloud Parse
 		)
 
-		https.createServer({key: $.config.https.key, cert: $.config.https.cert}, $.app).listen $.config.httpsPort if useHttps
-
-		$.app.listen $.config.port, () ->
+		$.httpsServer.listen $.config.httpsPort if $.httpsServer
+		$.httpServer.listen $.config.port, () ->
 			$.emitter.emit 'serverStarted'
 			done null
 	$.run.parseSchemaSetup = (done) ->

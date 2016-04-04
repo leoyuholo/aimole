@@ -1,4 +1,7 @@
 
+_ = require 'lodash'
+async = require 'async'
+
 module.exports = ($) ->
 	self = {}
 
@@ -25,9 +28,19 @@ module.exports = ($) ->
 		$.services.matchService.findMatchWithCode matchId, (err, match) ->
 			return done {ok: false, errorMessage: err.message} if err
 
-			$.services.gameService.play match, {}, (err, result) ->
+			onData = (record, index) ->
+				$.stores.matchStore.addResult matchId, record, _.noop
+				$.utils.amqp.publishJSON $.config.rabbitmq.queues.matchStream, matchId, {event: 'data', record: record, index: index}, _.noop
+
+			async.waterfall [
+				(done) -> $.stores.matchStore.setState matchId, 'running', (err) -> done err
+				_.partial $.services.gameService.play, match, {onData: onData, onError: onData}
+				_.partial $.stores.matchStore.finalizeResult, matchId
+			], (err, match) ->
 				return done {ok: false, errorMessage: err.message} if err
 
-				done {ok: true, result: result}
+				match = $.models.Match.envelop match
+				$.utils.amqp.publishJSON $.config.rabbitmq.queues.matchStream, matchId, {event: 'end'}, _.noop
+				done {ok: true, match: match}
 
 	return self

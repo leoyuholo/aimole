@@ -10,7 +10,7 @@ module.exports = ($) ->
 	# 		displayName: {type: String, required: true}
 	# 	}
 	# 	gameId: {type: String, required: true}
-	# 	status: {type: String, enum: ['created', 'waiting', 'running', 'evaluated'], required: true}
+	# 	state: {type: String, enum: ['created', 'queued', 'running', 'evaluated'], required: true}
 	# 	players: [
 	# 		{
 	# 			type: {type: String, enum: ['ai', 'submission'], default: 'ai'} # 'me' is not a player type, replace 'me' by corresponding submission before save
@@ -54,13 +54,13 @@ module.exports = ($) ->
 	# Match.MatchSchema =
 	# 	submitBy: {}
 	# 	gameId: 'str'
-	# 	status: 'str'
+	# 	state: 'str'
 	# 	players: []
 	# 	result: []
 
 	Match.envelop = (match) ->
-		slim = _.pick match, ['objectId', 'submitBy', 'gameId', 'players']
-		slim.result = _.map _.map(_.filter(match.result, (r) -> r.type == 'action' || r.type == 'error'), 'action'), 'display'
+		slim = _.pick match, ['objectId', 'submitBy', 'gameId', 'state', 'players']
+		slim.result = _.map _.filter(match.result, (r) -> r.type == 'action' || r.type == 'error'), 'action.display'
 		return slim
 
 	return Match

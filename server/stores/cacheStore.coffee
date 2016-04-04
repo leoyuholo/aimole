@@ -79,11 +79,21 @@ module.exports = ($) ->
 			.then (cache) ->
 				return self.upsert tags, [item], done if !cache
 				return done new Error("Cache type mismatch. Expect 'arr' but get #{cache.get 'type'}.") if 'arr' != cache.get 'type'
-				# workaround, lose atomicity
-				# cache.add item
-				cache.set 'arr', cache.get('arr').concat [item]
+				cache.add 'arr', item
 					.save null, {useMasterKey: true}
 					.then (cache) -> done null, cache.get 'arr'
+			.fail (err) -> done err
+
+	self.setKey = (tags, key, value, done) ->
+		done = _.partial _.defer, done
+		_first tags
+			.then (cache) ->
+				return self.upsert tags, _.set({}, key, value), done if !cache
+				return done new Error("Cache type mismatch. Expect 'obj' but get #{cache.get 'type'}.") if 'obj' != cache.get 'type'
+				# workaround, lose atomicity
+				cache.set 'obj', _.set cache.get('obj'), key, value
+				cache.save null, {useMasterKey: true}
+					.then (cache) -> done null, cache.get 'obj'
 			.fail (err) -> done err
 
 	return self

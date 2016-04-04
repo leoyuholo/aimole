@@ -124,26 +124,34 @@ module.exports = ($) ->
 					done null, match
 
 	self.create = (newMatch, done) ->
+		createIfNotFound = (gameId, players, done) ->
+			$.stores.matchStore.findByGameIdAndPlayers gameId, players, (err, match) ->
+				return done err if err
+				return done null, match if match
+				$.stores.matchStore.create newMatch, done
+
 		async.series [
 			_.partial self.validate, newMatch
-			_.partial async.waterfall, [
-				_.partial $.stores.matchStore.findByGameIdAndPlayers, newMatch.gameId, newMatch.players
-				(match, done) ->
-					if match
-						done null, match
-					else
-						$.stores.matchStore.create newMatch, done
-			]
+			_.partial createIfNotFound, newMatch.gameId, newMatch.players
 		], (err, [__, match]) ->
 			return $.utils.onError done, err if err
 			done null, match
 
 	self.play = (matchId, done) ->
 		return done new Error('Missing match id.') if !matchId
-		$.utils.amqp.rpcClientJSON $.config.rabbitmq.queues.playMatch, {matchId: matchId}, (err, result) ->
+
+		$.stores.matchStore.findById matchId, (err, match) ->
 			return $.utils.onError done, err if err
-			return $.utils.onError done, new Error('No results received from rpc.') if !result
-			return $.utils.onError done, new Error("Error: #{result.errorMessage}") if !result.ok
-			done null, result.result
+			return $.utils.onError done, new Error("Match is already #{match.state}") if match.state == 'queued' || match.state == 'running'
+			return done null, $.models.Match.envelop match.result if match.state == 'evaluated'
+
+			async.series [
+				_.partial $.stores.matchStore.setState, matchId, 'queued'
+				_.partial $.utils.amqp.rpcClientJSON, $.config.rabbitmq.queues.playMatch, {matchId: matchId}
+			], (err, [__, result]) ->
+				return $.utils.onError done, err if err
+				return $.utils.onError done, new Error('No results received from rpc.') if !result
+				return $.utils.onError done, new Error("Error: #{result.errorMessage}") if !result.ok
+				done null, result.match
 
 	return self

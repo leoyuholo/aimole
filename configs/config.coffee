@@ -28,6 +28,7 @@ defaultConfig =
 		queues:
 			codeAnalysis: 'codeAnalysis'
 			playMatch: 'playMatch'
+			matchStream: 'matchStream'
 
 config = {}
 switch process.env.NODE_ENV

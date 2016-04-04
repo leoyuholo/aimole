@@ -16,4 +16,4 @@ module.exports = ($) ->
 
 			$.services.submissionService.submit gameId, userId, displayName, language, code, players, (err, match) ->
 				return res.error err.message if err
-				res.success match.objectId
+				res.success $.models.Match.envelop match

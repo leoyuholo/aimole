@@ -45,32 +45,36 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 				code: $scope.code
 
 			messageService.success $scope.runMsg, 'Submitting...'
-			async.waterfall [
-				_.partial matchService.newMatch, $scope.gameId, players, myCode
-				(matchId, done) ->
-					messageService.success $scope.runMsg, 'Running...'
-					done null, matchId
-				matchService.playMatch
-			], (err, match) ->
-				# TODO: track how many user leaves before getting match result
+			matchService.newMatch $scope.gameId, players, myCode, (err, match) ->
 				if err && /^Compile Error:/.test err.message
 					messageService.error $scope.runMsg, 'Compile Error'
 					$scope.compileError = err.message
 					return
 				return messageService.error $scope.runMsg, err.message if err
-				$scope.iframeUrl = ''
-				_.delay () ->
-					$scope.iframeUrl = $sce.trustAsResourceUrl $scope.game.viewUrl.replace('http://', 'https://') + '#display=' + encodeURIComponent JSON.stringify match.result
+
 				messageService.success $scope.runMsg, 'Enjoy the game!'
+
+				$scope.iframeUrl = ''
+				viewData = if match.result && match.result.length > 0 then {display: JSON.stringify match.result} else {streamUrl: makeStreamUrl(), matchId: match.objectId}
+				_.delay () -> $scope.iframeUrl = makeIframeUrl $scope.game.viewUrl, viewData
 
 	findGame = (gameId) ->
 		parseService.getCache "game-#{$scope.gameId}", (err, game) ->
 			return messageService.error $scope.gameMsg, err.message if err
 
 			$scope.game = game
-			$scope.iframeUrl = $sce.trustAsResourceUrl game.viewUrl.replace('http://', 'https://')
+			$scope.iframeUrl = makeIframeUrl $scope.game.viewUrl
 			$scope.code = game.codeTpl?.c || '// Enter your code here' if !$scope.code
 
 			analyticService.trackGame $scope.game, 'load'
+
+	makeStreamUrl = () ->
+		"#{window.location.origin}/match"
+
+	makeIframeUrl = (baseUrl, hashObj) ->
+		url = URI baseUrl
+		url.protocol 'https' if window.location.protocol == 'https:'
+		url.addFragment hashObj if hashObj
+		$sce.trustAsResourceUrl url.toString()
 
 	findGame $scope.gameId

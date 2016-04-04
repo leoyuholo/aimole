@@ -12,7 +12,7 @@ helper = require '../helper'
 describe 'aimole', () ->
 	describe 'server', () ->
 		describe 'services', () ->
-			describe 'gameService', () ->
+			describe.skip 'gameService', () ->
 				$ = helper.getGlobals()
 				verdict = {}
 				players = []

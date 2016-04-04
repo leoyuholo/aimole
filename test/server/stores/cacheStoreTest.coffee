@@ -106,3 +106,31 @@ describe 'aimole', () ->
 							array[1].should.be.deep.equal {name: 'othello'}
 
 							done null
+
+					it 'should add one more item to an existing array', (done) ->
+						$.stores.cacheStore.addItem 'games', {name: '2048'}, (err, array) ->
+							should.not.exist err
+
+							array[0].should.be.deep.equal {name: 'tictactoe'}
+							array[1].should.be.deep.equal {name: 'othello'}
+							array[2].should.be.deep.equal {name: '2048'}
+
+							done null
+
+				describe 'setKey', () ->
+					it 'should create a new object', (done) ->
+						$.stores.cacheStore.setKey 'matchResults', '1', {bar: 1}, (err, object) ->
+							should.not.exist err
+
+							object['1'].bar.should.be.equal 1
+
+							done null
+
+					it 'should set key 2 to bar: 2', (done) ->
+						$.stores.cacheStore.setKey 'matchResults', '2', {bar: 2}, (err, object) ->
+							should.not.exist err
+
+							object['1'].bar.should.be.equal 1
+							object['2'].bar.should.be.equal 2
+
+							done null

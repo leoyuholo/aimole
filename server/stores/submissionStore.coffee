@@ -28,20 +28,17 @@ module.exports = ($) ->
 		done = _.partial _.defer, done
 
 		_new(newSubmission)
-			.save null, {userMasterKey: true}
+			.save null, {useMasterKey: true}
 			.then (submission) -> done null, submission?.toJSON?()
 			.fail (err) -> done err
 
 	self.addMatchId = (submissionId, matchId, done) ->
 		done = _.partial _.defer, done
 
-		new $.Parse.Query($.models.Submission)
-			.get submissionId, {useMasterKey: true}
-			.then (submission) ->
-				return done new Error("Submission not found for id [#{submissionId}].") if !submission
-				submission.set 'matchId', matchId
-					.save null, {useMasterKey: true}
-					.then (submission) -> done null, submission?.toJSON?()
+		new $.models.Submission({id: submissionId})
+			.set 'matchId', matchId
+			.save null, {useMasterKey: true}
+			.then (submission) -> done null, submission?.toJSON?()
 			.fail (err) -> done err
 
 	return self

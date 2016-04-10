@@ -1,5 +1,4 @@
 
-_ = require 'lodash'
 Parse = require 'parse/node'
 
 module.exports = ($) ->

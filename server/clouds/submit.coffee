@@ -9,7 +9,7 @@ module.exports = ($) ->
 			code = req.params.code
 			players = req.params.players
 
-			return res.error 'Anonymous user is not allowed to submit code.' if !userId || !displayName
+			return res.error 'Anonymous users are not allowed to submit code.' if !userId || !displayName
 			return res.error 'Missing game id.' if !gameId
 			return res.error 'Missing code.' if !code
 			return res.error 'Missing players.' if !players

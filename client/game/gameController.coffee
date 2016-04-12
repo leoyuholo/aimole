@@ -7,8 +7,8 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 	$scope.game = {}
 	$scope.gameMsg = {}
 	$scope.runMsg = {}
-	$scope.compileError = ''
 	$scope.iframeUrl = ''
+	$scope.bgUrl = ''
 
 	$scope.code = ''
 	$scope.codeTpl = ''
@@ -20,7 +20,58 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 
 	playersLocalStorageKey = "players/#{$scope.gameId}"
 
-	$scope.run = () ->
+	$scope.showLeaderBoard = () ->
+		analyticService.trackGame $scope.game, 'showLeaderBoard'
+
+		modalOptions =
+			templateUrl: 'views/leaderBoardModal'
+			controller: 'leaderBoardModalController'
+			animation: false
+			size: 'lg'
+			resolve:
+				game: () -> $scope.game
+
+		modalService.openModal modalOptions, (err, matchId) ->
+			matchService.playMatch matchId, (err, match) ->
+				return messageService.error $scope.runMsg, err.message if err
+				updateIframeUrl match
+
+	makeStreamUrl = () ->
+		"#{window.location.origin}/match"
+
+	makeIframeUrl = (baseUrl, hashObj) ->
+		url = URI baseUrl
+		url.protocol 'https' if window.location.protocol == 'https:'
+		url.addFragment hashObj if hashObj
+		$sce.trustAsResourceUrl url.toString()
+
+	updateIframeUrl = (match) ->
+		messageService.success $scope.runMsg, 'Enjoy the game!'
+		$scope.iframeUrl = ''
+		viewData = if match.result && match.result.length > 0 then {display: JSON.stringify match.result} else {streamUrl: makeStreamUrl(), matchId: match.objectId}
+		_.delay () -> $scope.iframeUrl = makeIframeUrl $scope.game.viewUrl, viewData
+
+	submit = (ranked, players) ->
+		myCode =
+			language: 'c'
+			code: $scope.code
+
+		return messageService.error 'Missing players for game.' if !ranked && (!players || players.length < 1)
+
+		messageService.success $scope.runMsg, 'Submitting...'
+		submitFunc = _.partial matchService.try, $scope.gameId, players, myCode
+		submitFunc = _.partial matchService.rank, $scope.gameId, myCode if ranked
+		submitFunc (err, match) ->
+			return messageService.error $scope.runMsg, 'Compile Error', err.message if err && /^Compile Error:/.test err.message
+			return messageService.error $scope.runMsg, err.message if err
+
+			return updateIframeUrl match if match.result && match.result.length > 0
+
+			matchService.playMatch match.objectId, (err, match) ->
+				return messageService.error $scope.runMsg, err.message if err
+				updateIframeUrl match
+
+	$scope.try = () ->
 		analyticService.trackGame $scope.game, 'selectPlayer'
 
 		modalOptions =
@@ -34,47 +85,24 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 				playersLocalStorageKey: () -> playersLocalStorageKey
 
 		modalService.openModal modalOptions, (err, players) ->
-			analyticService.trackPlayers $scope.game, players
-
-			$scope.compileError = ''
-			messageService.clear $scope.runMsg
 			return messageService.error $scope.runMsg, err.message if err
 
-			myCode =
-				language: 'c'
-				code: $scope.code
+			analyticService.trackPlayers $scope.game, players
+			submit false, players
 
-			messageService.success $scope.runMsg, 'Submitting...'
-			matchService.newMatch $scope.gameId, players, myCode, (err, match) ->
-				if err && /^Compile Error:/.test err.message
-					messageService.error $scope.runMsg, 'Compile Error'
-					$scope.compileError = err.message
-					return
-				return messageService.error $scope.runMsg, err.message if err
-
-				messageService.success $scope.runMsg, 'Enjoy the game!'
-
-				$scope.iframeUrl = ''
-				viewData = if match.result && match.result.length > 0 then {display: JSON.stringify match.result} else {streamUrl: makeStreamUrl(), matchId: match.objectId}
-				_.delay () -> $scope.iframeUrl = makeIframeUrl $scope.game.viewUrl, viewData
+	$scope.rank = () ->
+		analyticService.trackGame $scope.game, 'rank'
+		submit true
 
 	findGame = (gameId) ->
 		parseService.getCache "game-#{$scope.gameId}", (err, game) ->
 			return messageService.error $scope.gameMsg, err.message if err
 
 			$scope.game = game
-			$scope.iframeUrl = makeIframeUrl $scope.game.viewUrl
+			$scope.iframeUrl = makeIframeUrl game.viewUrl
 			$scope.code = game.codeTpl?.c || '// Enter your code here' if !$scope.code
+			$scope.bgUrl = $sce.trustAsResourceUrl game.bgUrl if game.bgUrl
 
 			analyticService.trackGame $scope.game, 'load'
-
-	makeStreamUrl = () ->
-		"#{window.location.origin}/match"
-
-	makeIframeUrl = (baseUrl, hashObj) ->
-		url = URI baseUrl
-		url.protocol 'https' if window.location.protocol == 'https:'
-		url.addFragment hashObj if hashObj
-		$sce.trustAsResourceUrl url.toString()
 
 	findGame $scope.gameId

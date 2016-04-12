@@ -1,0 +1,18 @@
+script
+	include:coffee-script leaderBoardModalController.coffee
+script(type="text/ng-template", id="views/leaderBoardModal")
+	.modal-header
+		h4.modal-little
+			| {{game.name}} Leader Board
+			button.pull-right(type="button" class="close" ng-click="dismiss()") &times;
+	.modal-body
+		ul.list-group
+			.list-group-item(ng-repeat="profile in profiles track by $index" href="javascript:void(0)")
+				ul.list-inline
+					li {{$index + 1}}
+					li {{profile.displayName}}
+					li score: {{profile.score}}
+					li
+						| Last Match: 
+						b.text-info {{makeMatchDescription(profile.submissions[0])}}
+						button.btn.btn-primary(type="button" ng-click="replay(profile.submissions[0].matchId)") Replay

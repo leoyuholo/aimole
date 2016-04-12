@@ -26,6 +26,8 @@ module.exports = ($) ->
 			@process.stdin.on 'error', @onError
 
 		onData: (data) =>
+			data = data.toString()
+			return onError 'Output exceeds 10KB.' if data.length > 10240
 			time = @stopTimer()
 			@enqueueData
 				event: 'data'
@@ -102,12 +104,14 @@ module.exports = ($) ->
 			process.nextTick () =>
 				return defer.resolve {event: 'error', errorMessage: 'GameEntity error: fail to write message because process already exited.', time: 0} if @exited
 
-				str = JSON.stringify str if _.isObject str
-				str += '\n' if !/\n$/.test str
+				if str
+					str = JSON.stringify str if _.isObject str
+					str += '\n' if !/\n$/.test str
 
-				# console.log 'send', str
+					# console.log 'send', str
 
-				@process.stdin.write str
+					@process.stdin.write str
+
 				@startTimer timeLimit
 				@dequeueData (err, data) =>
 					return defer.resolve {event: 'error', errorMessage: err.message, time: 0} if err

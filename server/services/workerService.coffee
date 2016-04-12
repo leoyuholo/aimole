@@ -36,7 +36,7 @@ module.exports = ($) ->
 			async.waterfall [
 				(done) -> $.stores.matchStore.setState matchId, 'running', (err) -> done err
 				_.partial $.services.gameService.play, match, {onData: onData, onError: onData}
-				_.partial $.stores.matchStore.finalizeResult, matchId
+				_.partial $.services.matchService.finalizeMatch, match
 			], (err, match) ->
 				return done {ok: false, errorMessage: err.message} if err
 

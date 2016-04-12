@@ -7,6 +7,7 @@ module.exports = ($) ->
 	onError = (socket, err) ->
 		return if socket.disconnected
 		socket.emit 'err', err.message
+		socket.emit 'end'
 		socket.disconnect()
 
 	$.io.of('/match').on 'connection', (socket) ->
@@ -20,6 +21,7 @@ module.exports = ($) ->
 				when 'data'
 					record = data.record
 					index = data.index
+					socket.emit 'start' if index == 0
 					socket.emit 'display', record.action.display if record.type == 'action' && record.action?.display
 				when 'end'
 					socket.emit 'end'
@@ -39,6 +41,7 @@ module.exports = ($) ->
 				socket.on 'disconnect', () -> $.utils.amqp.unsubscribe consumerTag, _.noop
 
 				if match.state == 'created'
+					socket.emit 'queueing'
 					$.services.matchService.play matchId, (err, match) ->
 						return onError socket, err if err
 						socket.disconnect()

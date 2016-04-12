@@ -43,9 +43,11 @@
   },
   "dependencies": {
     "amqplib": "^0.4.1",
+    "arpad": "^0.1.2",
     "async": "^1.5.2",
     "body-parser": "^1.15.0",
     "caller-id": "^0.1.0",
+    "commander": "^2.9.0",
     "compression": "^1.6.1",
     "express": "^4.13.4",
     "express-force-ssl": "^0.3.1",

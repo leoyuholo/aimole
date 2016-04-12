@@ -93,7 +93,7 @@ module.exports = ($) ->
 
 				async.map match.players, ( (player, done) ->
 					if player.type == 'ai'
-						done null, _.cloneDeep _.find game.ai, {name: player.name}
+						done null, _.set _.cloneDeep(_.find game.ai, {name: player.name}), 'userId', "ai_#{game.objectId}_#{player.name}"
 					else if player.type == 'submission'
 						$.stores.submissionStore.findById player.submissionId, (err, submission) ->
 							return done err if err
@@ -123,16 +123,16 @@ module.exports = ($) ->
 
 					done null, match
 
-	self.create = (newMatch, done) ->
+	self.viewMatch = (matchInfo, done) ->
 		createIfNotFound = (gameId, players, done) ->
 			$.stores.matchStore.findByGameIdAndPlayers gameId, players, (err, match) ->
 				return done err if err
 				return done null, match if match
-				$.stores.matchStore.create newMatch, done
+				$.stores.matchStore.create matchInfo, done
 
 		async.series [
-			_.partial self.validate, newMatch
-			_.partial createIfNotFound, newMatch.gameId, newMatch.players
+			_.partial self.validate, matchInfo
+			_.partial createIfNotFound, matchInfo.gameId, matchInfo.players
 		], (err, [__, match]) ->
 			return $.utils.onError done, err if err
 			done null, match
@@ -143,7 +143,7 @@ module.exports = ($) ->
 		$.stores.matchStore.findById matchId, (err, match) ->
 			return $.utils.onError done, err if err
 			return $.utils.onError done, new Error("Match is already #{match.state}") if match.state == 'queued' || match.state == 'running'
-			return done null, $.models.Match.envelop match.result if match.state == 'evaluated'
+			return done null, $.models.Match.envelop match if match.state == 'evaluated'
 
 			async.series [
 				_.partial $.stores.matchStore.setState, matchId, 'queued'
@@ -153,5 +153,14 @@ module.exports = ($) ->
 				return $.utils.onError done, new Error('No results received from rpc.') if !result
 				return $.utils.onError done, new Error("Error: #{result.errorMessage}") if !result.ok
 				done null, result.match
+
+	self.finalizeMatch = (matchWithCode, result, done) ->
+		async.series [
+			_.partial $.services.rankingService.updateScore, matchWithCode, result
+			_.partial $.services.rankingService.updateLeaderBoard, matchWithCode.game.objectId
+			_.partial $.stores.matchStore.finalizeResult, matchWithCode.objectId, result
+		], (err, [__, ___, match]) ->
+			return $.utils.onError done, err if err
+			done null, match
 
 	return self

@@ -1,47 +1,60 @@
 
 _ = require 'lodash'
+async = require 'async'
 
 module.exports = ($) ->
 	self = {}
 
-	self.submit = (gameId, userId, displayName, language, code, players, done) ->
-		$.services.codeService.sendToAnalyse gameId, language, code, (err, result) ->
+	submit = (newSubmission, done) ->
+		$.services.codeService.sendToAnalyse newSubmission.gameId, newSubmission.language, newSubmission.code, (err, result) ->
 			return $.utils.onError done, err if err
 			return done new Error("Compile Error: #{result.compileErrorMessage}") if !result.ok && result.compileErrorMessage
 			return done new Error("Error: #{result.errorMessage}") if !result.ok
+			$.stores.submissionStore.create newSubmission, done
 
-			newSubmission =
-				userId: userId
-				displayName: displayName
-				gameId: gameId
-				language: language
-				code: code
+	submitMatch = (submission, players, ranked, done) ->
+		me =
+			type: 'submission'
+			name: submission.displayName
+			userId: submission.userId
+			submissionId: submission.objectId
 
-			newMatch =
-				submitBy: {userId: userId, displayName: displayName}
-				gameId: gameId
-				players: players
+		matchInfo =
+			submitBy:
+				userId: submission.userId
+				displayName: submission.displayName
+				ranked: ranked
+			gameId: submission.gameId
+			players: _.map players, (p) -> if p.type == 'me' then me else p
 
-			$.services.matchService.validate newMatch, (err) ->
+		$.services.matchService.viewMatch matchInfo, (err, match) ->
+			return $.utils.onError done, err if err
+			$.stores.submissionStore.addMatchId submission.objectId, match.objectId, (err) ->
 				return $.utils.onError done, err if err
-				$.stores.submissionStore.create newSubmission, (err, submission) ->
+				done null, match
+
+	self.try = (newSubmission, players, done) ->
+		submit newSubmission, (err, submission) ->
+			return $.utils.onError done, err if err
+			submitMatch submission, players, false, done
+
+	self.rank = (newSubmission, user, done) ->
+		submit newSubmission, (err, submission) ->
+			return $.utils.onError done, err if err
+			$.services.rankingService.matchUp submission, user, (err, players) ->
+				return $.utils.onError done, err if err
+				submitMatch submission, players, true, (err, match) ->
 					return $.utils.onError done, err if err
 
-					me =
-						type: 'submission'
-						name: displayName
-						userId: userId
+					profileSubmission =
 						submissionId: submission.objectId
+						matchId: match.objectId
+						players: players
 
-					newMatch =
-						submitBy: {userId: userId, displayName: displayName}
-						gameId: gameId
-						players: _.map newMatch.players, (p) -> if p.type == 'me' then me else p
-
-					$.stores.matchStore.create newMatch, (err, match) ->
+					async.each players, ( (player, done) ->
+						$.stores.profileStore.addSubmission submission.gameId, player.userId, profileSubmission, done
+					), (err) ->
 						return $.utils.onError done, err if err
-						$.stores.submissionStore.addMatchId submission.objectId, match.objectId, (err) ->
-							return $.utils.onError done, err if err
-							done null, match
+						done null, match
 
 	return self

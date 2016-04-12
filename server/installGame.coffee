@@ -1,54 +1,26 @@
-path = require 'path'
 
-_ = require 'lodash'
-async = require 'async'
-fse = require 'fs-extra'
+program = require 'commander'
+Parse = require 'parse/node'
 
-$ = require('./globals') {}
+program
+	.option('-i, --appId <id>', 'Parse appId')
+	.option('-s, --serverURL <url>', 'Parse serverURL')
+	.option('-k, --adminKey <secret>', 'adminKey')
+	.option('-u, --githubUrl <url>', 'GitHub Url')
+	.parse process.argv
 
-githubUrl = process.argv[2]
-
-if !githubUrl
-	console.log 'usage: coffee runGame.coffee https://github.com/leoyuholo/aimole.git'
+exit = (msg) ->
+	console.log msg
 	process.exit 0
 
-installGame = (githubUrl, done) ->
-	$.services.adminService.readGame githubUrl, (err, gameConfig) ->
-		return done err if err
+exit 'Missing Parse appId.' if !program.appId
+exit 'Missing Parse serverURL.' if !program.serverURL
+exit 'Missing adminKey.' if !program.adminKey
+exit 'Missing GitHub Url.' if !program.githubUrl
 
-		game =
-			githubUrl: githubUrl
-			name: gameConfig.name
-			description: gameConfig.description
-			author: gameConfig.author
-			version: gameConfig.version
-			viewUrl: gameConfig.viewUrl
-			bgUrl: gameConfig.bgUrl
-			players: gameConfig.players
-			codeTpl: gameConfig.codeTpl
-			ai: gameConfig.ai
-			verdict: gameConfig.verdict
+Parse.initialize program.appId
+Parse.serverURL = program.serverURL
 
-		async.series [
-			_.partial async.waterfall, [
-				_.partial $.stores.gameStore.upsertByGithubUrl, githubUrl, game
-				(game, done) ->
-					$.stores.cacheStore.upsert "game-#{game.objectId}", $.models.Game.envelop(game), done
-			]
-			_.partial async.waterfall, [
-				$.stores.gameStore.list
-				(games, done) ->
-					$.stores.cacheStore.upsert 'games', _.map(games, $.models.Game.envelop), done
-			]
-		], done
-
-async.series [
-	$.run.setup
-	_.partial installGame, githubUrl
-], (err) ->
-	if err
-		console.log "error installing game [#{githubUrl}]: #{err.message} Please make sure aimole web server is running"
-		return process.exit 0
-
-	console.log "game [#{githubUrl}] installed."
-	return process.exit 0
+Parse.Cloud.run 'installGame', {adminKey: program.adminKey, githubUrl: program.githubUrl}
+	.then (game) -> exit "game [#{program.githubUrl}] installed."
+	.fail (err) -> exit "error installing game [#{program.githubUrl}]: #{err.message}"

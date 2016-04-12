@@ -6,6 +6,7 @@ defaultConfig =
 	env: 'development'
 	port: 3000
 	httpsPort: 3001
+	adminKey: 'aimole-admin'
 	workerDir: process.env.WORKER_DIR || path.join '/', 'tmp', 'worker'
 	https:
 		key: ''

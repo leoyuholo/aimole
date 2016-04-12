@@ -28,7 +28,7 @@ module.exports = ($) ->
 		logAction: (action) =>
 			record =
 				type: 'action'
-				action: action
+				action: _.pick action, _.keys $.models.Match.schema.result[0].action
 			index = @history.push record
 			@listeners.onData record, index - 1 if @listeners.onData
 
@@ -119,7 +119,7 @@ module.exports = ($) ->
 		gameDir = path.join $.workerDir, $.utils.rng.generateId()
 
 		verdict.sandboxPath = path.join gameDir, 'verdict'
-		verdict.filename = "code.#{$.constants.languageExtname[verdict.language]}"
+		verdict.filename = "code.#{$.constants.language.extname[verdict.language]}"
 		dirObj = {}
 		dirObj.verdict = {}
 		dirObj.verdict[verdict.filename] = verdict.code
@@ -129,7 +129,7 @@ module.exports = ($) ->
 			playerDirname = "player#{index}"
 
 			player.sandboxPath = path.join gameDir, 'players', playerDirname
-			player.filename = "code.#{$.constants.languageExtname[player.language]}"
+			player.filename = "code.#{$.constants.language.extname[player.language]}"
 
 			playerObj = {}
 			playerObj[player.filename] = player.code

@@ -42,7 +42,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 	makeIframeUrl = (baseUrl, hashObj) ->
 		url = URI baseUrl
 		url.protocol 'https' if window.location.protocol == 'https:'
-		url.addFragment hashObj if hashObj
+		url.hash encodeURIComponent JSON.stringify hashObj if hashObj
 		$sce.trustAsResourceUrl url.toString()
 
 	updateIframeUrl = (match) ->

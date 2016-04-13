@@ -15,4 +15,5 @@ script(type="text/ng-template", id="views/leaderBoardModal")
 					li
 						| Last Match: 
 						b.text-info {{makeMatchDescription(profile.submissions[0])}}
+					li
 						button.btn.btn-primary(type="button" ng-click="replay(profile.submissions[0].matchId)") Replay

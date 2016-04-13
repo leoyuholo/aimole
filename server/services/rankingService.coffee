@@ -24,8 +24,8 @@ module.exports = ($) ->
 	self.matchUp = (submission, user, done) ->
 		me =
 			type: 'submission'
-			name: user.displayName
-			userId: user.id
+			name: submission.displayName
+			userId: submission.userId
 			submissionId: submission.objectId
 
 		$.stores.gameStore.findById submission.gameId, (err, game) ->

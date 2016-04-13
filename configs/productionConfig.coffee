@@ -8,6 +8,7 @@ module.exports =
 	env: 'production'
 	port: 3000
 	httpsPort: 3001
+	adminKey: credentials.adminKey
 	https:
 		key: credentials.https?.key
 		cert: credentials.https?.cert

@@ -11,4 +11,4 @@ module.exports = ($) ->
 
 			$.services.matchService.play matchId, (err, match) ->
 				return res.error err.message if err
-				res.success $.models.Match.envelop match
+				res.success match

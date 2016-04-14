@@ -17,24 +17,18 @@ module.exports = ($) ->
 			.setACL submissionACL
 
 	self.findById = (submissionId, done) ->
-		done = _.partial _.defer, done
-
 		new $.Parse.Query($.models.Submission)
 			.get submissionId, {useMasterKey: true}
 			.then (submission) -> done null, submission?.toJSON?()
 			.fail (err) -> done err
 
 	self.create = (newSubmission, done) ->
-		done = _.partial _.defer, done
-
 		_new(newSubmission)
 			.save null, {useMasterKey: true}
 			.then (submission) -> done null, submission?.toJSON?()
 			.fail (err) -> done err
 
 	self.addMatchId = (submissionId, matchId, done) ->
-		done = _.partial _.defer, done
-
 		new $.models.Submission({id: submissionId})
 			.set 'matchId', matchId
 			.save null, {useMasterKey: true}

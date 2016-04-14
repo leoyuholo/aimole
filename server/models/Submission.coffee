@@ -15,4 +15,6 @@ module.exports = ($) ->
 
 	Submission.schema = submissionSchema
 
+	Submission.parsePermissions = $.constants.parsePermissions.grantFindOnly
+
 	return Submission

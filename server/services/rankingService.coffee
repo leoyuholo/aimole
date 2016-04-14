@@ -21,7 +21,7 @@ module.exports = ($) ->
 		# TODO: ensure opponent is not running a match, related to submit.coffee
 		done null, _.sampleSize profiles, count
 
-	self.matchUp = (submission, user, done) ->
+	self.matchUp = (submission, done) ->
 		me =
 			type: 'submission'
 			name: submission.displayName
@@ -37,11 +37,10 @@ module.exports = ($) ->
 				gameId: submission.gameId
 				userId: submission.userId
 				displayName: submission.displayName
-				pictureUrl: user.profilePictureUrl
 				ai: false
 				score: game.ranking.baseScore
 
-			$.stores.profileStore.addIfNotExist profile, (err, profile) ->
+			$.services.profileService.addIfNotExist profile, (err, profile) ->
 				return $.utils.onError done, err if err
 
 				aroundMe profile, (err, profiles) ->

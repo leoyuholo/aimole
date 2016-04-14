@@ -26,7 +26,7 @@ module.exports = ($) ->
 
 			# TODO: avoid running multiple matches for same user at the same time, related to rankingService.coffee
 
-			submit = _.partial $.services.submissionService.rank, newSubmission, req.user
+			submit = _.partial $.services.submissionService.rank, newSubmission
 			submit = _.partial $.services.submissionService.try, newSubmission, players if !ranked
 			submit (err, match) ->
 				return res.error err.message if err

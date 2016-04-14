@@ -41,14 +41,9 @@ module.exports = ($) ->
 			.then (profiles) -> done null, _.compact _.map profiles, (p) -> p?.toJSON?()
 			.fail (err) -> done err
 
-	self.addIfNotExist = (newProfile, done) ->
-		_first newProfile.gameId, newProfile.userId
-			.then (profile) ->
-				return profile if profile
-
-				_new(newProfile)
-					.save null, {useMasterKey: true}
-			.then (profile) -> done null, profile?.toJSON?()
+	self.create = (newProfile, done) ->
+		_new(newProfile)
+			.then (profile) -> done null, profile?.toJSON()?
 			.fail (err) -> done err
 
 	self.addSubmission = (gameId, userId, submission, done) ->

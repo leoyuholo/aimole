@@ -39,11 +39,10 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 	makeStreamUrl = () ->
 		"#{window.location.origin}/match"
 
-	makeIframeUrl = (baseUrl, hashObj) ->
-		url = URI baseUrl
-		url.protocol 'https' if window.location.protocol == 'https:'
-		url.hash encodeURIComponent JSON.stringify hashObj if hashObj
-		$sce.trustAsResourceUrl url.toString()
+	makeIframeUrl = (baseUrl, params) ->
+		baseUrl.replace /^http:/, 'https:' if window.location.protocol == 'https:'
+		hash = _.compact(_.map(params, (v, k) -> if v then "#{encodeURIComponent(k)}=#{encodeURIComponent(v)}" else '')).join('&')
+		$sce.trustAsResourceUrl "#{baseUrl}##{hash}"
 
 	updateIframeUrl = (match) ->
 		messageService.success $scope.runMsg, 'Enjoy the game!'
@@ -65,11 +64,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 			return messageService.error $scope.runMsg, 'Compile Error', err.message if err && /^Compile Error:/.test err.message
 			return messageService.error $scope.runMsg, err.message if err
 
-			return updateIframeUrl match if match.result && match.result.length > 0
-
-			matchService.playMatch match.objectId, (err, match) ->
-				return messageService.error $scope.runMsg, err.message if err
-				updateIframeUrl match
+			updateIframeUrl match
 
 	$scope.try = () ->
 		analyticService.trackGame $scope.game, 'selectPlayer'

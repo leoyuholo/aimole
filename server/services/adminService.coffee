@@ -73,7 +73,7 @@ module.exports = ($) ->
 					pictureUrl: ''
 					ai: true
 					score: game.ranking.baseScore
-				$.stores.profileStore.addIfNotExist profile, done
+				$.services.profileService.addIfNotExist profile, done
 			), done
 
 		updateGameCache = (game, done) ->

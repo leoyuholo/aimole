@@ -38,10 +38,10 @@ module.exports = ($) ->
 			return $.utils.onError done, err if err
 			submitMatch submission, players, false, done
 
-	self.rank = (newSubmission, user, done) ->
+	self.rank = (newSubmission, done) ->
 		submit newSubmission, (err, submission) ->
 			return $.utils.onError done, err if err
-			$.services.rankingService.matchUp submission, user, (err, players) ->
+			$.services.rankingService.matchUp submission, (err, players) ->
 				return $.utils.onError done, err if err
 				submitMatch submission, players, true, (err, match) ->
 					return $.utils.onError done, err if err

@@ -12,7 +12,6 @@ module.exports = ($) ->
 			'docker'
 			'run'
 			'--name', containerName
-			'--rm'
 			'--net', 'none'
 			'--entrypoint', 'sh'
 			'-v', sandboxPath + ':/vol/'
@@ -27,7 +26,6 @@ module.exports = ($) ->
 				'run'
 				'-i'
 				'--name', containerName
-				'--rm'
 				'--net', 'none'
 				'-v', sandboxPath + ':/vol/'
 				'-u', '$(id -u):$(id -g)'

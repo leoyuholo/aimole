@@ -50,6 +50,7 @@ module.exports = ($) ->
 						submissionId: submission.objectId
 						matchId: match.objectId
 						players: players
+						updatedAt: (new Date()).toJSON()
 
 					async.each players, ( (player, done) ->
 						$.stores.profileStore.addSubmission submission.gameId, player.userId, profileSubmission, done

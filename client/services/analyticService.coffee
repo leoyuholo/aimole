@@ -24,8 +24,8 @@ app.service 'analyticService', ($analytics, userService) ->
 		now = new Date()
 		self.track 'activeEditing', {
 			category: game.name
-			label: "#{now.getFullYear()} #{now.getMonth()} #{now.getDate()}"
-			value: now - since
+			label: "#{now.getFullYear()} #{now.getMonth() + 1} #{now.getDate()}"
+			value: (Date.now() - since) / 60000
 		}
 
 	viewWhoisplayingCount = 0

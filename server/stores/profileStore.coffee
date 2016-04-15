@@ -7,13 +7,13 @@ module.exports = ($) ->
 	_find = (gameId) ->
 		new $.Parse.Query($.models.Profile)
 			.equalTo 'gameId', gameId
-			.find()
+			.find {useMasterKey: true}
 
 	_first = (gameId, userId) ->
 		new $.Parse.Query($.models.Profile)
 			.equalTo 'gameId', gameId
 			.equalTo 'userId', userId
-			.first()
+			.first {useMasterKey: true}
 
 	_new = (newProfile) ->
 		profileACL = new $.Parse.ACL()
@@ -41,6 +41,15 @@ module.exports = ($) ->
 			.then (profiles) -> done null, _.compact _.map profiles, (p) -> p?.toJSON?()
 			.fail (err) -> done err
 
+	self.listByGameIdSortByScoreWithLimit = (gameId, limit, done) ->
+		new $.Parse.Query($.models.Profile)
+			.equalTo 'gameId', gameId
+			.descending 'score'
+			.limit limit
+			.find {useMasterKey: true}
+			.then (profiles) -> done null, _.compact _.map profiles, (p) -> p?.toJSON?()
+			.fail (err) -> done err
+
 	self.create = (newProfile, done) ->
 		_new(newProfile)
 			.then (profile) -> done null, profile?.toJSON()?
@@ -51,11 +60,6 @@ module.exports = ($) ->
 			.then (profile) ->
 				profile.add 'submissions', submission
 					.save null, {useMasterKey: true}
-					.then (profile) ->
-						submissions = profile.get 'submissions'
-						return profile if submissions.length <= 5
-						excessSubmissions = _.take submissions, submissions.length - 5
-						Promise.all _.map excessSubmissions, (s) -> profile.remove 'submissions', s
 					.then (profile) -> done null, profile?.toJSON?()
 			.fail (err) -> done err
 

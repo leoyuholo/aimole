@@ -25,6 +25,15 @@ module.exports = ($) ->
 			.set 'matchTag', _makeMatchTag newMatch.gameId, newMatch.players
 			.setACL matchACL
 
+	self.findLastBySubmitByUserId = (userId, done) ->
+		new $.Parse.Query($.models.Match)
+			.equalTo 'submitBy.userId', userId
+			.descending 'updatedAt'
+			.limit 1
+			.first {useMasterKey: true}
+			.then (match) -> done null, match?.toJSON?()
+			.fail (err) -> done err
+
 	self.findByGameIdAndPlayers = (gameId, players, done) ->
 		new $.Parse.Query($.models.Match)
 			.equalTo 'matchTag', _makeMatchTag gameId, players

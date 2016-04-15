@@ -1,8 +1,9 @@
 app = angular.module 'aimole'
 
-app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messageService, parseService, modalService, matchService, analyticService) ->
+app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $timeout, messageService, parseService, modalService, matchService, analyticService) ->
 
 	$scope.gameId = $routeParams.gameId
+	$scope.matchId = $routeParams.matchId
 
 	$scope.game = {}
 	$scope.gameMsg = {}
@@ -32,6 +33,26 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 				game: () -> $scope.game
 
 		modalService.openModal modalOptions, (err, matchId) ->
+			return messageService.error $scope.runMsg, err.message if err
+			return messageService.clear $scope.runMsg if !matchId
+			matchService.playMatch matchId, (err, match) ->
+				return messageService.error $scope.runMsg, err.message if err
+				updateIframeUrl match
+
+	watchRecentMatch = () ->
+		analyticService.trackGame $scope.game, 'watchRecentMatch'
+
+		modalOptions =
+			templateUrl: 'views/watchRecentMatchModal'
+			controller: 'watchRecentMatchModalController'
+			animation: false
+			size: 'md'
+			resolve:
+				game: () -> $scope.game
+
+		modalService.openModal modalOptions, (err, matchId) ->
+			return messageService.error $scope.runMsg, err.message if err
+			return messageService.clear $scope.runMsg if !matchId
 			matchService.playMatch matchId, (err, match) ->
 				return messageService.error $scope.runMsg, err.message if err
 				updateIframeUrl match
@@ -47,8 +68,8 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 	updateIframeUrl = (match) ->
 		messageService.success $scope.runMsg, 'Enjoy the game!'
 		$scope.iframeUrl = ''
-		viewData = if match.result && match.result.length > 0 then {display: JSON.stringify match.result} else {streamUrl: makeStreamUrl(), matchId: match.objectId}
-		_.delay () -> $scope.iframeUrl = makeIframeUrl $scope.game.viewUrl, viewData
+		viewData = if match.state == 'evaluated' then {display: JSON.stringify match.result} else {streamUrl: makeStreamUrl(), matchId: match.objectId}
+		$timeout () -> $scope.iframeUrl = makeIframeUrl $scope.game.viewUrl, viewData
 
 	submit = (ranked, players) ->
 		myCode =
@@ -62,6 +83,8 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 		submitFunc = _.partial matchService.rank, $scope.gameId, myCode if ranked
 		submitFunc (err, match) ->
 			return messageService.error $scope.runMsg, 'Compile Error', err.message if err && /^Compile Error:/.test err.message
+			return watchRecentMatch() if err && _.startsWith err.message, 'You have an unfinished match.'
+			return messageService.success $scope.runMsg, err.message if err && _.startsWith err.message, 'Congraduations, you\'re No.1 in this game!'
 			return messageService.error $scope.runMsg, err.message if err
 
 			updateIframeUrl match
@@ -95,6 +118,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, messag
 
 			$scope.game = game
 			$scope.iframeUrl = makeIframeUrl game.viewUrl
+			updateIframeUrl {objectId: $scope.matchId} if $scope.matchId
 			$scope.code = game.codeTpl?.c || '// Enter your code here' if !$scope.code
 			$scope.bgUrl = $sce.trustAsResourceUrl game.bgUrl if game.bgUrl
 

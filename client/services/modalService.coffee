@@ -7,7 +7,7 @@ app.service 'modalService', ($rootScope, $uibModal) ->
 		modal = $uibModal.open options
 
 		modal.result
-			.then (args...) -> done null, args...
+			.then ( (args...) -> done null, args...), ( () -> done null)
 
 		dismissModalListener = $rootScope.$on '$routeChangeStart', () ->
 			modal.close() if modal.close

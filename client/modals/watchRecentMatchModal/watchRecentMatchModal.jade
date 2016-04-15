@@ -1,0 +1,17 @@
+script
+	include:coffee-script watchRecentMatchModalController.coffee
+script(type="text/ng-template", id="views/watchRecentMatchModal")
+	.modal-header
+		h4.modal-little
+			| Oh, wait...
+			button.pull-right(type="button" class="close" ng-click="dismiss()") &times;
+	.modal-body
+		.message-text.text-danger(ng-if="gameMsg.errorMessage") {{gameMsg.errorMessage}}
+		ul.list-inline
+			li
+				h5 You have an unfinished match.
+			//- TODO: add an info button with glyphicon-info-sign to show tooltip to tell user about fair usage
+			li(ng-if="recentMatch.gameId === game.objectId")
+				a(ng-href="#/game/{{recentMatch.gameId}}/{{recentMatch.objectId}}" target="_blank") Go to watch.
+			li(ng-if="recentMatch.gameId === game.objectId")
+				button.btn.btn-default(type="button" ng-click="watch()") Watch now

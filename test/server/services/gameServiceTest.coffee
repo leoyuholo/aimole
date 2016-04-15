@@ -30,8 +30,8 @@ describe 'aimole', () ->
 							code: verdictCode
 
 						players = [
-							{language: 'c', code: player1Code}
-							{language: 'c', code: player2Code}
+							{name: 'easyplayer', language: 'c', code: player1Code}
+							{name: 'easyplayer2', language: 'c', code: player2Code}
 						]
 
 						done null
@@ -51,7 +51,8 @@ describe 'aimole', () ->
 					$.services.gameService.play match, {}, (err, result) ->
 						should.not.exist err
 
-						console.log 'two-player', result
+						# console.log 'two-player', result
+						console.log 'two-player', JSON.stringify _.map _.filter(result, (r) -> r.type == 'action' || r.type == 'error'), 'action.display'
 
 						done null
 

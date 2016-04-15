@@ -16,13 +16,12 @@ script(type="text/ng-template", id="views/game")
 				.flex.panel.panel-default
 					.flex-header.panel-body
 						.row
-							p
-								.col-sm-6
-									a(href="javascript:void(0)" ng-click="showLeaderBoard()")
-										strong {{game.name}} Leader Board
-								.col-sm-6
-									.text-right
-										a(ng-href="https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts" target="_blank") Editor Hotkeys
+							.col-sm-6
+								a(href="javascript:void(0)" ng-click="showLeaderBoard()")
+									strong {{game.name}} Leader Board
+							.col-sm-6
+								.text-right
+									a(ng-href="https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts" target="_blank") Editor Hotkeys
 					.flex.aimole-editor
 						aimole-editor.flex(local-storage-key="codeLocalStorageKey" editor-options="codeAceOptions" language="'c'" ng-model="code" on-change="editorOnChange")
 					.flex-footer.panel-footer.clearfix#submit-btn-toolbar
@@ -31,5 +30,6 @@ script(type="text/ng-template", id="views/game")
 							.message-text.text-success(ng-if="runMsg.successMessage") {{runMsg.successMessage}}
 						.btn-toolbar.pull-right
 							//- button.btn.btn-link(ng-show="user" type="button" ng-click="showPrevious()") Previous Submissions
+							button.btn.btn-default(type="button" ng-click="showLeaderBoard()") Leader Board
 							button.btn.btn-default(type="button" tooltip-placement="left" tooltip-popup-delay="500" uib-tooltip="Test your AI!" ng-click="try()" ng-disabled="runMsg.successMessage == 'Submitting...'") Try!
 							button.btn.btn-primary(ng-show="user" type="button" tooltip-placement="left" tooltip-popup-delay="500" uib-tooltip="Rank your AI on the leader board!" ng-click="rank()" ng-disabled="runMsg.successMessage == 'Submitting...'") Rank!

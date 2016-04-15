@@ -24,10 +24,12 @@ module.exports = ($) ->
 				language: language
 				code: code
 
-			# TODO: avoid running multiple matches for same user at the same time, related to rankingService.coffee
-
-			submit = _.partial $.services.submissionService.rank, newSubmission
-			submit = _.partial $.services.submissionService.try, newSubmission, players if !ranked
-			submit (err, match) ->
+			$.stores.matchStore.findLastBySubmitByUserId userId, (err, match) ->
 				return res.error err.message if err
-				res.success $.models.Match.envelop match
+				return res.error "You have an unfinished match. gameId:#{match.gameId} matchId:#{match.objectId}" if match.state != 'evaluated'
+
+				submit = _.partial $.services.submissionService.rank, newSubmission
+				submit = _.partial $.services.submissionService.try, newSubmission, players if !ranked
+				submit (err, match) ->
+					return res.error err.message if err
+					res.success $.models.Match.envelop match

@@ -17,6 +17,7 @@ module.exports = ($) ->
 				players: [
 					{name: String}
 				]
+				updatedAt: {type: Date, required: true}
 			}
 		]
 		score: {type: Number, default: 0}

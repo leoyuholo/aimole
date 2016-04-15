@@ -142,7 +142,9 @@ module.exports = ($) ->
 
 		$.stores.matchStore.findById matchId, (err, match) ->
 			return $.utils.onError done, err if err
-			return $.utils.onError done, new Error("Match is already #{match.state}") if match.state == 'queued' || match.state == 'running'
+			minSinceUpdated = $.utils.dateDiff match.updatedAt, 'minutes'
+			if (match.state == 'queued' || match.state == 'running') && 30 > minSinceUpdated
+				return $.utils.onError done, new Error("Match is already #{match.state} #{minSinceUpdated} minutes ago.")
 			return done null, $.models.Match.envelop match if match.state == 'evaluated'
 
 			async.series [

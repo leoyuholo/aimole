@@ -16,6 +16,7 @@ app.controller 'playMatchModalController', ($scope, $rootScope, $uibModalInstanc
 
 		modalService.openModal options, (err, player) ->
 			return messageService.error $scope.msg, err.message if err
+			return if !player
 
 			$scope.players[index] = player
 			$scope.involveMe = _.filter($scope.players, (player) -> player.type == 'me').length > 0

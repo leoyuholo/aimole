@@ -5,12 +5,9 @@ app.config ($routeProvider, $locationProvider) ->
 		.when '/',
 			controller: 'gamesController'
 			templateUrl: 'views/games'
-		.when '/game/:gameId',
+		.when '/game/:gameId/:matchId?',
 			controller: 'gameController'
 			templateUrl: 'views/game'
-		# .when '/replay/:gameId/:replayId',
-		# 	controller: 'replayController'
-		# 	templateUrl: 'views/replay'
 		.otherwise
 			redirectTo: '/'
 

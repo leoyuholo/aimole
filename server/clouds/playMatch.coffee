@@ -9,6 +9,6 @@ module.exports = ($) ->
 
 			return res.error 'Missing match id.' if !matchId
 
-			$.services.matchService.play matchId, (err, match) ->
+			$.stores.matchStore.findById matchId, (err, match) ->
 				return res.error err.message if err
-				res.success match
+				res.success $.models.Match.envelop match

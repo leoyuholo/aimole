@@ -19,6 +19,9 @@ app.controller 'leaderBoardModalController', ($scope, $uibModalInstance, parseSe
 	loadLeaderBoard = () ->
 		parseService.getCache "leaderboard-#{game.objectId}", (err, profiles) ->
 			return messageService.error $scope.msg, err.message if err
+			profiles = _.map profiles, (p) ->
+				p.submissions = [_.last p.submissions]
+				return p
 			$scope.profiles = profiles
 
 	loadLeaderBoard()

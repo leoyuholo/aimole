@@ -7,19 +7,30 @@ module.exports = ($) ->
 	self = {}
 
 	aroundMe = (profile, done) ->
-		# TODO: use leaderboard cache
 		$.stores.profileStore.listByGameId profile.gameId, (err, profiles) ->
 			return $.utils.onError done, err if err
 
-			rank = _.lastIndexOf _.orderBy(_.map(profiles, 'score'), '', 'desc'), profile.score
+			sortedScores = _.map(profiles, 'score').sort().reverse()
+			rank = _.lastIndexOf sortedScores, profile.score
 
-			return $.utils.onError done, new Error("Congraduations, you're No.1 in this game! Please sit tight and wait for challengers.") if rank == 0
+			return $.utils.onError done, new Error('Congraduations, you\'re No.1 in this game! Please sit tight and wait for challengers.') if rank == 0
 
-			done null, _.slice _.orderBy(profiles, 'score', 'desc'), _.max([0, rank - 5]), rank + 1
+			sortedProfiles = _.orderBy(profiles, 'score', 'desc')
+			result = _.slice sortedProfiles, _.max([0, rank - 5]), rank + 1
 
-	pick = (profiles, count, done) ->
-		# TODO: ensure opponent is not running a match, related to submit.coffee
+			done null, result
+
+	pickOpponents = (profiles, count, done) ->
 		done null, _.sampleSize profiles, count
+		# async.filter _.shuffle(profiles), ( (profile, done) ->
+		# 	return done null, true if profile.ai
+		# 	$.services.profileService.findRecentMatch profile.gameId, profile.userId, (err, match) ->
+		# 		return $.utils.onError done, err if err
+		# 		done null, match.state == 'evaluated'
+		# ), (err, profiles) ->
+		# 	return $.utils.onError done, err if err
+		# 	return done new Error() if !profiles || profiles.length < count
+		# 	done null, _.sampleSize profiles, count
 
 	self.matchUp = (submission, done) ->
 		me =
@@ -46,7 +57,7 @@ module.exports = ($) ->
 				aroundMe profile, (err, profiles) ->
 					return $.utils.onError done, err if err
 
-					pick _.reject(profiles, ['userId', me.userId]), game.players - 1, (err, opponents) ->
+					pickOpponents _.reject(profiles, ['userId', me.userId]), game.players - 1, (err, opponents) ->
 						return $.utils.onError done, err if err
 
 						opponents = _.map opponents, (o) ->
@@ -110,9 +121,11 @@ module.exports = ($) ->
 				return done new Error("Unknow ranking scheme: #{game.ranking.scheme}")
 
 	self.updateLeaderBoard = (gameId, done) ->
+		# $.stores.profileStore.listByGameIdSortByScoreWithLimit gameId, $.constants.leaderBoard.size, (err, profiles) ->
 		$.stores.profileStore.listByGameId gameId, (err, profiles) ->
 			return $.utils.onError done, err if err
 			leaderBoard = _.orderBy _.map(profiles, $.models.Profile.envelop), 'score', 'desc'
+			leaderBoard = _.take leaderBoard, $.constants.leaderBoard.size
 			$.stores.cacheStore.upsert "leaderboard-#{gameId}", leaderBoard, done
 
 	return self

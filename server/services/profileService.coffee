@@ -8,7 +8,10 @@ module.exports = ($) ->
 			return done null if !profile
 			return done null if profile.submissions.length < 1
 
-			$.stores.matchStore.findById profile.submissions[0].matchId, done
+			matchId = _.last(profile.submissions)?.matchId
+			return done null if !matchId
+
+			$.stores.matchStore.findById matchId, done
 
 	self.addIfNotExist = (newProfile, done) ->
 		$.stores.profileStore.findByGameIdAndUserId newProfile.gameId, newProfile.userId, (err, profile) ->

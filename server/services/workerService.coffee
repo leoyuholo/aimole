@@ -27,7 +27,7 @@ module.exports = ($) ->
 		matchId = msg.matchId
 		$.services.matchService.findMatchWithCode matchId, (err, match) ->
 			return done {ok: false, errorMessage: err.message} if err
-			return done {ok: false, errorMessage: "Match state is '#{match.state}', need to be 'queued'."} if match.state != 'queued'
+			# return done {ok: false, errorMessage: "Match state is '#{match.state}', need to be 'queued'."} if match.state != 'queued'
 
 			onData = (record, index) ->
 				$.stores.matchStore.addResult matchId, record, _.noop

@@ -15,7 +15,7 @@ module.exports = ($) ->
 			return $.utils.onError done, err if err
 			return done null, profile if profile
 
-			$.userStore.findById newProfile.userId, (err, user) ->
+			$.stores.userStore.findById newProfile.userId, (err, user) ->
 				return $.utils.onError done, err if err
 				return $.utils.onError done, new Error('User not found.') if !user
 

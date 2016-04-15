@@ -15,12 +15,14 @@ module.exports = ($) ->
 			return $.utils.onError done, err if err
 			return done null, profile if profile
 
+			return $.stores.profileStore.create newProfile, done if newProfile.ai
+
 			$.stores.userStore.findById newProfile.userId, (err, user) ->
 				return $.utils.onError done, err if err
 				return $.utils.onError done, new Error('User not found.') if !user
 
 				newProfile.profilePictureUrl = user.profilePictureUrl
 
-				$.profileStore.create newProfile, done
+				$.stores.profileStore.create newProfile, done
 
 	return self

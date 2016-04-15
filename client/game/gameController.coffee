@@ -61,7 +61,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $timeo
 		"#{window.location.origin}/match"
 
 	makeIframeUrl = (baseUrl, params) ->
-		baseUrl.replace /^http:/, 'https:' if window.location.protocol == 'https:'
+		baseUrl = if window.location.protocol == 'https:' then baseUrl.replace /^http:/, 'https:' else baseUrl.replace /^https:/, 'http:'
 		hash = _.compact(_.map(params, (v, k) -> if v then "#{encodeURIComponent(k)}=#{encodeURIComponent(v)}" else '')).join('&')
 		$sce.trustAsResourceUrl "#{baseUrl}##{hash}"
 

@@ -26,7 +26,7 @@ module.exports = ($) ->
 
 			$.stores.matchStore.findLastBySubmitByUserId userId, (err, match) ->
 				return res.error err.message if err
-				return res.error "You have an unfinished match. gameId:#{match.gameId} matchId:#{match.objectId}" if match.state != 'evaluated'
+				return res.error "You have an unfinished match. gameId:#{match.gameId} matchId:#{match.objectId}" if match && match.state != 'evaluated'
 
 				submit = _.partial $.services.submissionService.rank, newSubmission
 				submit = _.partial $.services.submissionService.try, newSubmission, players if !ranked

@@ -52,7 +52,8 @@ module.exports = ($) ->
 
 	self.create = (newProfile, done) ->
 		_new(newProfile)
-			.then (profile) -> done null, profile?.toJSON()?
+			.save null, {useMasterKey: true}
+			.then (profile) -> done null, profile?.toJSON?()
 			.fail (err) -> done err
 
 	self.addSubmission = (gameId, userId, submission, done) ->

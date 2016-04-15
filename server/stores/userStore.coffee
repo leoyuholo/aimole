@@ -13,10 +13,9 @@ module.exports = ($) ->
 
 	self.findById = (userId, done) ->
 		new $.Parse.Query($.Parse.User)
-			.equalTo 'id', userId
-			.first {useMasterKey: true}
+			.get userId
 			.then (user) -> done null, user?.toJSON?()
-			.fail(err) -> done err
+			.fail (err) -> done err
 
 	self.list = (done) ->
 		new $.Parse.Query($.Parse.User)

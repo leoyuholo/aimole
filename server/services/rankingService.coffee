@@ -10,6 +10,8 @@ module.exports = ($) ->
 		$.stores.profileStore.listByGameId profile.gameId, (err, profiles) ->
 			return $.utils.onError done, err if err
 
+			console.log profiles
+
 			sortedScores = _.map(profiles, 'score').sort().reverse()
 			rank = _.lastIndexOf sortedScores, profile.score
 
@@ -17,6 +19,8 @@ module.exports = ($) ->
 
 			sortedProfiles = _.orderBy(profiles, 'score', 'desc')
 			result = _.slice sortedProfiles, _.max([0, rank - 5]), rank + 1
+
+			console.log 'aroundMe', sortedScores, rank, sortedProfiles, result
 
 			done null, result
 

@@ -56,6 +56,14 @@ module.exports = ($) ->
 			.then (profile) -> done null, profile?.toJSON?()
 			.fail (err) -> done err
 
+	self.setLastSubmissionId = (gameId, userId, submissionId, done) ->
+		_first gameId, userId
+			.then (profile) ->
+				profile.set 'lastSubmissionId', submissionId
+					.save null, {useMasterKey: true}
+					.then (profile) -> done null, profile?.toJSON?()
+			.fail (err) -> done err
+
 	self.addSubmission = (gameId, userId, submission, done) ->
 		_first gameId, userId
 			.then (profile) ->

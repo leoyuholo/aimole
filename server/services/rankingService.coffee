@@ -46,8 +46,6 @@ module.exports = ($) ->
 		$.stores.gameStore.findById submission.gameId, (err, game) ->
 			return $.utils.onError done, err if err
 
-			return done null, [me] if game.players < 2
-
 			profile =
 				gameId: submission.gameId
 				userId: submission.userId
@@ -57,6 +55,7 @@ module.exports = ($) ->
 
 			$.services.profileService.addIfNotExist profile, (err, profile) ->
 				return $.utils.onError done, err if err
+				return done null, [me] if game.players < 2
 
 				aroundMe profile, (err, profiles) ->
 					return $.utils.onError done, err if err
@@ -69,7 +68,7 @@ module.exports = ($) ->
 								type: if o.ai then 'ai' else 'submission'
 								name: o.displayName
 								userId: o.userId
-								submissionId: if o.ai then null else _.last(o.submissions)?.submissionId
+								submissionId: if o.ai then null else o.lastSubmissionId
 							}
 
 						done null, _.shuffle opponents.concat me

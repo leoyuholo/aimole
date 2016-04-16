@@ -20,6 +20,7 @@ module.exports = ($) ->
 				updatedAt: {type: Date, required: true}
 			}
 		]
+		lastSubmissionId: {type: String, required: true}
 		score: {type: Number, default: 0}
 
 	Profile = Parse.Object.extend 'Profile'

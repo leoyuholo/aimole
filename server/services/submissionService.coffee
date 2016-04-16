@@ -52,10 +52,12 @@ module.exports = ($) ->
 						players: players
 						updatedAt: (new Date()).toJSON()
 
-					async.each players, ( (player, done) ->
-						$.stores.profileStore.addSubmission submission.gameId, player.userId, profileSubmission, done
-					), (err) ->
+					$.stores.profileStore.setLastSubmissionId submission.gameId, submission.userId, submission.objectId, (err) ->
 						return $.utils.onError done, err if err
-						done null, match
+						async.each players, ( (player, done) ->
+							$.stores.profileStore.addSubmission submission.gameId, player.userId, profileSubmission, done
+						), (err) ->
+							return $.utils.onError done, err if err
+							done null, match
 
 	return self

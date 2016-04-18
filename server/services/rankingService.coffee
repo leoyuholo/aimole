@@ -106,7 +106,11 @@ module.exports = ($) ->
 
 		switch game.ranking.scheme
 			when 'max'
-				$.stores.profileStore.updateScoreIfHigher game.objectId, players[0].userId, lastAction.score, done
+				submission =
+					submissionId: players[0].submissionId
+					matchId: matchWithCode.objectId
+					updatedAt: (new Date()).toJSON()
+				$.stores.profileStore.updateScoreIfHigher game.objectId, players[0].userId, lastAction.score, submission, done
 			when 'elo'
 				computeEloChange game, players, lastAction.winner, (err, scoreIncrement) ->
 					return $.utils.onError done, err if err

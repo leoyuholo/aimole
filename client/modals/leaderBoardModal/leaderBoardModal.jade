@@ -12,7 +12,9 @@ script(type="text/ng-template", id="views/leaderBoardModal")
 					li {{$index + 1}}
 					li {{profile.displayName}}
 					li score: {{profile.score}}
-					li
+					li(ng-if="game.ranking.scheme === 'max'")
+						| Highest Score Game:
+					li(ng-if="game.ranking.scheme !== 'max'")
 						| Last Match: 
 						b.text-info {{makeMatchDescription(profile.submissions[0])}}
 					li

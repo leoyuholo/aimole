@@ -54,6 +54,7 @@ module.exports = ($) ->
 
 					$.stores.profileStore.setLastSubmissionId submission.gameId, submission.userId, submission.objectId, (err) ->
 						return $.utils.onError done, err if err
+						return done null, match if players.length < 2
 						async.each players, ( (player, done) ->
 							$.stores.profileStore.addSubmission submission.gameId, player.userId, profileSubmission, done
 						), (err) ->

@@ -72,11 +72,12 @@ module.exports = ($) ->
 					.then (profile) -> done null, profile?.toJSON?()
 			.fail (err) -> done err
 
-	self.updateScoreIfHigher = (gameId, userId, score, done) ->
+	self.updateScoreIfHigher = (gameId, userId, score, submission, done) ->
 		_first gameId, userId
 			.then (profile) ->
 				return done null, profile?.toJSON?() if score <= profile.get 'score'
 				profile.set 'score', score
+					.set 'submissions', [submission]
 					.save null, {useMasterKey: true}
 					.then (profile) -> done null, profile?.toJSON?()
 			.fail (err) -> done err

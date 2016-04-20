@@ -7,7 +7,7 @@ script(type="text/ng-template", id="views/game")
 		.flex-row.row
 			.flex.col-md-6
 				.flex.panel.panel-default
-					.flex-header.panel-heading(ng-if="gameMsg.errorMessage || compileError")
+					.flex-header.panel-heading(ng-if="gameMsg.errorMessage || runMsg.details")
 						.message-text.text-danger(ng-if="gameMsg.errorMessage") {{gameMsg.errorMessage}}
 						p
 							pre.compile-error(ng-if="runMsg.details") {{runMsg.details}}

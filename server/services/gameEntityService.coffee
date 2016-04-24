@@ -35,18 +35,15 @@ module.exports = ($) ->
 				data: data.toString()
 
 		onExit: (code, signal) =>
-			time = @stopTimer()
-			try
-				signal = fse.readJsonSync(path.join @processDir, 'result.json')?.result?[0]
-			catch err
-				signal = ''
-			@enqueueData
-				event: 'exit'
-				time: time
-				exitCode: code
-				signalStr: signal || 'Unexpected termination.'
+			fse.readJson path.join @processDir, 'result.json', (err, data) ->
+				time = @stopTimer()
+				@enqueueData
+					event: 'exit'
+					time: time
+					exitCode: code
+					signalStr: data?.result?[0] || 'Unexpected termination.'
 
-			@exited = true
+				@exited = true
 
 		onError: (errorMessage) =>
 			time = @stopTimer()

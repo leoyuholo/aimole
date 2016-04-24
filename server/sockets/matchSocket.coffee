@@ -22,7 +22,7 @@ module.exports = ($) ->
 					record = data.record
 					index = data.index
 					socket.emit 'start' if index == 0
-					socket.emit 'display', record.action.display if record.type == 'action' && record.action?.display
+					socket.emit 'display', record.action.display if (record.type == 'action' || record.type == 'error') && record.action?.display
 				when 'end'
 					socket.emit 'end'
 					socket.disconnect()

@@ -25,6 +25,8 @@ module.exports = ($) ->
 			@process.stderr.on 'data', @onError
 			@process.stdin.on 'error', @onError
 
+			@pause()
+
 		onData: (data) =>
 			data = data.toString()
 			return onError 'Output exceeds 10KB.' if data.length > 10240
@@ -35,7 +37,7 @@ module.exports = ($) ->
 				data: data.toString()
 
 		onExit: (code, signal) =>
-			fse.readJson path.join @processDir, 'result.json', (err, data) ->
+			fse.readJson path.join(@processDir, 'result.json'), (err, data) =>
 				time = @stopTimer()
 				@enqueueData
 					event: 'exit'
@@ -61,7 +63,7 @@ module.exports = ($) ->
 				time: time
 
 		enqueueData: (data) =>
-			# console.log 'receive', data
+			console.log 'receive', data
 			@dataQueue.push data
 			@emitter.emit 'data'
 
@@ -109,7 +111,7 @@ module.exports = ($) ->
 					str = JSON.stringify str if _.isObject str
 					str += '\n' if !/\n$/.test str
 
-					# console.log 'send', str
+					console.log 'send', str
 
 					@process.stdin.write str
 

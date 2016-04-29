@@ -127,7 +127,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $timeo
 			$scope.iframeUrl = makeIframeUrl game.viewUrl
 			updateIframeUrl {objectId: $scope.matchId} if $scope.matchId
 			$scope.language = localStorage.getItem($scope.languageLocalStorageKey) || 'C'
-			$scope.code = game.codeTpl?[$scope.language]? || '// Enter your code here' if !$scope.code
+			$scope.code = game.codeTpl?[$scope.language?.toLowerCase()] || '// Enter your code here' if !$scope.code
 			$scope.bgUrl = $sce.trustAsResourceUrl game.bgUrl if game.bgUrl
 
 			analyticService.trackGame $scope.game, 'load'

@@ -11,12 +11,19 @@ const compute = (me, opponent, board) => {
 	} else {
 		return [4, 2];
 	}
-}
+};
 
 process.stdin.on('data', data => {
+	// parse stdin to lines
 	const lines = data.toString().split('\n');
+
+	// my disc symbol and opponent's disc symbol
 	const me = lines[0].charAt(0);
 	const opponent = lines[0].charAt(2);
-	const board = lines.slice(1, lines.length - 1);
+
+	// game board
+	const board = lines.slice(1);
+
+	// compute my move and print it to stdout
 	console.log(compute(me, opponent, board).join(' '));
 });

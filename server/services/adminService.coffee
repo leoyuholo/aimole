@@ -42,7 +42,7 @@ module.exports = ($) ->
 			throw new Error('Missing ai name.') if !ai.name
 			throw new Error('AI name is not a string.') if !_.isString ai.name
 
-			throw new Error("AI language is not one of #{languages}.") if ai.language && !_.includes languages, ai.language
+			throw new Error("AI language #{ai.language} of #{ai.name} is not one of #{languages}.") if ai.language && !_.includes languages, ai.language
 
 			throw new Error('Missing ai code.') if !ai.code
 			throw new Error('AI code is not a string.') if !_.isString ai.code
@@ -50,7 +50,7 @@ module.exports = ($) ->
 		if game.codeTpl
 			throw new Error() if !_.isObject game.codeTpl
 			_.each game.codeTpl, (tpl, language) ->
-				throw new Error("AI language is not one of #{languages}.") if !_.includes languages, language
+				throw new Error("Code template language #{language} is not one of #{languages}.") if !_.includes languages, language
 				throw new Error("Code template for language #{language} is not a string.") if !_.isString tpl
 
 		throw new Error('Missing verdict.') if !game.verdict

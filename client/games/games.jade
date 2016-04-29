@@ -8,7 +8,7 @@ script(type="text/ng-template", id="views/games-users")
 			b.text-info {{user.displayName}}
 		div.pull-right(ng-if="userCount > 5") and {{userCount - 5}} more...
 script(type="text/ng-template", id="views/games")
-	div#games-bg(dynamic-background="" background-image="{{bgUrl}}")
+	div.flex#games-bg(dynamic-background="" background-image="{{bgUrl}}")
 		div(aimole-header)
 		.container#games-view
 			.panel.panel-default

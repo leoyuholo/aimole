@@ -47,6 +47,7 @@ mediaWidth = 720px
 		background-size cover
 		background-repeat no-repeat
 		background-position top center
+		background-attachment fixed
 	#game-view
 		> .row
 			margin 0px

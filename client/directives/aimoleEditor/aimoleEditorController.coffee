@@ -41,7 +41,7 @@ app.controller 'aimoleEditorController', ($scope) ->
 		$scope.aceOptions = _.defaults _.cloneDeep($scope.editorOptions) || {}, defaultOptions
 
 	setLanguage = () ->
-		editor.getSession().setMode "ace/mode/#{if $scope.language == 'c' then 'c_cpp' else $scope.language}" if $scope.language
+		editor.getSession().setMode "ace/mode/#{if $scope.language.toLowerCase() == 'c' then 'c_cpp' else $scope.language.toLowerCase()}" if $scope.language
 
 	$scope.$watch 'editorOptions', setAceOptions
 	$scope.$watch 'language', setLanguage

@@ -36,7 +36,6 @@ describe 'aimole', () ->
 
 						done null
 
-
 				it 'should run two-player game', (done) ->
 					this.timeout 200000
 
@@ -51,8 +50,8 @@ describe 'aimole', () ->
 					$.services.gameService.play match, {}, (err, result) ->
 						should.not.exist err
 
-						# console.log 'two-player', result
-						console.log 'two-player', JSON.stringify _.map _.filter(result, (r) -> r.type == 'action' || r.type == 'error'), 'action.display'
+						console.log 'two-player', result
+						# console.log 'two-player', JSON.stringify _.map _.filter(result, (r) -> r.type == 'action' || r.type == 'error'), 'action.display'
 
 						done null
 
@@ -78,5 +77,47 @@ describe 'aimole', () ->
 							result[2].should.have.property 'command'
 								.that.has.property 'signalStr'
 								.that.is.equal 'Runtime Error'
+
+							done null
+
+				it 'should run python two-player game', (done) ->
+					this.timeout 200000
+
+					fse.readFile path.join(__dirname, 'testData', 'python', 'player1.py'), {encoding: 'utf8'}, (err, player1Code) ->
+						should.not.exist err
+
+						match =
+							game:
+								verdict: _.cloneDeep verdict
+							players: [
+								{name: 'pythonplayer', language: 'python', code: player1Code}
+								_.cloneDeep players[1]
+							]
+
+						$.services.gameService.play match, {}, (err, result) ->
+							should.not.exist err
+
+							console.log 'python', helper.inspect result
+
+							done null
+
+				it 'should run javascript two-player game', (done) ->
+					this.timeout 200000
+
+					fse.readFile path.join(__dirname, 'testData', 'javascript', 'player1.js'), {encoding: 'utf8'}, (err, player1Code) ->
+						should.not.exist err
+
+						match =
+							game:
+								verdict: _.cloneDeep verdict
+							players: [
+								{name: 'javascriptplayer', language: 'javascript', code: player1Code}
+								_.cloneDeep players[1]
+							]
+
+						$.services.gameService.play match, {}, (err, result) ->
+							should.not.exist err
+
+							console.log 'javascript', helper.inspect result
 
 							done null

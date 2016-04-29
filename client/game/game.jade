@@ -21,9 +21,14 @@ script(type="text/ng-template", id="views/game")
 									strong {{game.name}} Leader Board
 							.col-sm-6
 								.text-right
-									a(ng-href="https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts" target="_blank") Editor Hotkeys
+									//- a(ng-href="https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts" target="_blank") Editor Hotkeys
+									span(uib-dropdown)
+										a(href uib-dropdown-toggle) Language: {{language}}
+										ul.dropdown-menu(uib-dropdown-menu)
+											li(ng-repeat="lang in languages")
+												a(href ng-click="setLanguage(lang)") {{lang}}
 					.flex.aimole-editor
-						aimole-editor.flex(local-storage-key="codeLocalStorageKey" editor-options="codeAceOptions" language="'c'" ng-model="code" on-change="editorOnChange")
+						aimole-editor.flex(local-storage-key="codeLocalStorageKey" editor-options="codeAceOptions" language="language" ng-model="code" on-change="editorOnChange")
 					.flex-footer.panel-footer.clearfix#submit-btn-toolbar
 						.pull-left
 							.message-text.text-danger(ng-if="runMsg.errorMessage") {{runMsg.errorMessage}}

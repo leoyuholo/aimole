@@ -10,16 +10,23 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $timeo
 	$scope.runMsg = {}
 	$scope.iframeUrl = ''
 	$scope.bgUrl = ''
+	$scope.languages = ['C', 'Python', 'Javascript', 'Ruby']
 
+	$scope.language = 'C'
 	$scope.code = ''
 	$scope.codeTpl = ''
 	$scope.codeLocalStorageKey = "game/#{$scope.gameId}"
+	$scope.languageLocalStorageKey = "language/#{$scope.gameId}"
 	$scope.codeAceOptions =
 		maxLines: Infinity
 	timer = Date.now()
 	$scope.editorOnChange = _.throttle ( () -> analyticService.trackActiveEditing $scope.game, timer), 10 * 60 * 1000
 
 	playersLocalStorageKey = "players/#{$scope.gameId}"
+
+	$scope.setLanguage = (lang) ->
+		$scope.language = lang
+		localStorage.setItem $scope.languageLocalStorageKey, lang
 
 	$scope.showLeaderBoard = () ->
 		analyticService.trackGame $scope.game, 'showLeaderBoard'
@@ -73,7 +80,7 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $timeo
 
 	submit = (ranked, players) ->
 		myCode =
-			language: 'c'
+			language: $scope.language.toLowerCase()
 			code: $scope.code
 
 		return messageService.error 'Missing players for game.' if !ranked && (!players || players.length < 1)
@@ -119,7 +126,8 @@ app.controller 'gameController', ($scope, $rootScope, $routeParams, $sce, $timeo
 			$scope.game = game
 			$scope.iframeUrl = makeIframeUrl game.viewUrl
 			updateIframeUrl {objectId: $scope.matchId} if $scope.matchId
-			$scope.code = game.codeTpl?.c || '// Enter your code here' if !$scope.code
+			$scope.language = localStorage.getItem($scope.languageLocalStorageKey) || 'C'
+			$scope.code = game.codeTpl?[$scope.language]? || '// Enter your code here' if !$scope.code
 			$scope.bgUrl = $sce.trustAsResourceUrl game.bgUrl if game.bgUrl
 
 			analyticService.trackGame $scope.game, 'load'

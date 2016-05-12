@@ -21,21 +21,21 @@ module.exports = ($) ->
 		].join ' '
 
 	makeRunCmd = (sandboxPath, sandboxConfig, containerName) ->
-		_.flatten([
+		_.compact _.flatten([
 				'docker'
 				'run'
 				'-i'
 				'--name', containerName
 				'--net', 'none'
 				'-v', sandboxPath + ':/vol/'
-				'-u', '$(id -u):$(id -g)'
+				'-u', '1000:1000'
 				'tomlau10/sandbox-run'
 				'-n', 1
 				'-m', sandboxConfig.memoryLimitMB
 				if sandboxConfig.language != 'c' then ['-c', sandboxConfig.codeFilename] else ''
 				'-CR'
 				sandboxConfig.executableFilename
-			]).join ' '
+			])
 
 	makeRmCmd = (containerName) ->
 		[
@@ -71,6 +71,7 @@ module.exports = ($) ->
 	self.compileAndRun = (sandboxPath, sandboxConfig, containerName, done) ->
 		self.compile sandboxPath, sandboxConfig, (err) ->
 			return done err if err
-			done null, childProcess.exec makeRunCmd sandboxPath, sandboxConfig, containerName
+			cmd = makeRunCmd(sandboxPath, sandboxConfig, containerName)
+			done null, childProcess.spawn _.head(cmd), _.tail(cmd)
 
 	return self

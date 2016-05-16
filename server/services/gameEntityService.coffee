@@ -80,12 +80,12 @@ module.exports = ($) ->
 		pause: () =>
 			return if @paused
 			@paused = true
-			childProcess.exec "docker pause #{@containerName}"
+			childProcess.spawn 'docker', ['pause', @containerName]
 
 		resume: () =>
 			return if !@paused
 			@paused = false
-			childProcess.exec "docker unpause #{@containerName}"
+			childProcess.spawn 'docker', ['unpause', @containerName]
 
 		stopTimer: () =>
 			clearTimeout @timer.timeout

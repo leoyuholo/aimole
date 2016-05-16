@@ -69,7 +69,7 @@ module.exports = ($) ->
 
 	self.finalizeResult = (matchId, result, done) ->
 		new $.models.Match({id: matchId})
-			.set 'result', result
+			# .set 'result', result
 			.set 'state', 'evaluated'
 			.save null, {useMasterKey: true}
 			.then (match) -> done null, match?.toJSON?()

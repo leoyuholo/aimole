@@ -17,20 +17,23 @@ module.exports = ($) ->
 	class GameHistory
 		constructor: (@listeners) ->
 			@history = []
+			@index = 0
 
 		logCommand: (command) =>
 			record =
 				type: 'command'
 				command: command
-			index = @history.push record
-			@listeners.onData record, index - 1 if @listeners.onData
+			# index = @history.push record
+			# @listeners.onData record, index - 1 if @listeners.onData
+			@listeners.onData record, @index++ if @listeners.onData
 
 		logAction: (action) =>
 			record =
 				type: 'action'
 				action: _.pick action, _.keys $.models.Match.schema.result[0].action
-			index = @history.push record
-			@listeners.onData record, index - 1 if @listeners.onData
+			# index = @history.push record
+			# @listeners.onData record, index - 1 if @listeners.onData
+			@listeners.onData record, @index++ if @listeners.onData
 
 		logError: (error) =>
 			record =
@@ -39,8 +42,9 @@ module.exports = ($) ->
 				action:
 					display:
 						errorMessage: error.message
-			index = @history.push record
-			@listeners.onError record, index - 1 if @listeners.onError
+			# index = @history.push record
+			# @listeners.onError record, index - 1 if @listeners.onError
+			@listeners.onError record, @index++ if @listeners.onError
 
 		getHistory: () =>
 			@history

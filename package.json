@@ -45,6 +45,7 @@
     "amqplib": "^0.4.1",
     "arpad": "^0.1.2",
     "async": "^2.0.0-rc.3",
+    "bluebird": "^3.3.5",
     "body-parser": "^1.15.0",
     "caller-id": "^0.1.0",
     "commander": "^2.9.0",

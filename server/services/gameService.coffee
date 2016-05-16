@@ -3,7 +3,7 @@ path = require 'path'
 _ = require 'lodash'
 async = require 'async'
 fse = require 'fs-extra'
-Q = require 'q'
+promise = require 'bluebird'
 
 module.exports = ($) ->
 	self = {}
@@ -49,7 +49,7 @@ module.exports = ($) ->
 		getHistory: () =>
 			@history
 
-	_kickoff = Q.async (match, verdictEntity, playerEntities, listeners) ->
+	_kickoff = promise.coroutine (match, verdictEntity, playerEntities, listeners) ->
 		verdictTimeLimit = match.game.verdict.timeLimit || $.constants.time.verdict.defaultTimeLimit
 		defaultPlayerTimeLimit = $.constants.time.player.defaultTimeLimit
 

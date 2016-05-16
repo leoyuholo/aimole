@@ -35,6 +35,15 @@ module.exports = ($) ->
 			# @listeners.onData record, index - 1 if @listeners.onData
 			@listeners.onData record, @index++ if @listeners.onData
 
+		logLastAction: (action) =>
+			record =
+				type: 'action'
+				action: _.pick action, _.keys $.models.Match.schema.result[0].action
+			# index = @history.push record
+			# @listeners.onData record, index - 1 if @listeners.onData
+			@history.push record
+			@listeners.onData record, @index++ if @listeners.onData
+
 		logError: (error) =>
 			record =
 				type: 'error'
@@ -44,6 +53,7 @@ module.exports = ($) ->
 						errorMessage: error.message
 			# index = @history.push record
 			# @listeners.onError record, index - 1 if @listeners.onError
+			@history.push record
 			@listeners.onError record, @index++ if @listeners.onError
 
 		getHistory: () =>
@@ -78,7 +88,8 @@ module.exports = ($) ->
 					break
 
 				if verdictAction.action == 'stop' || verdictAction.action == 'error'
-					gameHistory.logAction verdictAction
+					# gameHistory.logAction verdictAction
+					gameHistory.logLastAction verdictAction
 					break
 				else if verdictAction.action == 'next'
 					gameHistory.logAction verdictAction
@@ -149,10 +160,9 @@ module.exports = ($) ->
 				return onError err if err
 				kickoff match, verdictEntity, playerEntities, listeners, (err, result) ->
 					return onError err if err
-					# TODO: update elo score if applicable
 					async.series [
 						_.partial async.parallel, _.map [verdictEntity].concat(playerEntities), 'exit'
-						# _.partial fse.remove, gameDir
+						_.partial fse.remove, gameDir
 					], (err) ->
 						return $.utils.onError done, err if err
 						done null, result

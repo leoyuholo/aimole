@@ -52,7 +52,7 @@ module.exports = ($) ->
 			@enqueueData
 				event: 'error'
 				time: time
-				errorMessage: errorMessage
+				errorMessage: errorMessage.toString()
 
 			# don't need to exit
 

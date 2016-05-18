@@ -1,4 +1,4 @@
-FROM node:6
+FROM node:5
 
 RUN git config --system user.name Docker && git config --system user.email docker@localhost
 

@@ -1,5 +1,18 @@
-# AI mole
-let ai play against ai
+# aimole
+> Let AI play against AI
+
+*aimole* is a platform for game playing AI to play against other game playing AI. It is initially developed to support the online course taught by [Dr. Wong Tsz Yeung](http://www.cse.cuhk.edu.hk/~tywong/html/index.html) at [CUHK](http://www.cuhk.edu.hk), see the course [here](http://tywong.github.io/gitbook-engg1110/).
+
+Besides this AI competing platform, there is also an online judge for programming assignments. See [codeSubmit](https://github.com/leoyuholo/codesubmit).
+
+## Games
+aimole is modularized to two parts, platform and games. Currently have two games developed and available.
+
+### [Othello](https://github.com/ymcatar/aimole-othello)
+![screenshot](./aimole-othello.png)
+
+### [2048](https://github.com/jjanicechen/aimole-2048)
+![screenshot](./aimole-2048.png)
 
 # LICENSE
 This program is free software: you can redistribute it and/or modify

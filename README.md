@@ -14,6 +14,11 @@ aimole is modularized to two parts, platform and games. Currently have two games
 ### [2048](https://github.com/jjanicechen/aimole-2048)
 ![screenshot](./aimole-2048.png)
 
+## Sandbox-run
+All the user submitted code are running inside sandbox environment. For each code execution, codeSubmit will spawn docker instances to run the compilation and execution process. This isolates each submission as well as providing security to the host.
+
+This sandbox is a sub-project of Dr. Wong Tsz Yeung's students' final year project. You can find its docker hub repository [here](https://hub.docker.com/r/tomlau10/sandbox-run/).
+
 # LICENSE
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
